@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_ir_model_lookup_wizard_form_view">
+            <field name="name">builder.ir.model.lookup.wizard.form</field>
+            <field name="model">builder.ir.model.lookup.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Model Lookup">
+                    <group>
+                        <group>
+                            <field name="system_model_id" attrs="{'required': [('model_source', 'in', ['system'])], 'invisible': [('model_source', 'not in', ['system'])]}" />
+                            <field name="development_model_id" attrs="{'required': [('model_source', 'in', ['development'])], 'invisible': [('model_source', 'not in', ['development'])]}" />
+                            <field name="lookup_mode" invisible="1" />
+                            <field name="lookup_value" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="model_source" widget="radio" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_lookup" string="Select" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_model_lookup_wizard">
+            <field name="name">Model Lookup</field>
+            <field name="res_model">builder.ir.model.lookup.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_ir_model_import_wizard_form_view">
+            <field name="name">builder.ir.model.import.wizard.form</field>
+            <field name="model">builder.ir.model.import.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Model Import">
+                    <group>
+                        <group>
+                            <field name="set_inherited" />
+                        </group>
+                        <group>
+                            <field name="create_fields" attrs="{'invisible': [('set_inherited', '=', True)]}"/>
+                            <field name="relations_only" attrs="{'invisible': [('create_fields', '=', False)]}" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="model_ids" />
+                    </group>
+                    <footer>
+                        <button name="action_import" string="Import" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_model_import_wizard">
+            <field name="name">Model Import</field>
+            <field name="res_model">builder.ir.model.import.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

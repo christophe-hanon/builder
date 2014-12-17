@@ -1,0 +1,45 @@
+{%- extends 'base.xml' %}
+{% import 'fields.xml' as field %}
+
+{% block content %}
+
+<menuitem name="{{package.name.capitalize()}}" id="{{module}}_{{package.name}}_menu_root" parent="{{module}}_menu_root"/>
+
+{% for model in models %}
+<!-- begin model: {{model.class_name}}({{model.class_id}}) -->
+<record model="ir.ui.view" id="{{model.class_id|dot2dashed}}_tree_view">
+    <field name="name">{{model.class_id}}.tree</field>
+    <field name="model">{{model.class_id}}</field>
+    <field name="arch" type="xml">
+        {{ field.tree_tag(model) }}
+    </field>
+</record>
+
+<record model="ir.ui.view" id="{{model.class_id|dot2dashed}}_form_view">
+    <field name="name">{{model.class_id}}.form</field>
+    <field name="model">{{model.class_id}}</field>
+    <field name="arch" type="xml">
+        {{ field.form_tag(model) }}
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="act_{{model.class_id|dot2dashed}}">
+    <field name="name">{{model.class_name}}</field>
+    <field name="res_model">{{model.class_id}}</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Click to create a new {{model.class_name}}.
+        </p>
+        <p>
+
+        </p>
+    </field>
+</record>
+
+<menuitem name="{{model.class_name}}" id="menu_{{model.class_id|dot2dashed}}" parent="{{module}}_{{package.name}}_menu_root" action="act_{{model.class_id|dot2dashed}}" />
+<!-- end model: {{model.class_name}} -->
+{% endfor %}
+
+{% endblock %}

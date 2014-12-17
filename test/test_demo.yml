@@ -1,0 +1,17 @@
+-
+  I create an item based on this template
+-
+  !record {model: builder.ir.module.module, id: module_1}:
+    name: Demo1
+    author: Yusnel Rojas Garcia
+    maintainer: Yunier Rojas Garcia
+    contributors: Alcides Morales Guedes, Luis Artiles
+    category_id: base.module_category_administration
+    website: http://www.amazon.com/
+
+-
+  This is another stage
+-
+  !python {model: builder.ir.module.module}: |
+    print self.get_available_import_formats(cr, uid)
+    assert len(self.get_available_import_formats(cr, uid)) == 2, "This is incorrect"

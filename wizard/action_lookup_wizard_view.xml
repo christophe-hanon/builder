@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_ir_model_lookup_wizard_form_view">
+            <field name="name">builder.ir.action.lookup.wizard.form</field>
+            <field name="model">builder.ir.action.lookup.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Action Lookup">
+                    <group>
+                        <group>
+                            <field name="action_id" />
+                            <field name="lookup_mode" invisible="1" />
+                            <field name="lookup_value" readonly="1" />
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_lookup" string="Select" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_action_lookup_wizard">
+            <field name="name">Model Lookup</field>
+            <field name="res_model">builder.ir.action.lookup.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,12 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+{% if data.groups %}
+{% for group in data.groups -%}
+{% for model in data.class_map.values() -%}
+"access_{{group|cleargroup}}_{{model|dot2dashed}}","{{model}}","model_{{model|dot2dashed}}","{{group}}",1,0,0,0
+{%endfor %}
+{%- endfor %}
+{% else %}
+{%- for model in data.class_map.values() -%}
+"access_{{model|dot2dashed}}","{{model}}","model_{{model|dot2dashed}}","base.group_user",1,0,0,0
+{% endfor %}
+{% endif %}

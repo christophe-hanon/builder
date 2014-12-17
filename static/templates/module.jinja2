@@ -1,0 +1,20 @@
+{% include 'python' ignore missing %}
+# noinspection PyStatementEffect
+{
+        "name" : "{{module}}",
+        "version" : "0.1",
+        "author" : "Odoo",
+        "website" : "http://www.odoo.com",
+        "category" : "Unknown",
+        "description": \"\"\"  \"\"\",
+        "depends" : ['base'],
+        "data" : [
+                'security/ir.model.access.csv',
+                'views/menu.xml',
+                {% for pkg in packages -%}
+                'views/{{pkg}}.xml',
+                {%- endfor %}
+        ],
+        "demo" : [ ],
+        "installable": True
+}

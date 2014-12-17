@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<templates>
+        <!--<t t-extend="ListView.buttons">
+            <t t-jquery="span.oe_alternative" t-operation="append">
+                <a href="#" class="oe_bold oe_list_button_module_import">Imports</a>
+            </t>
+        </t>-->
+
+    <t t-extend="UserMenu">
+        <t t-jquery="li>a[data-menu='account']" t-operation="replace" />
+        <t t-jquery="li>a[data-menu='about']" t-operation="replace" />
+        <t t-jquery="li>a[data-menu='odoo_support']" t-operation="replace" />
+        <t t-jquery="li>a[data-menu='help']" t-operation="replace" />
+    </t>
+</templates>

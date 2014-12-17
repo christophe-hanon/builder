@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="Assets Backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/builder/static/src/js/diagram.js"></script>
+                <script type="text/javascript" src="/builder/static/src/js/codemirror_odoo.js"></script>
+            </xpath>
+        </template>
+    </data>
+</openerp>

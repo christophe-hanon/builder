@@ -1,0 +1,65 @@
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_link}:
+    name: oe_link
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_inline}:
+    name: oe_inline
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_edit_only}:
+    name: oe_edit_only
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_highlight}:
+    name: oe_highlight
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_title}:
+    name: oe_title
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_left}:
+    name: oe_left
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_right}:
+    name: oe_right
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_text_center}:
+    name: oe_text_center
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_text_left}:
+    name: oe_text_left
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_text_right}:
+    name: oe_text_right
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_clear}:
+    name: oe_clear
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_bold}:
+    name: oe_bold
+-
+
+-
+  !record {model: builder.web.util.css.class, id: builder_web_util_css_class_oe_fade}:
+    name: oe_fade
+-
+

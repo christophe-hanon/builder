@@ -1,0 +1,4 @@
+{% include 'python' ignore missing %}
+{% for pack in packages -%}
+from . import {{pack}}
+{% endfor %}

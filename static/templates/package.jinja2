@@ -1,0 +1,35 @@
+{% include 'python' ignore missing %}
+from openerp import models, fields, api, tools, _
+from openerp.osv import fields as fields_old
+import openerp.addons.decimal_precision as dp
+
+{% for model in models %}
+class {{model.class_name}}({% if model.abstract %}models.AbstractModel{% else %}models.Model{% endif %}):
+    _name = '{{model.class_id}}'
+    {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif %}
+    {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif %}
+    {% if model.comment %}_description = '{{model.comment}}'{% endif %}
+    {% if model.handle_attribute %}_order = '{{model.handle_attribute.name}}' {% endif %}
+
+    {% for field in model.attributes -%}
+    {{field.name}} = {{field}}
+    {% endfor -%}
+
+    {%- for definition in model.clips.values() %}
+    {{definition}}
+    {% endfor -%}
+
+    {%- for operation in model.operations %}
+    {{ operation.sugar() }}
+    def {{ operation.scope() }}{{ operation.name }}({{ operation.self() }}{{ operation.param_list() }}):
+        """
+        {{ operation.comment }}
+        {%- for param in operation.params %}
+        @{{ param.name }}: <{{ param.type|default('Unknown') }}> {{ param.comment }}
+        {% endfor -%}
+        @return <{{ operation.type }}>
+        """
+        raise NotImplementedError
+    {% endfor -%}
+
+{% endfor %}

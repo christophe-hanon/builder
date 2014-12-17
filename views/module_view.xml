@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="module_form" model="ir.ui.view">
+            <field name="name">builder.ir.module.module.form</field>
+            <field name="model">builder.ir.module.module</field>
+            <field name="arch" type="xml">
+                <form string="Module">
+
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+                            <button class="oe_inline oe_stat_button" string="UML Diagram" name="action_diagram" type="object"
+                                    icon="fa-magic" context="{}"/>
+                        </div>
+                        <field name="icon_image" widget="image" class="oe_avatar oe_left"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="shortdesc"/>
+                            </h1>
+                            <h3 class="oe_fade">
+                                By
+                                <field name="author" class="oe_inline"/>
+                            </h3>
+                            <div>
+                                <button name="button_download" string="Download" type="object" class="oe_highlight"/>
+                            </div>
+                        </div>
+                        <div class="oe_clear"/>
+                        <notebook>
+                            <page string="Information">
+                                <group>
+                                    <group>
+                                        <field name="website" widget="url"/>
+                                        <field name="category_id" widget="selection"/>
+                                        <field name="summary"/>
+                                    </group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="license"/>
+                                        <field name="installed_version"/>
+                                    </group>
+                                </group>
+                                <field name="description_html" class='oe_styling_v8'/>
+
+                            </page>
+                            <page string="Technical Data">
+                                <group col="4">
+                                    <field name="demo"/>
+                                    <field name="application"/>
+                                    <field name="auto_install"/>
+                                </group>
+                                <group string="Dependencies"/>
+                                <p class="oe_grey" attrs="{'invisible': [('dependency_ids','not in',[None,False])]}">
+                                    -This module does not depends on any other module.
+                                </p>
+                                <field name="dependency_ids">
+                                    <tree string="Dependencies" context="{'default_module_id': active_id}">
+                                        <field name="name"/>
+                                    </tree>
+                                    <form string="Dependency">
+                                        <group>
+                                            <group>
+                                                <field name="type"/>
+                                                <field name="dependency_module_id"
+                                                       attrs="{'invisible': [('type', 'not in', 'module')]}"/>
+                                                <field name="dependency_project_id"
+                                                       attrs="{'invisible': [('type', 'not in', 'project')]}"/>
+                                                <field name="dependency_module_name"
+                                                       attrs="{'invisible': [('type', 'not in', 'manual')]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="name"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Models">
+                                <div class="oe_right oe_button_box" name="model_buttons">
+                                    <button string="Import Models" name="%(act_builder_ir_model_import_wizard)d" type="action" context="{}"/>
+                                </div>
+                                <field name="model_ids" editable="bottom" context="{'default_module_id': active_id}">
+                                    <tree string="Models" context="{'default_module_id': active_id}">
+                                        <field name="id" invisible="1"/>
+                                        <field name="special_states_field_id" invisible="1"/>
+                                        <field name="model"/>
+                                        <field name="inherit_model"/>
+                                        <field name="name"/>
+                                        <field name="osv_memory"/>
+                                        <button name="action_open_view_wizard" type="object" string="Views" class="oe_button oe_form_button oe_link"/>
+                                        <!--<button name="%(act_builder_ir_model_view_config_wizard)d" type="action" string="Views" class="oe_link" context="{'default_model_id': id, 'default_module_id': active_id, 'default_special_states_field_id': special_states_field_id}"/>-->
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Views">
+
+                            </page>
+                            <page string="Menus">
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="module_tree" model="ir.ui.view">
+            <field name="name">builder.ir.module.module.tree</field>
+            <field name="model">builder.ir.module.module</field>
+            <field name="arch" type="xml">
+                <tree string="Modules">
+                    <field name="shortdesc"/>
+                    <field name="name"/>
+                    <field name="author"/>
+                    <field name="installed_version"/>
+                    <field name="category_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="module_view_kanban">
+            <field name="name">Modules Kanban</field>
+            <field name="model">builder.ir.module.module</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="icon"/>
+                    <field name="icon_image"/>
+                    <field name="name"/>
+                    <field name="summary"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_module_vignette">
+                                <a type="open">
+                                    <img t-att-src="kanban_image('builder.ir.module.module', 'icon_image', record.id.value, {'preview_image': 'icon_image'})" class="oe_module_icon"/>
+                                </a>
+                                <div class="oe_module_desc">
+                                    <h4>
+                                        <a type="open">
+                                            <field name="shortdesc"/>
+                                        </a>
+                                    </h4>
+                                    <p class="oe_module_name">
+                                        <t t-if="record.summary.raw_value">
+                                            <field name="summary"/>
+                                            <br/>
+                                        </t>
+                                        <i>
+                                            <field name="name" groups="base.group_no_one"/>
+                                        </i>
+                                    </p>
+                                    <button type="object" name="button_download">Download</button>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_module_filter" model="ir.ui.view">
+            <field name="name">ir.module.module.list.select</field>
+            <field name="model">ir.module.module</field>
+            <field name="arch" type="xml">
+                <search string="Search modules">
+                    <field name="name" filter_domain="['|', '|', ('summary', 'ilike', self), ('shortdesc', 'ilike', self), ('name',
+                        'ilike', self)]" string="Module"/>
+                    <filter name="app" string="Apps" domain="[('application', '=', 1)]"/>
+                    <filter name="extra" string="Extra" domain="[('application', '=', 0)]"/>
+                    <separator/>
+                    <field name="category_id"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Author" domain="[]" context="{'group_by':'author'}"/>
+                        <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_builder_model_diagram" model="ir.ui.view">
+            <field name="name">builder.ir.module.module.diagram</field>
+            <field name="model">builder.ir.module.module</field>
+            <field name="arch" type="xml">
+                <diagram string="UML Editor">
+                    <node object="builder.ir.model" shape="rectangle:osv_memory!=True;circle:osv_memory==True">
+                        <field name="model"/>
+                        <field name="name"/>
+                        <field name="osv_memory" invisible="1"/>
+                    </node>
+                    <arrow object="builder.ir.model.fields" source="model_id" destination="relation_model_id" label="['name']" form_view_ref="builder.builder_ir_model_fields_form_diagram_view"  context="{'from_diagram': True}">
+                        <field name="model_id"/>
+                        <field name="relation_model_id"/>
+                    </arrow>
+                </diagram>
+            </field>
+        </record>
+
+
+        <record id="open_module_tree" model="ir.actions.act_window">
+            <field name="name">Modules</field>
+            <field name="res_model">builder.ir.module.module</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="view_module_filter"/>
+            <field name="help" type="html">
+                <p>
+                    <b>No module found!</b>
+                </p>
+                <p>You should try others search criteria.</p>
+            </field>
+        </record>
+
+    </data>
+</openerp>

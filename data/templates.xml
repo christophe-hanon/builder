@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="document.template" id="builder_base_xml">
+                    <field name="name">builder.base.xml</field>
+                    <field name="title">builder.base.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        {% block content %}
+        {% endblock %}
+    </data>
+</openerp>
+                    ]]></field>
+        </record>
+        
+        <record model="document.template" id="builder_menu_xml">
+                    <field name="name">builder.menu.xml</field>
+                    <field name="title">builder.menu.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+    <menuitem name="{{module.shortdesc}}" id="{{module.name}}_menu_root" />
+{% endblock %}
+                    ]]></field>
+        </record>
+        
+        <record model="document.template" id="builder_models_py">
+                    <field name="name">builder.models.py</field>
+                    <field name="title">builder.models.py</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{% include 'builder.python_file_header.py' ignore missing %}
+from openerp import models, fields, api, tools, _
+from openerp.osv import fields as fields_old
+import openerp.addons.decimal_precision as dp
+
+{% for model in models %}
+class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
+    _name = '{{model.model}}'
+    {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif %}
+    {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif %}
+    {% if model.comment %}_description = '{{model.name}}'{% endif %}
+    {% if model.handle_attribute %}_order = '{{model.handle_attribute.name}}' {% endif %}
+
+    {% for field in model.field_ids -%}
+        {{field.name}} = {{field.name}}
+    {% endfor -%}
+
+{% endfor %}
+                    ]]></field>
+        </record>
+        
+        <record model="document.template" id="builder_openerp_py">
+                    <field name="name">builder.__openerp__.py</field>
+                    <field name="title">builder.__openerp__.py</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{% include 'builder.python_file_header.py' ignore missing %}
+# noinspection PyStatementEffect
+{
+            "name" : "{{module.name}}",
+{% if module.installed_version %}           "version" : "{{module.installed_version}}",
+{% endif %} {% if module.author %}          "author" : "{{module.author}}",
+{% endif %} {% if module.website %}             "website" : "{{module.website}}",
+{% endif %} {% if module.category_id %}             "category" : "{{module.category_id}}",
+{% endif %}             "licence" : "{{module.license}}",
+            "description": """
+{{module.shortdesc}}
+====================================
+{{module.summary}}
+            """,
+            "depends" : {{ module.dependencies_as_list()[0] }},
+            "data" : [
+                        'security/ir.model.access.csv',
+                        'views/menu.xml',
+                        'views/views.xml',
+            ],
+            "demo" : [ ],
+            "installable": True,
+            "auto_install": {{module.auto_install}},
+            "application": {{module.application}},
+}
+                    ]]></field>
+        </record>
+        <record model="document.template" id="builder_python_file_header_py">
+                    <field name="name">builder.python_file_header.py</field>
+                    <field name="title">builder.python_file_header.py</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+{% block content %} {% endblock %}
+                    ]]></field>
+        </record>
+        <record model="document.template" id="builder_python_init_py">
+                    <field name="name">builder.python.__init__.py</field>
+                    <field name="title">builder.python.__init__.py</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{% include 'builder.python_file_header.py' ignore missing %}
+{% for pack in packages -%}
+    from . import {{pack}}
+{% endfor %}
+                    ]]></field>
+        </record>
+        <record model="document.template" id="view_form_macros_xml">
+                    <field name="name">view_form_macros.xml</field>
+                    <field name="title">view_form_macros.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{% macro tree_tag(model, editable=False, extra='') -%}
+    <tree string="{{model.class_name}}" {% if editable %}editable="{{editable}}"{% endif %} {{extra}} >
+        {% for attr in model.view_tree_attributes -%}
+            <field name="{{attr.name}}" />
+        {% endfor -%}
+    </tree>
+{%- endmacro %}
+
+
+{% macro form_field(model, field) -%}
+    {% if field.type in ["many2many", "one2many"] %}
+        <field name="{{field.name}}" mode="tree" {% if field.options['widget'] %}widget="{{field.options['widget']}}"{% endif %}>
+            {{ tree_tag(field.options.related_class, editable="bottom") }}
+        </field>
+    {% else -%}
+        <field name="{{field.name}}" {% if field.options['widget'] %}widget="{{field.options['widget']}}"{% endif %}/>
+    {%- endif %}
+{%- endmacro %}
+
+
+
+{% macro form_tag(model) -%}
+    <form string="{{model.class_name}}" version="7.0">
+        <sheet>
+            <group col="4">
+                {% for attr in model.view_form_attributes -%}
+                    {% if attr.type not in ["many2many", "one2many"] %}
+                        {{ form_field(model, attr) }}
+                    {% endif %}
+                {% endfor -%}
+            </group>
+
+
+            {% for attr in model.view_form_attributes -%}
+                {% if attr.type in ["many2many", "one2many"] %}
+                    {{ form_field(model, attr) }}
+                {% endif %}
+            {% endfor -%}
+        </sheet>
+    </form>
+{% endmacro -%}
+                    ]]></field>
+                </record>
+    </data>
+</openerp>

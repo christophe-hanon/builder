@@ -1,0 +1,39 @@
+{% macro tree_tag(model, editable=False, extra='') -%}
+        <tree string="{{model.class_name}}" {% if editable %}editable="{{editable}}"{% endif %} {{extra}} >
+            {% for attr in model.view_tree_attributes -%}
+            <field name="{{attr.name}}" />
+            {% endfor -%}
+        </tree>
+{%- endmacro %}
+
+{% macro form_field(model, field) -%}
+    {% if field.type in ["Many2many", "One2many"] %}
+    <field name="{{field.name}}" mode="tree" {% if field.options['widget'] %}widget="{{field.options['widget']}}"{% endif %}>
+        {{ tree_tag(field.options.related_class, editable="bottom") }}
+    </field>
+    {% else -%}
+    <field name="{{field.name}}" {% if field.options['widget'] %}widget="{{field.options['widget']}}"{% endif %}/>
+    {%- endif %}
+{%- endmacro %}
+
+
+
+{% macro form_tag(model) -%}
+    <form string="{{model.class_name}}" version="7.0">
+        <sheet>
+            <group col="4">
+                {% for attr in model.view_form_attributes -%}
+                    {% if attr.type not in ["Many2many", "One2many"] %}
+                       {{ form_field(model, attr) }}
+                    {% endif %}
+                {% endfor -%}
+            </group>
+
+            {% for attr in model.view_form_attributes -%}
+                {% if attr.type in ["Many2many", "One2many"] %}
+                    {{ form_field(model, attr) }}
+                {% endif %}
+            {% endfor -%}
+        </sheet>
+    </form>
+{% endmacro -%}
