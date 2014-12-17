@@ -87,7 +87,7 @@
                                         <field name="inherit_model"/>
                                         <field name="name"/>
                                         <field name="osv_memory"/>
-                                        <button name="action_open_view_wizard" type="object" string="Views" class="oe_button oe_form_button oe_link"/>
+                                        <!--<button name="action_open_view_wizard" type="object" string="Views" class="oe_button oe_form_button oe_link"/>-->
                                         <!--<button name="%(act_builder_ir_model_view_config_wizard)d" type="action" string="Views" class="oe_link" context="{'default_model_id': id, 'default_module_id': active_id, 'default_special_states_field_id': special_states_field_id}"/>-->
                                     </tree>
                                 </field>

@@ -43,9 +43,6 @@ FIELD_WIDGETS = [
 ]
 
 
-
-
-
 class ModelViewWizardFormPage(models.Model):
     _name = 'builder.ir.model.view.config.wizard.form.pages'
 
