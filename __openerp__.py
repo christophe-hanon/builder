@@ -41,6 +41,15 @@ This module aims to help in the development of new modules
         'data/oe.css.classes.yml',
         'wizard/model_lookup_wizard_view.xml',
         'wizard/action_lookup_wizard_view.xml',
+
+        'wizard/views/selector_view.xml',
+        'wizard/views/form_view.xml',
+        'wizard/views/tree_view.xml',
+        'wizard/views/search_view.xml',
+        'wizard/views/calendar_view.xml',
+        'wizard/views/graph_view.xml',
+        'wizard/views/gantt_view.xml',
+
         # 'wizard/model_view_wizard_view.xml',
         'wizard/model_import_view.xml',
         'wizard/model_export_view.xml',

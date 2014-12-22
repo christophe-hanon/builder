@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_builder_wizard_views_gantt">
+            <field name="name">builder.wizard.views.gantt</field>
+            <field name="model">builder.wizard.views.gantt</field>
+            <field name="arch" type="xml">
+                <form string="View Generator">
+                    <field name="model_id" invisible="1" />
+                    <footer>
+                        <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_builder_wizard_views_gantt_field">
+            <field name="name">builder.wizard.views.gantt.field</field>
+            <field name="model">builder.wizard.views.gantt.field</field>
+            <field name="arch" type="xml">
+                <form string="Fields">
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_wizard_views_gantt">
+            <field name="name">Form Wizard</field>
+            <field name="res_model">builder.wizard.views.gantt</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

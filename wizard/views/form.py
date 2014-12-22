@@ -6,8 +6,8 @@ __author__ = 'one'
 
 
 class FormWizard(models.Model):
-    _inherit = 'builder.wizard.views.abstract'
     _name = 'builder.wizard.views.form'
+    _inherit = 'builder.wizard.views.abstract'
 
     attr_create = fields.Boolean('Allow Create', default=True)
     attr_edit = fields.Boolean('Allow Edit', default=True)
@@ -79,10 +79,13 @@ class StatusBarActionButton(models.Model):
             self.method_name = "action_{name}".format(name=snake_case(self.name.replace(' ', '.')).lower())
 
 
+
+
 class FormField(models.Model):
     _name = 'builder.wizard.views.form.field'
     _inherit = 'builder.wizard.views.abstract.field'
 
+    wizard_id = fields.Many2one('builder.wizard.views.form', string='Wizard', ondelete='cascade')
     page_id = fields.Many2one('builder.wizard.views.form.page', string='Page', ondelete='set null')
 
     related_field_view_type = fields.Selection([('default', 'Default'), ('defined', 'Defined'), ('custom', 'Custom')], 'View Type', required=True, default='default')

@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_builder_wizard_views_form">
+            <field name="name">builder.wizard.views.form</field>
+            <field name="model">builder.wizard.views.form</field>
+            <field name="arch" type="xml">
+                <form string="View Generator">
+                    <group>
+                        <group>
+                            <field name="model_id" invisible="1" />
+                            <field name="attr_string" />
+                            <field name="view_id"  />
+                            <field name="attr_create" />
+                            <field name="attr_edit"  />
+                            <field name="attr_delete"  />
+                        </group>
+                        <group>
+                            <field name="special_states_field_id" invisible="1" />
+                            <field name="show_status_bar" />
+                            <field name="states_clickable" attrs="{'invisible': ['|', ('show_status_bar', '=', False), ('special_states_field_id', '=', False)]}" />
+                            <field name="visible_states" attrs="{'invisible': ['|', ('show_status_bar', '=', False), ('special_states_field_id', '=', False)]}" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fields">
+                            <field name="field_ids" nolabel="1">
+                                <tree string="Fields" context="{'default_special_states_field_id': parent.special_states_field_id, 'default_model_id': model_id}">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="field_id" />
+                                    <field name="widget" />
+                                    <field name="required" />
+                                    <field name="invisible" />
+                                    <field name="readonly" />
+                                    <field name="states" />
+                                    <field name="page_id" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Actions" attrs="{'invisible': [('show_status_bar', '=', False)]}">
+                            <field name="statusbar_button_ids" nolabel="1">
+                                <tree string="Actions">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="states"/>
+                                    <field name="highlighted"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Buttons">
+
+                        </page>
+                        <page string="Arch">
+                            <group>
+                                <group></group>
+                                <group>
+                                    <field name="view_custom_arch" />
+                                </group>
+                            </group>
+                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_builder_wizard_views_form_field">
+            <field name="name">builder.wizard.views.form.field</field>
+            <field name="model">builder.wizard.views.form.field</field>
+            <field name="arch" type="xml">
+                <form string="Fields">
+                    <group>
+                        <group>
+                            <field name="special_states_field_id" invisible="1"/>
+                            <field name="model_id" invisible="1"/>
+                            <field name="field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}"/>
+                            <field name="field_ttype" invisible="1" />
+                            <field name="widget" />
+                            <field name="widget_options" attrs="{'invisible': [('widget', '=', False)]}" />
+                            <field name="states" attrs="{'readonly': [('special_states_field_id', '=', False)], 'invisible': [('special_states_field_id', '=', False)]}"/>
+                            <field name="page_id" domain="[('wizard_id', '=', active_id)]"/>
+                            <field name="domain" attrs="{'invisible': [('field_ttype', 'not in', ['many2one', 'one2many', 'many2many'])]}"/>
+                        </group>
+                        <group>
+                            <field name="nolabel" />
+                            <field name="required" />
+                            <field name="required_condition" attrs="{'invisible': [('required', '=', False)]}"/>
+                            <field name="invisible" />
+                            <field name="invisible_condition" attrs="{'invisible': [('invisible', '=', False)]}"/>
+                            <field name="readonly" />
+                            <field name="readonly_condition" attrs="{'invisible': [('readonly', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('field_ttype', 'not in', ['one2many', 'many2many'])]}">
+                        <group>
+                            <field name="related_field_view_type" />
+                            <field name="related_field_mode"/>
+                            <field name="related_field_tree_editable" attrs="{'invisible': ['|', ('field_ttype', 'not in', ['one2many', 'many2many']), '|', ('related_field_mode', 'not in', ['tree']), ('related_field_view_type', 'not in', ['default'])]}"/>
+                        </group>
+                        <group>
+                            <field name="related_field_form_id" options="{'no_create': True}" attrs="{'required': [('related_field_view_type', '=', 'defined')], 'invisible': [('related_field_view_type', 'not in', ['defined'])], 'readonly': [('related_field_view_type', 'not in', ['defined'])]}" />
+                            <field name="related_field_tree_id" options="{'no_create': True}" attrs="{'required': [('related_field_view_type', '=', 'defined')], 'invisible': [('related_field_view_type', 'not in', ['defined'])], 'readonly': [('related_field_view_type', 'not in', ['defined'])]}" />
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('field_ttype', 'not in', ['one2many', 'many2many'])]}">
+                        <field name="related_field_arch" widget="ace" mode="xml" theme="tomorrow" style="min-height:150px" attrs="{'required': [('related_field_view_type', '=', 'custom')], 'invisible': [('related_field_view_type', 'not in', ['custom'])], 'readonly': [('related_field_view_type', 'not in', ['custom'])]}" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_builder_wizard_views_form_page">
+            <field name="name">builder.wizard.views.form.page</field>
+            <field name="model">builder.wizard.views.form.page</field>
+            <field name="arch" type="xml">
+                <form string="Pages">
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_builder_wizard_views_form_statusbar_button">
+            <field name="name">builder.wizard.views.form.statusbar.button</field>
+            <field name="model">builder.wizard.views.form.statusbar.button</field>
+            <field name="arch" type="xml">
+                <form string="Buttons">
+                    <group>
+                        <group>
+                            <field name="id" invisible="1" />
+                            <field name="name" />
+                            <field name="type" />
+                            <field name="change_to_state" attrs="{'readonly': [('type', 'not in', ['state'])], 'invisible': [('type', 'not in', ['state'])], 'required': [('type', 'in', ['state'])]}"/>
+
+                            <label for="action_ref"/>
+                            <div>
+                                <field name="action_ref" class="oe_inline"/>
+                                <button name="%(act_builder_ir_action_lookup_wizard)d" class="oe_link oe_edit_only" type="action" attrs="{'invisible': [('id', '=', False)]}" context="{'target_field': 'action_ref', 'default_lookup_mode': 'ref'}">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+
+                            <!--<field name="action_ref" attrs="{'readonly': [('type', 'not in', ['action'])], 'invisible': [('type', 'not in', ['action'])], 'required': [('type', 'in', ['action'])]}"/>-->
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="highlighted"/>
+                            <field name="states"/>
+                            <field name="method_name" attrs="{'readonly': [('type', 'not in', ['object', 'state'])], 'invisible': [('type', 'not in', ['object', 'state'])], 'required': [('type', 'in', ['object', 'state'])]}"/>
+                        </group>
+                    </group>
+                    <field name="method_code" widget="ace" mode="python" theme="tomorrow" style="min-height:100px" attrs="{'readonly': [('type', 'not in', ['object'])], 'invisible': [('type', 'not in', ['object'])], 'required': [('type', 'in', ['object'])]}"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_wizard_views_form">
+            <field name="name">Form Wizard</field>
+            <field name="res_model">builder.wizard.views.form</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

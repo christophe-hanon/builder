@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_builder_wizard_views_tree">
+            <field name="name">builder.wizard.views.tree</field>
+            <field name="model">builder.wizard.views.tree</field>
+            <field name="arch" type="xml">
+                <form string="View Generator">
+                    <group>
+                        <group>
+                            <field name="model_id" invisible="1" />
+                            <field name="attr_string" />
+                            <field name="view_id"  />
+                            <field name="attr_create"  />
+                            <field name="attr_edit"  />
+                            <field name="attr_delete"  />
+                        </group>
+                        <group>
+                            <field name="attr_toolbar" />
+                            <field name="attr_colors" />
+                            <field name="attr_fonts" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fields">
+                            <field name="field_ids" nolabel="1" context="{'default_special_states_field_id': special_states_field_id, 'default_model_id': model_id}">
+                                <tree string="Fields" >
+                                    <field name="sequence" widget="handle" />
+                                    <field name="field_id" />
+                                    <field name="widget" />
+                                    <field name="invisible" />
+                                    <field name="readonly" />
+                                    <field name="domain" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Arch">
+                            <group>
+                                <group></group>
+                                <group>
+                                    <field name="view_custom_arch" />
+                                </group>
+                            </group>
+                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_builder_wizard_views_tree_field">
+            <field name="name">builder.wizard.views.tree.field</field>
+            <field name="model">builder.wizard.views.tree.field</field>
+            <field name="arch" type="xml">
+                <form string="Fields">
+                    <group>
+                        <group>
+                            <field name="special_states_field_id" invisible="1"/>
+                            <field name="model_id" invisible="1"/>
+                            <field name="field_id" domain="[('model_id', '=', model_id), ('ttype', 'not in', ['one2many', 'many2many'])]" options="{'no_create': True}"/>
+                            <field name="field_ttype" invisible="1" />
+                            <field name="widget" />
+                            <field name="widget_options" attrs="{'invisible': [('widget', '=', False)]}" />
+                            <field name="domain" attrs="{'invisible': [('field_ttype', 'not in', ['many2one'])]}"/>
+                        </group>
+                        <group>
+                            <field name="invisible" />
+                            <field name="readonly" />
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record model="ir.actions.act_window" id="act_builder_wizard_views_tree">
+            <field name="name">Form Wizard</field>
+            <field name="res_model">builder.wizard.views.tree</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>
