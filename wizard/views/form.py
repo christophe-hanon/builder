@@ -21,6 +21,9 @@ class FormWizard(models.Model):
     # buttonbar_button_ids = fields.One2many('builder.ir.model.view.config.wizard.buttonbar.buttons', 'wizard_id', 'Buttons')
     statusbar_button_ids = fields.One2many('builder.wizard.views.form.statusbar.button', 'wizard_id', 'Status Bar Buttons')
 
+    _defaults = {
+        'view_type': 'form'
+    }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
@@ -35,6 +38,40 @@ class FormWizard(models.Model):
                 field_list.append({'field_id': field.id, 'widget': DEFAULT_WIDGETS_BY_TYPE.get(field.ttype), 'field_ttype': field.ttype, 'model_id': self.model_id.id, 'special_states_field_id': self.model_id.special_states_field_id.id})
 
             self.field_ids = field_list
+
+    @api.onchange('view_custom_arch', 'attr_string', 'field_ids', 'page_ids', 'attr_create', 'attr_edit', 'attr_delete', 'states_clickable', 'show_status_bar', 'visible_states' )
+    def _onchange_generate_arch(self):
+        self.view_arch = self._get_view_arch()
+
+    @api.multi
+    def _get_view_arch(self):
+        if self.view_custom_arch:
+            return self.view_arch
+        else:
+            pages = {}
+            flat = []
+            for field in self.field_ids:
+                if field.page_id.id:
+                    if not field.page_id.id in pages:
+                        pages[field.page_id.id] = {'page': field.page_id, 'fields': []}
+                    pages[field.page_id.id]['fields'].append(field)
+                else:
+                    flat.append(field)
+
+            template_obj = self.env['document.template']
+            return template_obj.render_template('builder.view_arch_form.xml', {
+                'this': self,
+                'string': self.attr_string,
+                'fields': self.field_ids,
+                'flat_fields': flat,
+                'pages': pages,
+                'create': self.attr_create,
+                'delete': self.attr_delete,
+                'edit': self.attr_edit,
+                'states_clickable': self.states_clickable,
+                'show_status_bar': self.show_status_bar,
+                'visible_states': self.visible_states.split(',') if self.visible_states else False,
+            })
 
 
 class FormPage(models.Model):

@@ -24,7 +24,7 @@
                     </group>
                     <notebook>
                         <page string="Fields">
-                            <field name="field_ids" nolabel="1">
+                            <field name="field_ids" nolabel="1" domain="[('model_id', '=', model_id)]">
                                 <tree string="Fields" context="{'default_special_states_field_id': parent.special_states_field_id, 'default_model_id': model_id}">
                                     <field name="sequence" widget="handle" />
                                     <field name="field_id" />

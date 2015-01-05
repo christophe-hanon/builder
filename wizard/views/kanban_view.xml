@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_builder_wizard_views_gantt">
-            <field name="name">builder.wizard.views.gantt</field>
-            <field name="model">builder.wizard.views.gantt</field>
+        <record model="ir.ui.view" id="view_builder_wizard_views_kanban">
+            <field name="name">builder.wizard.views.kanban</field>
+            <field name="model">builder.wizard.views.kanban</field>
             <field name="arch" type="xml">
                 <form string="View Generator">
                     <group>
@@ -16,15 +16,17 @@
                             <field name="attr_delete"  />
                         </group>
                         <group>
-                            <field name="attr_date_start_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
-                            <field name="attr_date_stop_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
-                            <field name="attr_date_delay_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
-                            <field name="attr_progress_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
-                            <field name="attr_default_group_by_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}"/>
+                            <field name="attr_quick_create"  />
                         </group>
                     </group>
 
                     <notebook>
+                        <page string="Fields">
+                            <field name="field_ids" domain="[('model_id', '=', model_id)]"/>
+                        </page>
+                        <page string="Template">
+                            <field name="attr_template" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" />
+                        </page>
                         <page string="Arch">
                             <group>
                                 <group></group>
@@ -32,7 +34,7 @@
                                     <field name="view_custom_arch" />
                                 </group>
                             </group>
-                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px;width:90%" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
                         </page>
                     </notebook>
 
@@ -45,18 +47,18 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_builder_wizard_views_gantt_field">
-            <field name="name">builder.wizard.views.gantt.field</field>
-            <field name="model">builder.wizard.views.gantt.field</field>
+        <record model="ir.ui.view" id="view_builder_wizard_views_kanban_field">
+            <field name="name">builder.wizard.views.kanban.field</field>
+            <field name="model">builder.wizard.views.kanban.field</field>
             <field name="arch" type="xml">
                 <form string="Fields">
                 </form>
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="act_builder_wizard_views_gantt">
-            <field name="name">Form Wizard</field>
-            <field name="res_model">builder.wizard.views.gantt</field>
+        <record model="ir.actions.act_window" id="act_builder_wizard_views_kanban">
+            <field name="name">Kanban Wizard</field>
+            <field name="res_model">builder.wizard.views.kanban</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

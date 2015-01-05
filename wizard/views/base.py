@@ -86,20 +86,65 @@ class ModelViewWizard(models.AbstractModel):
     special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field', related='model_id.special_states_field_id')
     model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields', related='model_id.groups_date_field_ids')
 
-    view_type = fields.Char('View Type', required=True)
+    view_type = fields.Char('View Type')
 
     attr_string = fields.Char('String', required=True)
-    view_arch = fields.Text('Arch', required=True)
+    view_arch = fields.Text('Arch')
     view_custom_arch = fields.Boolean('Customize')
     view_id = fields.Char('View ID', required=True)
 
     @api.multi
+    def write(self, vals):
+        vals['view_arch'] = self._get_view_arch()
+        return super(ModelViewWizard, self).write(vals)
+
+
+    @api.model
+    @api.returns('self', lambda value: value.id)
+    def create(self, vals):
+        vals['view_arch'] = self._get_view_arch()
+        return super(ModelViewWizard, self).create(vals)
+
+    @api.one
+    def _get_view_arch(self):
+        return False
+
+    @api.multi
     def action_generate(self):
+        view_obj = self.env['builder.ir.ui.view']
+
+        attrs = {
+            'wizard_id': "{model},{id}".format(model=self._name, id=self.id),
+            'module_id': self.model_id.module_id.id,
+            'model_id': self.model_id.id,
+            'xml_id': self.view_id,
+            'name': self.attr_string,
+            'type': self.view_type,
+            'priority': 3,
+            'arch': self._get_view_arch()
+        }
+        view_id = self.env.context.get('view_id', False)
+
+        if view_id:
+            view = view_obj.search([('id', '=', view_id)])
+            view.write(attrs)
+        else:
+            view_obj.create(attrs)
+
         return {'type': 'ir.actions.act_window_close'}
 
     @api.multi
     def action_save(self):
-        return {'type': 'ir.actions.act_window_close'}
+        return {
+            'name': _('View Wizard'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree',
+            'res_model': self._name,
+            'views': [(False, 'form')],
+            'res_id': self.id or False,
+            'target': 'new',
+        }
 
 
 

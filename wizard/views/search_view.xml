@@ -9,6 +9,7 @@
                     <group>
                         <group>
                             <field name="model_id" invisible="1" />
+                            <field name="id" invisible="1" />
                             <field name="attr_string" />
                             <field name="view_id"  />
                         </group>
@@ -17,16 +18,26 @@
                     </group>
                     <notebook>
                         <page string="Items">
-                            <field name="field_ids" nolabel="1">
+                            <field name="field_ids" nolabel="1" domain="[('model_id', '=', model_id)]" context="{'default_wizard_id': id}">
                                 <tree string="Items" >
                                     <field name="sequence" widget="handle" />
                                     <field name="type" />
                                     <field name="field_id" />
+                                    <field name="attr_name" />
                                     <field name="attr_string" />
                                     <field name="attr_filter_domain" />
                                     <field name="attr_domain" />
                                     <field name="group_field_id" />
                                     <field name="group_id" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Groups">
+                            <field name="group_ids" nolabel="1" domain="[('model_id', '=', model_id)]">
+                                <tree string="Groups" >
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
+                                    <field name="expand" />
                                 </tree>
                             </field>
                         </page>
@@ -41,6 +52,7 @@
                         </page>
                     </notebook>
                     <footer>
+                        <button name="action_save" string="Save" type="object" class="oe_highlight"/>
                         <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
@@ -80,12 +92,13 @@
                             <field name="wizard_id" invisible="1"/>
                             <field name="field_ttype" invisible="1" />
                             <field name="type"/>
-                            <field name="group_id" domain="[('wizard_id', '=', wizard_id)]" context="{'default_wizard_id': wizard_id}"/>
                             <field name="field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}" attrs="{'invisible': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['field'])], 'readonly': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['field'])], 'required': [('type', 'in', ['field'])]}"/>
                             <field name="attr_string" attrs="{'required': [('type', 'in', ['filter'])], 'invisible': [('type', 'in', ['separator'])]}"/>
+                            <field name="attr_name" attrs="{'invisible': [('type', 'in', ['separator', 'field'])]}"/>
                             <field name="group_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}" attrs="{'invisible': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['filter'])], 'readonly': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['filter'])]}"/>
                         </group>
                         <group>
+                            <field name="group_id" domain="[('wizard_id', '=', wizard_id)]" options="{'no_create': True}" />
                             <field name="attr_domain" attrs="{'invisible': [('type', 'in', ['separator'])], 'readonly': [('type', 'in', ['separator'])]}"/>
                             <field name="attr_filter_domain" attrs="{'invisible': [('type', 'in', ['separator'])], 'readonly': [('type', 'in', ['separator'])]}"/>
                             <field name="attr_operator" attrs="{'invisible': [('type', 'in', ['separator'])], 'readonly': [('type', 'in', ['separator'])]}"/>

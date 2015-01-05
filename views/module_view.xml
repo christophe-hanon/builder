@@ -93,7 +93,15 @@
                                 </field>
                             </page>
                             <page string="Views">
-
+                                <field name="view_ids" nolabel="1">
+                                    <tree string="Views" create="0" edit="0" delete="1">
+                                        <field name="model_id"/>
+                                        <field name="type"/>
+                                        <field name="xml_id"/>
+                                        <field name="inherit_id"/>
+                                        <button name="action_open_view_wizard" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Menus">
 

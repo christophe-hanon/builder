@@ -24,7 +24,7 @@ class IrModel(models.Model):
 
     #access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
 
-    #view_ids = fields.One2many('builder.ir.ui.view', 'model_id', 'Views')
+    view_ids = fields.One2many('builder.ir.ui.view', 'model_id', 'Views')
 
     to_ids = fields.One2many('builder.ir.model.fields',
                                             'model_id',

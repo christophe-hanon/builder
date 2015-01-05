@@ -67,6 +67,7 @@ class Module(models.Model):
     )
 
     model_ids = fields.One2many('builder.ir.model', 'module_id', 'Models')
+    view_ids = fields.One2many('builder.ir.ui.view', 'module_id', 'Views')
 
     @api.one
     def dependencies_as_list(self):

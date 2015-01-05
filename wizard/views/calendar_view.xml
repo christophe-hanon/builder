@@ -26,17 +26,23 @@
                                     <field name="attr_date_delay_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
                                     <field name="attr_all_day" attrs="{'invisible': [('attr_date_start_ttype', 'in', ['date'])]}"/>
                                 </group>
-                                <group>
+                                <group string="Other Settings">
                                     <field name="attr_color_ttype" invisible="1" />
                                     <field name="attr_color_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}"/>
                                     <field name="attr_color_is_attendee" attrs="{'invisible': ['|', ('attr_color_ttype', 'not in', ['one2many', 'many2many', 'many2one']), ('attr_color_field_id', '=', False)], 'readonly': ['|', ('attr_color_ttype', 'not in', ['one2many', 'many2many', 'many2one']), ('attr_color_field_id', '=', False)]}"/>
+                                    <field name="attr_event_open_popup" />
+                                    <field name="attr_avatar_filter" widget="domain"/>
+                                    <field name="attr_avatar_model" />
+                                    <field name="attr_avatar_title" />
+                                    <field name="attr_quick_add" />
+                                    <field name="attr_display" />
                                 </group>
                             </group>
 
                         </page>
                         <page string="Fields">
-                            <field name="field_ids" nolabel="1" mode="tree">
-                                <tree string="Fields" context="{'default_special_states_field_id': parent.special_states_field_id}" editable="bottom">
+                            <field name="field_ids" nolabel="1" domain="[('model_id', '=', model_id)]">
+                                <tree string="Fields" context="{'default_special_states_field_id': parent.special_states_field_id}">
                                     <field name="sequence" widget="handle" />
                                     <field name="field_id" />
                                     <field name="invisible" />
@@ -59,6 +65,27 @@
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_builder_wizard_views_calendar_field">
+            <field name="name">builder.wizard.views.calendar.field</field>
+            <field name="model">builder.wizard.views.calendar.field</field>
+            <field name="arch" type="xml">
+                <form string="Fields">
+                    <group>
+                        <group>
+                            <field name="special_states_field_id" invisible="1"/>
+                            <field name="model_id" invisible="1"/>
+                            <field name="field_id" domain="[('model_id', '=', model_id), ('ttype', 'not in', ['one2many', 'many2many'])]" options="{'no_create': True}"/>
+                            <field name="field_ttype" invisible="1" />
+                            <field name="invisible" />
+                        </group>
+                        <group>
+                            <field name="sequence" />
+                        </group>
+                    </group>
                 </form>
             </field>
         </record>

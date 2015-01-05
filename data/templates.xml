@@ -174,5 +174,104 @@ class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}mode
 {% endmacro -%}
                     ]]></field>
                 </record>
+
+        <record model="document.template" id="builder_view_arch_gantt">
+                    <field name="name">builder.view_arch_gantt.xml</field>
+                    <field name="title">builder.view_arch_gantt.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<gantt string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if date_start %} date_start="{{date_start}}" {% endif %}{% if date_stop %} date_stop="{{date_stop}}" {% endif %}{% if date_delay %} date_delay="{{date_delay}}" {% endif %}{% if progress %} progress="{{progress}}" {% endif %}{% if default_group_by%} default_group_by="{{default_group_by}}" {% endif %}>
+</gantt>]]></field>
+        </record>
+
+        <record model="document.template" id="builder_view_arch_kanban">
+                    <field name="name">builder.view_arch_kanban.xml</field>
+                    <field name="title">builder.view_arch_kanban.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<kanban string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if default_group_by%} default_group_by="{{default_group_by}}" {% endif %}{% if not quick_create%} quick_create="false" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.name}}" />
+{%- endfor %}
+{% if template %}
+    <templates>
+{{template}}
+    <templates>
+{% endif %}
+</kanban>]]></field>
+        </record>
+
+            <record model="document.template" id="builder_view_arch_graph">
+                    <field name="name">builder.view_arch_graph.xml</field>
+                    <field name="title">builder.view_arch_graph.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<graph string="{{string}}"{% if type %} type="{{type}}" {% endif %}{% if stacked %} stacked="true" {% endif %}{% if orientation %} orientation="{{orientation}}" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.field_id.name}}"{% if field.operator %} operator="{{field.operator}}" {% endif %}{% if field.type %} type="{{field.type}}" {% endif %}{% if field.interval %} interval="{{field.interval}}" {% endif %}/>
+{%- endfor %}
+</graph>]]></field>
+        </record>
+
+        <record model="document.template" id="builder_view_arch_calendar">
+                    <field name="name">builder.view_arch_calendar.xml</field>
+                    <field name="title">builder.view_arch_calendar.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<calendar string="{{string}}"{% if date_start %} date_start="{{date_start}}" {% endif %}{% if date_stop %} date_stop="{{date_stop}}" {% endif %}{% if date_length %} date_length="{{date_length}}" {% endif %}{% if date_delay %} date_delay="{{date_delay}}" {% endif %}{% if day_length %} day_length="{{day_length}}" {% endif %}{% if all_day %} all_day="true" {% endif %}{% if use_contacts %} use_contacts="true" {% endif %}{% if color %} color="{{color}}" {% endif %}{% if color_is_attendee %} color_is_attendee="true" {% endif %}{% if event_open_popup %} event_open_popup="{{event_open_popup}}" {% endif %}{% if avatar_filter %} avatar_filter="{{avatar_filter}}" {% endif %}{% if avatar_model %} avatar_model="{{avatar_model}}" {% endif %}{% if avatar_title %} avatar_title="{{avatar_title}}" {% endif %}{% if not quick_add %} quick_add="false" {% endif %}{% if display %} display="{{display}}" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.field_id.name}}"{% if field.invisible %} invisible="True" {% endif %} />
+{%- endfor %}
+</calendar>]]></field>
+        </record>
+
+        <record model="document.template" id="builder_view_arch_tree">
+                    <field name="name">builder.view_arch_tree.xml</field>
+                    <field name="title">builder.view_arch_tree.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<tree string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if toolbar %} toolbar="True" {% endif %}{% if fonts %} fonts="{{fonts}}" {% endif %}{% if colors %} colors="{{colors}}" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.field_id.name}}"{% if field.invisible %} invisible="True" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} widget_options="{{field.widget_options}}" {% endif %}{% if field.readonly %} readonly="{{field.readonly}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %} />
+{%- endfor %}
+</tree>]]></field>
+        </record>
+
+        <record model="document.template" id="builder_view_arch_search">
+                    <field name="name">builder.view_arch_search.xml</field>
+                    <field name="title">builder.view_arch_search.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<search string="{{string}}">
+{% for field in ungrouped_fields %}
+    {% if field.type == 'filter' -%}
+        <filter {% if field.attr_name %}name="{{field.attr_name}}" {% endif %}{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+    {%- elif field.type == 'field' -%}
+        <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+    {%- elif field.type == 'separator' -%}
+        <separator  />
+    {%- endif %}
+{%- endfor %}
+{% for k, item in groups.items() %}
+    <group string="{{item.group.name}}">
+        {%- for field in item.fields %}
+            {% if field.type == 'filter' -%}
+                <filter {% if field.attr_name %}name="{{field.attr_name}}" {% endif %}{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+            {%- elif field.type == 'field' -%}
+                <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+            {%- elif field.type == 'separator' -%}
+                <separator  />
+            {%- endif %}
+        {%- endfor %}
+    </group>
+{% endfor %}
+</search>]]></field>
+        </record>
+
+        <record model="document.template" id="builder_view_arch_form">
+                    <field name="name">builder.view_arch_form.xml</field>
+                    <field name="title">builder.view_arch_form.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[<form version="7.0" string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
+{% for field in flat_fields %}
+    <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+{%- endfor %}
+</search>]]></field>
+        </record>
     </data>
 </openerp>
+

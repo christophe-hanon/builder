@@ -48,6 +48,7 @@ This module aims to help in the development of new modules
         'wizard/views/search_view.xml',
         'wizard/views/calendar_view.xml',
         'wizard/views/graph_view.xml',
+        'wizard/views/kanban_view.xml',
         'wizard/views/gantt_view.xml',
 
         # 'wizard/model_view_wizard_view.xml',
@@ -55,6 +56,7 @@ This module aims to help in the development of new modules
         'wizard/model_export_view.xml',
         'views/module_view.xml',
         'views/model_view.xml',
+        'views/view_view.xml',
         'views/menu.xml',
         'views/backend_assets.xml',
     ],

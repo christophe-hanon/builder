@@ -13,9 +13,13 @@ class TreeWizard(models.Model):
     attr_edit = fields.Boolean('Allow Edit', default=True)
     attr_delete = fields.Boolean('Allow Delete', default=True)
     field_ids = fields.One2many('builder.wizard.views.tree.field', 'wizard_id', 'Fields')
-    attr_toolbar = fields.Boolean('Show Toolbar', default=True)
+    attr_toolbar = fields.Boolean('Show Toolbar', default=False)
     attr_fonts = fields.Char('Fonts', help='Font definition. Ex: bold:message_unread==True')
     attr_colors = fields.Char('Colors', help='Color definition. Ex: "gray:probability == 100;red:date_deadline and (date_deadline &lt; current_date)"')
+
+    _defaults = {
+        'view_type': 'tree'
+    }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
@@ -30,6 +34,28 @@ class TreeWizard(models.Model):
 
             self.field_ids = field_list
 
+    @api.onchange('view_custom_arch', 'field_ids', 'attr_string', 'attr_create', 'attr_edit', 'attr_delete', 'attr_fonts', 'attr_colors', 'attr_toolbar')
+    def _onchange_generate_arch(self):
+        if not self.view_custom_arch:
+            self.view_arch = self._get_view_arch()
+
+    @api.multi
+    def _get_view_arch(self):
+        if self.view_custom_arch:
+            return self.view_arch
+        else:
+            template_obj = self.env['document.template']
+            return template_obj.render_template('builder.view_arch_tree.xml', {
+                'this': self,
+                'string': self.attr_string,
+                'create': self.attr_create,
+                'fields': self.field_ids,
+                'edit': self.attr_edit,
+                'delete': self.attr_delete,
+                'toolbar': self.attr_toolbar,
+                'fonts': self.attr_fonts,
+                'colors': self.attr_colors,
+            })
 
 class TreeField(models.Model):
     _name = 'builder.wizard.views.tree.field'
