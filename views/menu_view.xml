@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- Menu -->
+        <record model="ir.ui.view" id="builder_ir_ui_menu_tree_view">
+            <field name="name">builder.ir.ui.menu.tree</field>
+            <field name="model">builder.ir.ui.menu</field>
+            <field name="arch" type="xml">
+                <tree string="Menu">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_ui_menu_form_view">
+            <field name="name">builder.ir.ui.menu.form</field>
+            <field name="model">builder.ir.ui.menu</field>
+            <field name="arch" type="xml">
+                <form string="Menu" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_ui_menu">
+            <field name="name">Menu</field>
+            <field name="res_model">builder.ir.ui.menu</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu -->
+    </data>
+</openerp>
