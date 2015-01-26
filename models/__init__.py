@@ -1,7 +1,8 @@
-__author__ = 'deimos'
+__author__ = 'one'
 
 from . import base
 from . import module
 from . import models
 from . import fields
-from . import ir_ui_view
+from . import views
+from . import menus

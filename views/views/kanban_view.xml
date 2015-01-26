@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_builder_wizard_views_kanban">
-            <field name="name">builder.wizard.views.kanban</field>
-            <field name="model">builder.wizard.views.kanban</field>
+        <record model="ir.ui.view" id="view_builder_views_kanban">
+            <field name="name">builder.views.kanban</field>
+            <field name="model">builder.views.kanban</field>
             <field name="arch" type="xml">
                 <form string="View Generator">
                     <group>
                         <group>
                             <field name="model_id" invisible="1" />
-                            <field name="attr_string" />
-                            <field name="view_id"  />
+                            <field name="name" />
+                            <field name="xml_id"  />
                             <field name="attr_create" />
                             <field name="attr_edit"  />
                             <field name="attr_delete"  />
@@ -31,15 +31,15 @@
                             <group>
                                 <group></group>
                                 <group>
-                                    <field name="view_custom_arch" />
+                                    <field name="custom_arch" />
                                 </group>
                             </group>
-                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px;width:90%" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                            <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px;width:90%" attrs="{'readonly': [('custom_arch', '=', False)]}"/>
                         </page>
                     </notebook>
 
                     <footer>
-                        <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
+                        <button name="action_save" string="Save" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
@@ -47,9 +47,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_builder_wizard_views_kanban_field">
-            <field name="name">builder.wizard.views.kanban.field</field>
-            <field name="model">builder.wizard.views.kanban.field</field>
+        <record model="ir.ui.view" id="view_builder_views_kanban_field">
+            <field name="name">builder.views.kanban.field</field>
+            <field name="model">builder.views.kanban.field</field>
             <field name="arch" type="xml">
                 <form string="Fields">
                 </form>
@@ -58,7 +58,7 @@
 
         <record model="ir.actions.act_window" id="act_builder_wizard_views_kanban">
             <field name="name">Kanban Wizard</field>
-            <field name="res_model">builder.wizard.views.kanban</field>
+            <field name="res_model">builder.views.kanban</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

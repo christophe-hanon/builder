@@ -5,10 +5,16 @@ from .base import FIELD_WIDGETS_ALL
 __author__ = 'one'
 
 
-class KanbanWizard(models.Model):
-    _name = 'builder.wizard.views.kanban'
-    _inherit = 'builder.wizard.views.abstract'
+class KanbanView(models.Model):
+    _name = 'builder.views.kanban'
 
+    _inherit = ['ir.mixin.polymorphism.subclass', 'builder.views.abstract']
+
+    _inherits = {
+        'builder.ir.ui.view': 'view_id'
+    }
+
+    view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
     attr_create = fields.Boolean('Allow Create', default=True)
     attr_edit = fields.Boolean('Allow Edit', default=True)
     attr_delete = fields.Boolean('Allow Delete', default=True)
@@ -16,33 +22,35 @@ class KanbanWizard(models.Model):
     attr_template = fields.Text('Template')
     attr_quick_create = fields.Boolean('Quick Create', default=True)
     # attr_quick_create = fields.Selection([(1, 'Quick Create'), (2, 'No Quick Create')], 'Quick Create')
-    field_ids = fields.Many2many('builder.ir.model.fields', 'builder_wizard_views_kanban_field_rel', 'wizard_id', 'field_id', 'Items')
-    # field_ids = fields.One2many('builder.wizard.views.kanban.field', 'wizard_id', 'Items')
+    field_ids = fields.Many2many('builder.ir.model.fields', 'builder_view_views_kanban_field_rel', 'view_id', 'field_id', 'Items')
+    # field_ids = fields.One2many('builder.views.kanban.field', 'view_id', 'Items')
 
 
     _defaults = {
-        'view_type': 'kanban'
+        'type': 'kanban',
+        'custom_arch': False,
+        'subclass_model': lambda s, c, u, cxt=None: s._name,
     }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
-        self.attr_string = self.model_id.name
-        self.view_id = "view_{snake}_kanban".format(snake = snake_case(self.model_id.model))
+        self.name = self.model_id.name
+        self.xml_id = "view_{snake}_kanban".format(snake = snake_case(self.model_id.model))
 
 
-    @api.onchange('view_custom_arch', 'field_ids', 'attr_string', 'attr_create', 'attr_edit', 'attr_delete', 'attr_template', 'attr_quick_create', 'attr_default_group_by_field_id')
+    @api.onchange('custom_arch', 'field_ids', 'name', 'attr_create', 'attr_edit', 'attr_delete', 'attr_template', 'attr_quick_create', 'attr_default_group_by_field_id')
     def _onchange_generate_arch(self):
-        self.view_arch = self._get_view_arch()
+        self.arch = self._get_view_arch()
 
     @api.multi
     def _get_view_arch(self):
-        if self.view_custom_arch:
-            return self.view_arch
+        if self.custom_arch:
+            return self.arch
         else:
             template_obj = self.env['document.template']
             return template_obj.render_template('builder.view_arch_kanban.xml', {
                 'this': self,
-                'string': self.attr_string,
+                'string': self.name,
                 'create': self.attr_create,
                 'fields': self.field_ids,
                 'edit': self.attr_edit,
@@ -54,9 +62,9 @@ class KanbanWizard(models.Model):
 
 
 class CalendarField(models.Model):
-    _name = 'builder.wizard.views.kanban.field'
-    _inherit = 'builder.wizard.views.abstract.field'
+    _name = 'builder.views.kanban.field'
+    _inherit = 'builder.views.abstract.field'
 
-    wizard_id = fields.Many2one('builder.wizard.views.kanban', string='Wizard', ondelete='cascade')
+    view_id = fields.Many2one('builder.views.kanban', string='View', ondelete='cascade')
     invisible = fields.Boolean('Invisible')
     

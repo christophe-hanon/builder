@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_builder_wizard_views_form">
-            <field name="name">builder.wizard.views.form</field>
-            <field name="model">builder.wizard.views.form</field>
+        <record model="ir.ui.view" id="view_builder_views_form">
+            <field name="name">builder.views.form</field>
+            <field name="model">builder.views.form</field>
             <field name="arch" type="xml">
                 <form string="View Generator">
                     <group>
                         <group>
                             <field name="model_id" invisible="1" />
-                            <field name="attr_string" />
-                            <field name="view_id"  />
+                            <field name="name" />
+                            <field name="xml_id"  />
                             <field name="attr_create" />
                             <field name="attr_edit"  />
                             <field name="attr_delete"  />
@@ -33,7 +33,7 @@
                                     <field name="invisible" />
                                     <field name="readonly" />
                                     <field name="states" />
-                                    <field name="page_id" />
+                                    <field name="page" />
                                 </tree>
                             </field>
                         </page>
@@ -55,14 +55,14 @@
                             <group>
                                 <group></group>
                                 <group>
-                                    <field name="view_custom_arch" />
+                                    <field name="custom_arch" />
                                 </group>
                             </group>
-                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                            <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('custom_arch', '=', False)]}"/>
                         </page>
                     </notebook>
                     <footer>
-                        <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
+                        <button name="action_save" string="Save" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
@@ -70,9 +70,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_builder_wizard_views_form_field">
-            <field name="name">builder.wizard.views.form.field</field>
-            <field name="model">builder.wizard.views.form.field</field>
+        <record model="ir.ui.view" id="view_builder_views_form_field">
+            <field name="name">builder.views.form.field</field>
+            <field name="model">builder.views.form.field</field>
             <field name="arch" type="xml">
                 <form string="Fields">
                     <group>
@@ -84,7 +84,7 @@
                             <field name="widget" />
                             <field name="widget_options" attrs="{'invisible': [('widget', '=', False)]}" />
                             <field name="states" attrs="{'readonly': [('special_states_field_id', '=', False)], 'invisible': [('special_states_field_id', '=', False)]}"/>
-                            <field name="page_id" domain="[('wizard_id', '=', active_id)]"/>
+                            <field name="page" />
                             <field name="domain" attrs="{'invisible': [('field_ttype', 'not in', ['many2one', 'one2many', 'many2many'])]}"/>
                         </group>
                         <group>
@@ -115,26 +115,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_builder_wizard_views_form_page">
-            <field name="name">builder.wizard.views.form.page</field>
-            <field name="model">builder.wizard.views.form.page</field>
-            <field name="arch" type="xml">
-                <form string="Pages">
-                    <group>
-                        <group>
-                            <field name="name" />
-                        </group>
-                        <group>
-                            <field name="sequence"/>
-                        </group>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="view_builder_wizard_views_form_statusbar_button">
-            <field name="name">builder.wizard.views.form.statusbar.button</field>
-            <field name="model">builder.wizard.views.form.statusbar.button</field>
+        <record model="ir.ui.view" id="view_builder_views_form_statusbar_button">
+            <field name="name">builder.views.form.statusbar.button</field>
+            <field name="model">builder.views.form.statusbar.button</field>
             <field name="arch" type="xml">
                 <form string="Buttons">
                     <group>
@@ -168,7 +151,7 @@
 
         <record model="ir.actions.act_window" id="act_builder_wizard_views_form">
             <field name="name">Form Wizard</field>
-            <field name="res_model">builder.wizard.views.form</field>
+            <field name="res_model">builder.views.form</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

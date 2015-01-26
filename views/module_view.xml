@@ -35,6 +35,7 @@
                                         <field name="summary"/>
                                     </group>
                                     <group>
+                                        <field name="id" readonly="1" invisible="1"/>
                                         <field name="name"/>
                                         <field name="license"/>
                                         <field name="installed_version"/>
@@ -87,24 +88,30 @@
                                         <field name="inherit_model"/>
                                         <field name="name"/>
                                         <field name="osv_memory"/>
-                                        <!--<button name="action_open_view_wizard" type="object" string="Views" class="oe_button oe_form_button oe_link"/>-->
-                                        <button name="%(act_builder_wizard_views_selector)d" type="action" string="Views" class="oe_link" context="{'default_model_id': id}"/>
                                     </tree>
                                 </field>
                             </page>
                             <page string="Views">
+                                <div class="oe_right oe_button_box" name="model_buttons">
+                                    <button string="New Model View" name="%(act_builder_views_selector)d" type="action" context="{'default_module_id': id}"/>
+                                </div>
                                 <field name="view_ids" nolabel="1">
-                                    <tree string="Views" create="0" edit="0" delete="1">
+                                    <tree string="Views" create="1" edit="1" delete="1">
                                         <field name="model_id"/>
                                         <field name="type"/>
                                         <field name="xml_id"/>
                                         <field name="inherit_id"/>
-                                        <button name="action_open_view_wizard" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
+                                        <button name="action_open_view" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
                                     </tree>
                                 </field>
                             </page>
                             <page string="Menus">
-
+                                <field name="menu_ids" nolabel="1">
+                                    <tree string="Menus" editable="bottom">
+                                        <field name="sequence"/>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
@@ -197,8 +204,8 @@
                         <field name="osv_memory" invisible="1"/>
                     </node>
                     <arrow object="builder.ir.model.fields" source="model_id" destination="relation_model_id" label="['name']" form_view_ref="builder.builder_ir_model_fields_form_diagram_view"  context="{'from_diagram': True}">
-                        <field name="model_id"/>
                         <field name="relation_model_id"/>
+                        <field name="model_id"/>
                     </arrow>
                 </diagram>
             </field>

@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_builder_wizard_views_graph">
-            <field name="name">builder.wizard.views.graph</field>
-            <field name="model">builder.wizard.views.graph</field>
+        <record model="ir.ui.view" id="view_builder_views_graph">
+            <field name="name">builder.views.graph</field>
+            <field name="model">builder.views.graph</field>
             <field name="arch" type="xml">
                 <form string="View Generator">
                     <group>
                         <group>
                             <field name="model_id" invisible="1" />
                             <field name="special_states_field_id" invisible="1"/>
-                            <field name="attr_string" />
-                            <field name="view_id"  />
+                            <field name="name" />
+                            <field name="xml_id"  />
                         </group>
                         <group>
                             <field name="attr_type" />
@@ -35,14 +35,14 @@
                             <group>
                                 <group></group>
                                 <group>
-                                    <field name="view_custom_arch" />
+                                    <field name="custom_arch" />
                                 </group>
                             </group>
-                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                            <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('custom_arch', '=', False)]}"/>
                         </page>
                     </notebook>
                     <footer>
-                        <button name="action_save" string="Save &amp; Generate" type="object" class="oe_highlight"/>
+                        <button name="action_save" string="Save" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
@@ -50,9 +50,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_builder_wizard_views_graph_field">
-            <field name="name">builder.wizard.views.graph.field</field>
-            <field name="model">builder.wizard.views.graph.field</field>
+        <record model="ir.ui.view" id="view_builder_views_graph_field">
+            <field name="name">builder.views.graph.field</field>
+            <field name="model">builder.views.graph.field</field>
             <field name="arch" type="xml">
                 <form string="Fields">
                     <group>
@@ -74,7 +74,7 @@
 
         <record model="ir.actions.act_window" id="act_builder_wizard_views_graph">
             <field name="name">Graph View Wizard</field>
-            <field name="res_model">builder.wizard.views.graph</field>
+            <field name="res_model">builder.views.graph</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_builder_views_selector">
+            <field name="name">builder.views.selector</field>
+            <field name="model">builder.views.selector</field>
+            <field name="arch" type="xml">
+                <form string="Wizard Selector">
+                    <group>
+                        <group>
+                            <field name="module_id" invisible="1" />
+                            <field name="model_id" domain="[('module_id', '=', module_id)]"/>
+                        </group>
+                        <group>
+                            <field name="type" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                        or
+                        <button name="action_show_view" string="Next" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_views_selector">
+            <field name="name">View Wizard Selector</field>
+            <field name="res_model">builder.views.selector</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

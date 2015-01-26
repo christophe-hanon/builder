@@ -5,26 +5,34 @@ from .base import FIELD_WIDGETS_ALL
 __author__ = 'one'
 
 
-class TreeWizard(models.Model):
-    _name = 'builder.wizard.views.tree'
-    _inherit = 'builder.wizard.views.abstract'
+class TreeView(models.Model):
+    _name = 'builder.views.tree'
 
+    _inherit = ['ir.mixin.polymorphism.subclass', 'builder.views.abstract']
+
+    _inherits = {
+        'builder.ir.ui.view': 'view_id'
+    }
+
+    view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
     attr_create = fields.Boolean('Allow Create', default=True)
     attr_edit = fields.Boolean('Allow Edit', default=True)
     attr_delete = fields.Boolean('Allow Delete', default=True)
-    field_ids = fields.One2many('builder.wizard.views.tree.field', 'wizard_id', 'Fields')
+    field_ids = fields.One2many('builder.views.tree.field', 'view_id', 'Fields')
     attr_toolbar = fields.Boolean('Show Toolbar', default=False)
     attr_fonts = fields.Char('Fonts', help='Font definition. Ex: bold:message_unread==True')
     attr_colors = fields.Char('Colors', help='Color definition. Ex: "gray:probability == 100;red:date_deadline and (date_deadline &lt; current_date)"')
 
     _defaults = {
-        'view_type': 'tree'
+        'type': 'tree',
+        'custom_arch': False,
+        'subclass_model': lambda s, c, u, cxt=None: s._name,
     }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
-        self.attr_string = self.model_id.name
-        self.view_id = "view_{snake}_tree".format(snake = snake_case(self.model_id.model))
+        self.name = self.model_id.name
+        self.xml_id = "view_{snake}_tree".format(snake = snake_case(self.model_id.model))
 
         if not len(self.field_ids):
             field_list = []
@@ -34,20 +42,20 @@ class TreeWizard(models.Model):
 
             self.field_ids = field_list
 
-    @api.onchange('view_custom_arch', 'field_ids', 'attr_string', 'attr_create', 'attr_edit', 'attr_delete', 'attr_fonts', 'attr_colors', 'attr_toolbar')
+    @api.onchange('custom_arch', 'field_ids', 'name', 'attr_create', 'attr_edit', 'attr_delete', 'attr_fonts', 'attr_colors', 'attr_toolbar')
     def _onchange_generate_arch(self):
-        if not self.view_custom_arch:
-            self.view_arch = self._get_view_arch()
+        if not self.custom_arch:
+            self.arch = self._get_view_arch()
 
     @api.multi
     def _get_view_arch(self):
-        if self.view_custom_arch:
-            return self.view_arch
+        if self.custom_arch:
+            return self.arch
         else:
             template_obj = self.env['document.template']
             return template_obj.render_template('builder.view_arch_tree.xml', {
                 'this': self,
-                'string': self.attr_string,
+                'string': self.name,
                 'create': self.attr_create,
                 'fields': self.field_ids,
                 'edit': self.attr_edit,
@@ -57,11 +65,12 @@ class TreeWizard(models.Model):
                 'colors': self.attr_colors,
             })
 
-class TreeField(models.Model):
-    _name = 'builder.wizard.views.tree.field'
-    _inherit = 'builder.wizard.views.abstract.field'
 
-    wizard_id = fields.Many2one('builder.wizard.views.tree', string='Wizard', ondelete='cascade')
+class TreeField(models.Model):
+    _name = 'builder.views.tree.field'
+    _inherit = 'builder.views.abstract.field'
+
+    view_id = fields.Many2one('builder.views.tree', string='View', ondelete='cascade')
     widget = fields.Selection(FIELD_WIDGETS_ALL, 'Widget')
     widget_options = fields.Char('Widget Options')
 
@@ -72,7 +81,7 @@ class TreeField(models.Model):
     domain = fields.Char('Domain')
 
     @api.one
-    @api.depends('field_id.ttype', 'wizard_id')
+    @api.depends('field_id.ttype', 'view_id')
     def _compute_field_type(self):
         if self.field_id:
             self.field_ttype = self.field_id.ttype

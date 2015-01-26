@@ -5,8 +5,7 @@
                     <field name="name">builder.base.xml</field>
                     <field name="title">builder.base.xml</field>
                     <field name="type">jinja</field>
-                    <field name="content"><![CDATA[
-<?xml version="1.0"?>
+                    <field name="content"><![CDATA[<?xml version="1.0"?>
 <openerp>
     <data>
         {% block content %}

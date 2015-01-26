@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_ir_ui_view_form">
+            <field name="name">builder.ir.ui.view.form</field>
+            <field name="model">builder.ir.ui.view</field>
+            <field name="arch" type="xml">
+                <form string="View Generator">
+                    <group>
+                        <group>
+                            <field name="model_id" />
+                            <field name="name" />
+                            <field name="xml_id"  />
+                            <field name="type"  />
+                        </group>
+                        <group>
+
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Arch">
+                            <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" />
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_ui_view">
+            <field name="name">View</field>
+            <field name="res_model">builder.ir.ui.view</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

@@ -5,10 +5,16 @@ from .base import FIELD_WIDGETS_ALL
 __author__ = 'one'
 
 
-class CalendarWizard(models.Model):
-    _inherit = 'builder.wizard.views.abstract'
-    _name = 'builder.wizard.views.calendar'
+class CalendarView(models.Model):
+    _name = 'builder.views.calendar'
 
+    _inherit = ['ir.mixin.polymorphism.subclass', 'builder.views.abstract']
+
+    _inherits = {
+        'builder.ir.ui.view': 'view_id'
+    }
+
+    view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
     attr_date_start_field_id = fields.Many2one('builder.ir.model.fields', 'Date Start Field', ondelete='set null', required=True)
     attr_date_start_ttype = fields.Char('Start Date Field Type')
     attr_date_stop_field_id = fields.Many2one('builder.ir.model.fields', 'Date Stop Field', ondelete='set null')
@@ -23,14 +29,17 @@ class CalendarWizard(models.Model):
     attr_avatar_filter = fields.Char('Avatar Filter')
     attr_avatar_model = fields.Char('Avatar Model')
     attr_avatar_title = fields.Char('Avatar Title')
-    attr_quick_add = fields.Selection([(False, 'No Quick Create'), (True, 'Quick Create')], 'Quick Create')
+    attr_quick_add = fields.Boolean('Quick Create')
+    # attr_quick_add = fields.Selection([(False, 'No Quick Create'), (True, 'Quick Create')], 'Quick Create')
     attr_display = fields.Char('Display Format', help='The display format which will be used to display the event where fields are between "[" and "]"')
 
 
-    field_ids = fields.One2many('builder.wizard.views.calendar.field', 'wizard_id', 'Items')
+    field_ids = fields.One2many('builder.views.calendar.field', 'view_id', 'Items')
 
     _defaults = {
-        'view_type': 'calendar'
+        'type': 'calendar',
+        'custom_arch': False,
+        'subclass_model': lambda s, c, u, cxt=None: s._name,
     }
 
     @api.onchange('attr_date_start_field_id')
@@ -43,22 +52,22 @@ class CalendarWizard(models.Model):
 
     @api.onchange('model_id')
     def _onchange_calendar_view(self):
-        self.attr_string = self.model_id.name
-        self.view_id = "view_{snake}_calendar".format(snake = snake_case(self.model_id.model))
+        self.name = self.model_id.name
+        self.xml_id = "view_{snake}_calendar".format(snake = snake_case(self.model_id.model))
 
-    @api.onchange('view_custom_arch', 'attr_string', 'field_ids', 'attr_date_start_field_id', 'attr_date_stop_field_id', 'attr_date_delay_field_id', 'attr_day_length_field_id', 'attr_color_field_id', 'attr_all_day', 'attr_use_contacts', 'attr_event_open_popup', 'attr_avatar_filter', 'attr_avatar_model', 'attr_avatar_title', 'attr_display', 'attr_quick_add')
+    @api.onchange('custom_arch', 'name', 'field_ids', 'attr_date_start_field_id', 'attr_date_stop_field_id', 'attr_date_delay_field_id', 'attr_day_length_field_id', 'attr_color_field_id', 'attr_all_day', 'attr_use_contacts', 'attr_event_open_popup', 'attr_avatar_filter', 'attr_avatar_model', 'attr_avatar_title', 'attr_display', 'attr_quick_add')
     def _onchange_generate_arch(self):
-        self.view_arch = self._get_view_arch()
+        self.arch = self._get_view_arch()
 
     @api.multi
     def _get_view_arch(self):
-        if self.view_custom_arch:
-            return self.view_arch
+        if self.custom_arch:
+            return self.arch
         else:
             template_obj = self.env['document.template']
             return template_obj.render_template('builder.view_arch_calendar.xml', {
                 'this': self,
-                'string': self.attr_string,
+                'string': self.name,
                 'date_start': self.attr_date_start_field_id and self.attr_date_start_field_id.name or False,
                 'date_stop': self.attr_date_stop_field_id and self.attr_date_stop_field_id.name or False,
                 'date_delay': self.attr_date_delay_field_id and self.attr_date_delay_field_id.name or False,
@@ -78,8 +87,8 @@ class CalendarWizard(models.Model):
 
 
 class CalendarField(models.Model):
-    _name = 'builder.wizard.views.calendar.field'
-    _inherit = 'builder.wizard.views.abstract.field'
+    _name = 'builder.views.calendar.field'
+    _inherit = 'builder.views.abstract.field'
 
     invisible = fields.Boolean('Invisible')
-    wizard_id = fields.Many2one('builder.wizard.views.calendar', string='Wizard', ondelete='cascade')
+    view_id = fields.Many2one('builder.views.calendar', string='View', ondelete='cascade')

@@ -1,34 +1,42 @@
 from openerp.addons.builder.models.fields import snake_case
 from openerp import models, fields, api, _
 from .base import FIELD_WIDGETS_ALL
+from collections import defaultdict
 
 __author__ = 'one'
 
 
-class FormWizard(models.Model):
-    _name = 'builder.wizard.views.form'
-    _inherit = 'builder.wizard.views.abstract'
+class FormView(models.Model):
+    _name = 'builder.views.form'
 
+    _inherit = ['ir.mixin.polymorphism.subclass', 'builder.views.abstract']
+
+    _inherits = {
+        'builder.ir.ui.view': 'view_id'
+    }
+
+    view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
     attr_create = fields.Boolean('Allow Create', default=True)
     attr_edit = fields.Boolean('Allow Edit', default=True)
     attr_delete = fields.Boolean('Allow Delete', default=True)
-    page_ids = fields.One2many('builder.wizard.views.form.page', 'wizard_id', 'Pages')
-    field_ids = fields.One2many('builder.wizard.views.form.field', 'wizard_id', 'Fields')
     states_clickable = fields.Boolean('States Clickable')
     show_status_bar = fields.Boolean('Show Status Bar')
     visible_states = fields.Char('Visible States')
 
-    # buttonbar_button_ids = fields.One2many('builder.ir.model.view.config.wizard.buttonbar.buttons', 'wizard_id', 'Buttons')
-    statusbar_button_ids = fields.One2many('builder.wizard.views.form.statusbar.button', 'wizard_id', 'Status Bar Buttons')
+    # buttonbar_button_ids = fields.One2many('builder.ir.model.view.config.view.buttonbar.buttons', 'view_id', 'Buttons')
+    statusbar_button_ids = fields.One2many('builder.views.form.statusbar.button', 'view_id', 'Status Bar Buttons')
+    field_ids = fields.One2many('builder.views.form.field', 'view_id', 'Items')
 
     _defaults = {
-        'view_type': 'form'
+        'type': 'form',
+        'custom_arch': False,
+        'subclass_model': lambda s, c, u, cxt=None: s._name,
     }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
-        self.attr_string = self.model_id.name
-        self.view_id = "view_{snake}_form".format(snake = snake_case(self.model_id.model))
+        self.name = self.model_id.name
+        self.xml_id = "view_{snake}_form".format(snake = snake_case(self.model_id.model))
         self.show_status_bar = True if self.model_id.special_states_field_id.id else False
 
         if not len(self.field_ids):
@@ -39,29 +47,27 @@ class FormWizard(models.Model):
 
             self.field_ids = field_list
 
-    @api.onchange('view_custom_arch', 'attr_string', 'field_ids', 'page_ids', 'attr_create', 'attr_edit', 'attr_delete', 'states_clickable', 'show_status_bar', 'visible_states' )
+    @api.onchange('custom_arch', 'name', 'field_ids', 'attr_create', 'attr_edit', 'attr_delete', 'states_clickable', 'show_status_bar', 'visible_states' )
     def _onchange_generate_arch(self):
-        self.view_arch = self._get_view_arch()
+        self.arch = self._get_view_arch()
 
     @api.multi
     def _get_view_arch(self):
-        if self.view_custom_arch:
-            return self.view_arch
+        if self.custom_arch:
+            return self.arch
         else:
-            pages = {}
+            pages = defaultdict(list)
             flat = []
             for field in self.field_ids:
-                if field.page_id.id:
-                    if not field.page_id.id in pages:
-                        pages[field.page_id.id] = {'page': field.page_id, 'fields': []}
-                    pages[field.page_id.id]['fields'].append(field)
+                if field.page:
+                    pages[field.page].append(field)
                 else:
                     flat.append(field)
 
             template_obj = self.env['document.template']
             return template_obj.render_template('builder.view_arch_form.xml', {
                 'this': self,
-                'string': self.attr_string,
+                'string': self.name,
                 'fields': self.field_ids,
                 'flat_fields': flat,
                 'pages': pages,
@@ -74,28 +80,17 @@ class FormWizard(models.Model):
             })
 
 
-class FormPage(models.Model):
-    _name = 'builder.wizard.views.form.page'
-
-    _order = 'sequence, name'
-
-    wizard_id = fields.Many2one('builder.wizard.views.form', string='Wizard', ondelete='cascade')
-    name = fields.Char(string='Name', required=True)
-    sequence = fields.Integer(string='Sequence')
-    field_ids = fields.One2many('builder.wizard.views.form.field', 'page_id', 'Fields')
-
-
 DEFAULT_WIDGETS_BY_TYPE = {
     'binary': 'image'
 }
 
 
 class StatusBarActionButton(models.Model):
-    _name = 'builder.wizard.views.form.statusbar.button'
+    _name = 'builder.views.form.statusbar.button'
 
     _order = 'sequence, name'
 
-    wizard_id = fields.Many2one('builder.wizard.views.form', string='Wizard', ondelete='cascade')
+    view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')
     model_id = fields.Many2one('builder.ir.model', string='Model')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id', string='States Field')
     name = fields.Char(string='Name', required=True)
@@ -116,14 +111,12 @@ class StatusBarActionButton(models.Model):
             self.method_name = "action_{name}".format(name=snake_case(self.name.replace(' ', '.')).lower())
 
 
-
-
 class FormField(models.Model):
-    _name = 'builder.wizard.views.form.field'
-    _inherit = 'builder.wizard.views.abstract.field'
+    _name = 'builder.views.form.field'
+    _inherit = 'builder.views.abstract.field'
 
-    wizard_id = fields.Many2one('builder.wizard.views.form', string='Wizard', ondelete='cascade')
-    page_id = fields.Many2one('builder.wizard.views.form.page', string='Page', ondelete='set null')
+    view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')
+    page = fields.Char('Page')
 
     related_field_view_type = fields.Selection([('default', 'Default'), ('defined', 'Defined'), ('custom', 'Custom')], 'View Type', required=True, default='default')
     related_field_arch = fields.Text('Arch')
@@ -150,7 +143,7 @@ class FormField(models.Model):
     states = fields.Char('States')
 
     @api.one
-    @api.depends('field_id.ttype', 'wizard_id')
+    @api.depends('field_id.ttype', 'view_id')
     def _compute_field_type(self):
         if self.field_id:
             self.field_ttype = self.field_id.ttype

@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_builder_wizard_views_search">
-            <field name="name">builder.wizard.views.search</field>
-            <field name="model">builder.wizard.views.search</field>
+        <record model="ir.ui.view" id="view_builder_views_search">
+            <field name="name">builder.views.search</field>
+            <field name="model">builder.views.search</field>
             <field name="arch" type="xml">
                 <form string="View Generator">
                     <group>
                         <group>
                             <field name="model_id" invisible="1" />
                             <field name="id" invisible="1" />
-                            <field name="attr_string" />
-                            <field name="view_id"  />
+                            <field name="name" />
+                            <field name="xml_id"  />
                         </group>
                         <group>
                         </group>
@@ -28,16 +28,7 @@
                                     <field name="attr_filter_domain" />
                                     <field name="attr_domain" />
                                     <field name="group_field_id" />
-                                    <field name="group_id" />
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Groups">
-                            <field name="group_ids" nolabel="1" domain="[('model_id', '=', model_id)]">
-                                <tree string="Groups" >
-                                    <field name="sequence" widget="handle" />
-                                    <field name="name" />
-                                    <field name="expand" />
+                                    <field name="group" />
                                 </tree>
                             </field>
                         </page>
@@ -45,15 +36,14 @@
                             <group>
                                 <group></group>
                                 <group>
-                                    <field name="view_custom_arch" />
+                                    <field name="custom_arch" />
                                 </group>
                             </group>
-                            <field name="view_arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('view_custom_arch', '=', False)]}"/>
+                            <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" attrs="{'readonly': [('custom_arch', '=', False)]}"/>
                         </page>
                     </notebook>
                     <footer>
                         <button name="action_save" string="Save" type="object" class="oe_highlight"/>
-                        <button name="action_generate" string="Save &amp; Generate" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
@@ -61,35 +51,15 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_builder_wizard_views_search_group">
-            <field name="name">builder.wizard.views.search.group</field>
-            <field name="model">builder.wizard.views.search.group</field>
-            <field name="arch" type="xml">
-                <form string="Groups">
-                    <group>
-                        <group>
-                            <field name="name" />
-                            <field name="expand" />
-                        </group>
-                        <group>
-                            <field name="sequence"/>
-                        </group>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-
         <record model="ir.ui.view" id="act_builder_wizard_views_search_field">
-            <field name="name">builder.wizard.views.search.field</field>
-            <field name="model">builder.wizard.views.search.field</field>
+            <field name="name">builder.views.search.field</field>
+            <field name="model">builder.views.search.field</field>
             <field name="arch" type="xml">
                 <form string="Items">
                     <group>
                         <group>
                             <field name="special_states_field_id" invisible="1"/>
                             <field name="model_id" invisible="1"/>
-                            <field name="wizard_id" invisible="1"/>
                             <field name="field_ttype" invisible="1" />
                             <field name="type"/>
                             <field name="field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}" attrs="{'invisible': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['field'])], 'readonly': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['field'])], 'required': [('type', 'in', ['field'])]}"/>
@@ -98,7 +68,7 @@
                             <field name="group_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}" attrs="{'invisible': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['filter'])], 'readonly': ['|', ('type', 'in', ['separator']), ('type', 'not in', ['filter'])]}"/>
                         </group>
                         <group>
-                            <field name="group_id" domain="[('wizard_id', '=', wizard_id)]" options="{'no_create': True}" />
+                            <field name="group" />
                             <field name="attr_domain" attrs="{'invisible': [('type', 'in', ['separator'])], 'readonly': [('type', 'in', ['separator'])]}"/>
                             <field name="attr_filter_domain" attrs="{'invisible': [('type', 'in', ['separator'])], 'readonly': [('type', 'in', ['separator'])]}"/>
                             <field name="attr_operator" attrs="{'invisible': [('type', 'in', ['separator'])], 'readonly': [('type', 'in', ['separator'])]}"/>
@@ -111,7 +81,7 @@
 
         <record model="ir.actions.act_window" id="act_builder_wizard_views_search">
             <field name="name">Form Wizard</field>
-            <field name="res_model">builder.wizard.views.search</field>
+            <field name="res_model">builder.views.search</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

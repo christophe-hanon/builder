@@ -1,8 +1,6 @@
 from openerp import models, fields, api
-from openerp.osv import fields as fields_old
-from openerp import tools
-from openerp.osv import expression
 from openerp import _
+
 
 class ModelDependency(models.Model):
     _name = 'builder.ir.module.dependency'
@@ -28,7 +26,6 @@ class ModelDependency(models.Model):
     @api.depends('dependency_module_id', 'dependency_project_id', 'dependency_module_name')
     def _compute_name(self):
         self.dependency_module_name = self.name = self.dependency_module_id.name or self.dependency_project_id.name or self.dependency_module_name
-
 
 
 class OeCssClass(models.Model):
