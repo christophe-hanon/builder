@@ -18,9 +18,10 @@ class IrModel(models.Model):
                                 help="This field specifies whether the model is transient or not (i.e. if records are automatically deleted from the database or not)")
     field_ids = fields.One2many('builder.ir.model.fields', 'model_id', 'Fields', required=True, copy=True)
     relation_field_ids = fields.One2many('builder.ir.model.fields', 'relation_model_id', 'Referenced By Fields')
-    inherit_model = fields.Char('Inherit', compute='_compute_inherit_model')
+    # inherit_model = fields.Char('Inherit', compute='_compute_inherit_model')
 
-    inherit_model_ids = fields.Many2many('builder.ir.model', 'builder_ir_model_inherit_model_rel', 'model_id', 'inherited_model_id', 'Inherit')
+    inherit_model_ids = fields.One2many('builder.ir.model.inherit', 'model_id', 'Inherit')
+    inherits_model_ids = fields.One2many('builder.ir.model.inherits', 'model_id', 'Inherits')
 
     #access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
 
@@ -63,10 +64,10 @@ class IrModel(models.Model):
         if not self.name:
             self.name = self.model
 
-    @api.one
-    @api.depends('inherit_model_ids')
-    def _compute_inherit_model(self):
-        self.inherit_model = ','.join([m.model for m in self.inherit_model_ids])
+    # @api.one
+    # @api.depends('inherit_model_ids')
+    # def _compute_inherit_model(self):
+    #     self.inherit_model = ','.join([m.model for m in self.inherit_model_ids])
 
     @api.multi
     def find_field_by_name(self, name):
@@ -99,27 +100,6 @@ class IrModel(models.Model):
         self.groups_binary_field_ids = self.find_field_by_type(['binary'])
 
 
-    @api.multi
-    def action_open_view_wizard(self):
-        view_wizard_obj = self.env['builder.ir.model.view.config.wizard']
-        wizard = view_wizard_obj.search([('model_id', '=', self.id)])
-
-        return {
-            'name': _('View Wizard'),
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'tree',
-            'res_model': 'builder.ir.model.view.config.wizard',
-            'views': [(False, 'form')],
-            'res_id': wizard.id or False,
-            'target': 'new',
-            'context': {
-                'default_model_id': self.id,
-                'default_special_states_field_id': self.special_states_field_id.id,
-                'default_module_id': self.module_id.id,
-            },
-        }
-
 class ModelMethod(models.Model):
     _name = 'builder.ir.model.method'
 
@@ -138,3 +118,45 @@ class ModelMethod(models.Model):
 
 
     code = fields.Text('Code', required=True)
+
+
+class InheritModelTemplate(models.AbstractModel):
+    _name = 'builder.ir.model.inherit.template'
+    _order = 'sequence, id'
+
+    sequence = fields.Integer('Sequence')
+    model_id = fields.Many2one('builder.ir.model', string='Model', ondelete='cascade')
+    module_id = fields.Many2one('builder.ir.module.module', string='Module', related='model_id.module_id', ondelete='cascade')
+    model_source = fields.Selection([('module', 'Module'), ('system', 'System')], 'Source', required=True)
+    module_model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade')
+    system_model_id = fields.Many2one('ir.model', 'Model', ondelete='set null')
+    system_model_name = fields.Char('Model Name')
+    model_display = fields.Char('Model', compute='_compute_model_display')
+
+    @api.one
+    @api.depends('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
+    def _compute_model_display(self):
+        self.model_display = self.system_model_name if self.model_source == 'system' else self.module_model_id.name
+
+    @api.onchange('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
+    def onchange_system_model_id(self):
+        self.system_model_name = self.system_model_id.name if self.model_source == 'system' else False
+        self.model_display = self.system_model_name if self.model_source == 'system' else self.module_model_id.name
+
+class InheritModel(models.Model):
+    _name = 'builder.ir.model.inherit'
+    _inherit = 'builder.ir.model.inherit.template'
+
+
+class InheritsModel(models.Model):
+    _name = 'builder.ir.model.inherits'
+    _inherit = 'builder.ir.model.inherit.template'
+
+    field_name = fields.Char('Field')
+    field_id = fields.Many2one('builder.ir.model.fields', 'Field')
+    field_display = fields.Char('Field', compute='_compute_field_display')
+
+    @api.one
+    @api.depends('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
+    def _compute_field_display(self):
+        self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name

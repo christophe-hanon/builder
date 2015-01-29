@@ -28,9 +28,6 @@
                                 <field name="model"/>
                                 <field name="name"/>
                                 <field name="osv_memory"/>
-
-                                <field name="inherit_model_ids" widget="many2many_tags"  domain="[('module_id', '=', module_id)]" />
-
                             </group>
                             <group>
                                 <label for="order_field_id"/>
@@ -38,13 +35,6 @@
                                     <field name="order_field_id" class="oe_inline" domain="[('model_id', '=', id)]" widget="selection"/>
                                     <field name="order_direction" class="oe_inline" attrs="{'invisible': [('order_field_id', '=', False)], 'readonly': [('order_field_id', '=', False)]}"/>
                                 </div>
-                                <!--<label for="inherit_model"/>
-                                <div>
-                                    <field name="inherit_model" class="oe_inline"/>
-                                    <button name="%(act_builder_ir_model_lookup_wizard)d" class="oe_link oe_edit_only" type="action" attrs="{'invisible': [('id', '=', False)]}" context="{'target_field': 'inherit_model', 'default_lookup_mode': 'field', 'lookup_field': 'model', 'domain': [('module_id', '=', module_id)]}">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>-->
                             </group>
                         </group>
                         <notebook>
@@ -129,10 +119,26 @@
                                 </field>
 
                             </page>
-                            <page string="Access Rights">
-                            </page>
-                            <page string="Notes">
-                                <field name="info"/>
+                            <page string="Inheritance">
+                                <group>
+                                    <group string="Inherit">
+                                        <field nolabel="1" name="inherit_model_ids" domain="[('module_id', '=', module_id)]" context="{'default_module_id': module_id, 'default_model_id': id}">
+                                            <tree>
+                                                <field name="sequence" widget="handle"/>
+                                                <field name="model_display"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group string="Inherits">
+                                        <field nolabel="1" name="inherits_model_ids" domain="[('module_id', '=', module_id)]" context="{'default_module_id': module_id, 'default_model_id': id}">
+                                            <tree>
+                                                <field name="sequence" widget="handle"/>
+                                                <field name="model_display"/>
+                                                <field name="field_display"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                </group>
                             </page>
                             <page string="Views">
                                 <field name="view_ids" nolabel="1">
@@ -143,6 +149,11 @@
                                         <button name="action_open_view" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
                                     </tree>
                                 </field>
+                            </page>
+                             <page string="Access Rights">
+                            </page>
+                            <page string="Notes">
+                                <field name="info"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -286,6 +297,51 @@
                             </group>
                         </page>
                     </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_model_inherit_form_view">
+            <field name="name">builder.ir.model.inherit.form</field>
+            <field name="model">builder.ir.model.inherit</field>
+            <field name="arch" type="xml">
+                <form string="Model Inherit">
+                    <group>
+                        <group>
+                            <field name="module_id" invisible="1" />
+                            <field name="model_source" />
+                            <field name="module_model_id" domain="[('module_id', '=', module_id)]" attrs="{'invisible': [('model_source', 'not in', ['module'])], 'readonly': [('model_source', 'not in', ['module'])], 'required': [('model_source', 'in', ['module'])]}"/>
+                            <field name="system_model_id" attrs="{'invisible': [('model_source', 'not in', ['system'])], 'readonly': [('model_source', 'not in', ['system'])], 'required': [('model_source', 'in', ['system'])]}"/>
+                            <field name="system_model_name" attrs="{'invisible': [('model_source', 'not in', ['system'])], 'readonly': [('model_source', 'not in', ['system'])], 'required': [('model_source', 'in', ['system'])]}"/>
+                        </group>
+                        <group>
+
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_model_inherits_form_view">
+            <field name="name">builder.ir.model.inherits.form</field>
+            <field name="model">builder.ir.model.inherits</field>
+            <field name="arch" type="xml">
+                <form string="Model Inherits">
+                    <group>
+                        <group>
+                            <field name="module_id" invisible="1" />
+                            <field name="model_id" invisible="1" />
+                            <field name="model_source" />
+                            <field name="module_model_id" domain="[('module_id', '=', module_id)]" attrs="{'invisible': [('model_source', 'not in', ['module'])], 'readonly': [('model_source', 'not in', ['module'])], 'required': [('model_source', 'in', ['module'])]}"/>
+                            <field name="system_model_id" attrs="{'invisible': [('model_source', 'not in', ['system'])], 'readonly': [('model_source', 'not in', ['system'])], 'required': [('model_source', 'in', ['system'])]}"/>
+                            <field name="system_model_name" attrs="{'invisible': [('model_source', 'not in', ['system'])], 'readonly': [('model_source', 'not in', ['system'])], 'required': [('model_source', 'in', ['system'])]}"/>
+                            <field name="field_id" domain="[('model_id', '=', model_id), ('ttype', '=', 'many2one'), ('relation_model_id', '=', module_model_id)]" context="{'default_module_id': module_id, 'default_model_id': model_id, 'default_ttype': 'many2one', 'default_relation_model_id': module_model_id}"  attrs="{'invisible': [('model_source', 'not in', ['module'])], 'readonly': [('model_source', 'not in', ['module'])], 'required': [('model_source', 'in', ['module'])]}"/>
+                            <field name="field_name" attrs="{'invisible': [('model_source', 'not in', ['system'])], 'readonly': [('model_source', 'not in', ['system'])], 'required': [('model_source', 'in', ['system'])]}"/>
+                        </group>
+                        <group>
+
+                        </group>
+                    </group>
                 </form>
             </field>
         </record>

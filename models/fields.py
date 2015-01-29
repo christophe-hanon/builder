@@ -24,11 +24,11 @@ _logger = logging.getLogger(__name__)
 
 
 def snake_case(name, prefix=None, suffix=None):
-    return (prefix or '') + name.replace('.', '_') + (suffix or '')
+    return (prefix or '') + (name or '').replace('.', '_') + (suffix or '')
 
 
 def model_name(name, prefix=None, suffix=None):
-    return (prefix or '') + ' '.join([p.capitalize() for p in name.split('.')]) + (suffix or '')
+    return (prefix or '') + ' '.join([p.capitalize() for p in (name or '').split('.')]) + (suffix or '')
 
 
 relational_field_types = ['one2many', 'many2one', 'many2many']
@@ -40,7 +40,7 @@ class IrFields(models.Model):
     _name = 'builder.ir.model.fields'
     _order = 'model_id, position asc'
     _description = 'Fields'
-    _rec_name = 'field_description'
+    _rec_name = 'name'
 
     def _get_fields_type_selection(self):
         context = {}
