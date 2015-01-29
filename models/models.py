@@ -27,13 +27,13 @@ class IrModel(models.Model):
 
     view_ids = fields.One2many('builder.ir.ui.view', 'model_id', 'Views')
 
-    # to_ids = fields.One2many('builder.ir.model.fields',
-    #                                         'model_id',
-    #                                         'Forward Models', domain=[('ttype', 'in', ['many2one','one2many','many2many']), ('relation_model_id', '!=', False)])
-    #
-    # from_ids = fields.One2many('builder.ir.model.fields',
-    #                                         'relation_model_id',
-    #                                         'Backward Models', domain=[('ttype', 'in', ['many2one','one2many','many2many']), ('relation_model_id', '!=', False)])
+    to_ids = fields.One2many('builder.ir.model.fields',
+                                            'relation_model_id',
+                                            'Forward Models', domain=[('ttype', 'in', ['many2one','one2many','many2many']), ('relation_model_id', '!=', False)])
+
+    from_ids = fields.One2many('builder.ir.model.fields',
+                                            'model_id',
+                                            'Backward Models', domain=[('ttype', 'in', ['many2one','one2many','many2many']), ('relation_model_id', '!=', False)])
 
     #extra fields
 
