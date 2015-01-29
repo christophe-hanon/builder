@@ -102,6 +102,7 @@ VIEW_TYPES = {
 
 class View(models.Model):
     _name = 'builder.ir.ui.view'
+    _rec_name = 'xml_id'
 
     _inherit = ['ir.mixin.polymorphism.superclass']
 

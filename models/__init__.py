@@ -6,3 +6,4 @@ from . import models
 from . import fields
 from . import views
 from . import menus
+from . import actions

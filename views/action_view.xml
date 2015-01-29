@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- Window Action -->
+        <record model="ir.ui.view" id="builder_ir_actions_act_window_tree_view">
+            <field name="name">builder.ir.actions.act_window.tree</field>
+            <field name="model">builder.ir.actions.act_window</field>
+            <field name="arch" type="xml">
+                <tree string="Window Action">
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="view_mode"/>
+                    <field name="view_type"/>
+                    <field name="target"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_actions_act_window_form_view">
+            <field name="name">builder.ir.actions.act_window.form</field>
+            <field name="model">builder.ir.actions.act_window</field>
+            <field name="arch" type="xml">
+                <form string="Window Action" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="module_id" invisible="1"/>
+                                <field name="name"/>
+                                <field name="model_id" domain="[('module_id', '=', module_id)]" options="{'no_create': True}"/>
+                                <field name="src_model"/>
+                            </group>
+                            <group>
+                                <field name="usage"/>
+                                <field name="type" readonly="1"/>
+                                <field name="target"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="General Settings">
+                                <group>
+                                    <group string="Views">
+                                        <field name="view_type"/>
+                                        <field name="view_mode"/>
+                                        <field name="view_id" options="{'no_create': True}" domain="[('module_id', '=', module_id), ('model_id', '=', model_id)]"/>
+                                        <field name="search_view_id" options="{'no_create': True}" domain="[('module_id', '=', module_id), ('type', '=', 'search'), ('model_id', '=', model_id)]"/>
+                                    </group>
+                                    <group string="Filters">
+                                        <field name="domain"/>
+                                        <field name="context"/>
+                                        <field name="limit"/>
+                                        <field name="auto_refresh"/>
+                                        <field name="auto_search"/>
+                                        <field name="filter"/>
+                                        <field name="multi"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Security">
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_actions_act_window">
+            <field name="name">Window Action</field>
+            <field name="res_model">builder.ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Window Action -->
+    </data>
+</openerp>

@@ -8,10 +8,7 @@
                 <form string="Module">
 
                     <sheet>
-                        <div class="oe_right oe_button_box" name="buttons">
-                            <button class="oe_inline oe_stat_button" string="UML Diagram" name="action_diagram" type="object"
-                                    icon="fa-magic" context="{}"/>
-                        </div>
+
                         <field name="icon_image" widget="image" class="oe_avatar oe_left"/>
                         <div class="oe_title">
                             <h1>
@@ -77,8 +74,11 @@
                                 </field>
                             </page>
                             <page string="Models">
-                                <div class="oe_right oe_button_box" name="model_buttons">
-                                    <button string="Import Models" name="%(act_builder_ir_model_import_wizard)d" type="action" context="{}"/>
+                                <div class="oe_right oe_button_box" name="buttons">
+                                    <button class="oe_inline oe_stat_button" string="UML Diagram" name="action_diagram" type="object"
+                                            icon="fa-magic" context="{}"/>
+                                    <button class="oe_inline oe_stat_button" string="Import Models" name="%(act_builder_ir_model_import_wizard)d" type="action"
+                                            icon="fa-reply" context="{}"/>
                                 </div>
                                 <field name="model_ids" editable="bottom" context="{'default_module_id': active_id}">
                                     <tree string="Models" context="{'default_module_id': active_id}">
@@ -92,8 +92,8 @@
                                 </field>
                             </page>
                             <page string="Views">
-                                <div class="oe_right oe_button_box" name="model_buttons">
-                                    <button string="New Model View" name="%(act_builder_views_selector)d" type="action" context="{'default_module_id': id}"/>
+                                <div class="oe_right oe_button_box" name="buttons">
+                                    <button class="oe_inline oe_stat_button" string="Model View" name="%(act_builder_views_selector)d" type="action" icon="fa-plus" context="{'default_module_id': id}"/>
                                 </div>
                                 <field name="view_ids" nolabel="1">
                                     <tree string="Views" create="1" edit="1" delete="1">
@@ -105,11 +105,23 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Menus">
-                                <field name="menu_ids" nolabel="1">
-                                    <tree string="Menus" editable="bottom">
-                                        <field name="sequence"/>
+                            <page string="Actions">
+                                <field name="action_window_ids" nolabel="1" context="{'default_module_id': active_id}">
+                                    <tree string="Actions">
                                         <field name="name"/>
+                                        <field name="model_id"/>
+                                        <field name="view_mode"/>
+                                        <field name="view_type"/>
+                                        <field name="target"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Menus">
+                                <field name="menu_ids" nolabel="1" context="{'default_module_id': active_id}">
+                                    <tree string="Menus">
+                                        <field name="sequence"/>
+                                        <field name="xml_id"/>
+                                        <field name="complete_name"/>
                                     </tree>
                                 </field>
                             </page>
@@ -175,8 +187,8 @@
         </record>
 
         <record id="view_module_filter" model="ir.ui.view">
-            <field name="name">ir.module.module.list.select</field>
-            <field name="model">ir.module.module</field>
+            <field name="name">builder.ir.module.module.list.select</field>
+            <field name="model">builder.ir.module.module</field>
             <field name="arch" type="xml">
                 <search string="Search modules">
                     <field name="name" filter_domain="['|', '|', ('summary', 'ilike', self), ('shortdesc', 'ilike', self), ('name',

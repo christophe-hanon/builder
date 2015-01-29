@@ -40,6 +40,7 @@ This module aims to help in the development of new modules
         'data/templates.xml',
         'data/oe.css.classes.yml',
         'wizard/model_lookup_wizard_view.xml',
+        'wizard/menu_lookup_wizard_view.xml',
         'wizard/action_lookup_wizard_view.xml',
 
         'views/views/base_view.xml',
@@ -54,9 +55,10 @@ This module aims to help in the development of new modules
 
         'wizard/model_import_view.xml',
         'wizard/model_export_view.xml',
+        'views/menu_view.xml',
         'views/module_view.xml',
         'views/model_view.xml',
-        'views/model_view.xml',
+        'views/action_view.xml',
         'views/menu.xml',
         'views/backend_assets.xml',
     ],

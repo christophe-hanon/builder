@@ -1,3 +1,5 @@
+import re
+from types import MethodType
 from openerp import models, fields, api
 from openerp.api import Environment
 from openerp.osv import fields as fields_old
@@ -6,7 +8,22 @@ from openerp.osv import expression
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
 
-__author__ = 'deimos'
+__author__ = 'one'
+
+MODULE_EXPORTER_RE = re.compile('_export_\w[\w_]+')
+def get_module_exporters(model):
+    return [
+        (attr.replace('_export_', ''), attr.replace('_export_', '').capitalize()) for attr in dir(model)
+        if MODULE_EXPORTER_RE.match(attr) and isinstance(getattr(model, attr), MethodType)
+    ]
+
+MODULE_IMPORTER_RE = re.compile('_import_\w[\w_]+')
+def get_module_importers(model):
+    return [
+        (attr.replace('_import_', ''), attr.replace('_import_', '').capitalize()) for attr in dir(model)
+        if MODULE_IMPORTER_RE.match(attr) and isinstance(getattr(model, attr), MethodType)
+    ]
+
 
 class Module(models.Model):
     _name = 'builder.ir.module.module'
@@ -17,11 +34,11 @@ class Module(models.Model):
 
     name = fields.Char("Technical Name", required=True, select=True)
     category_id = fields.Selection(simple_selection('ir.module.category', 'name') , 'Category')
-    shortdesc = fields.Char('Module Name', translate=True)
+    shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
     description_html = fields.Html(string='Description HTML')
-    author = fields.Char("Author")
+    author = fields.Char("Author", required=True)
     maintainer = fields.Char('Maintainer')
     contributors = fields.Text('Contributors')
     website = fields.Char("Website")
@@ -69,6 +86,9 @@ class Module(models.Model):
     model_ids = fields.One2many('builder.ir.model', 'module_id', 'Models')
     view_ids = fields.One2many('builder.ir.ui.view', 'module_id', 'Views')
     menu_ids = fields.One2many('builder.ir.ui.menu', 'module_id', 'Menus')
+    action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
+    action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
+    action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
 
     @api.one
     def dependencies_as_list(self):

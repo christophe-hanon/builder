@@ -21,7 +21,7 @@ class GraphView(models.Model):
     field_ids = fields.One2many('builder.views.graph.field', 'view_id', 'Items')
 
     _defaults = {
-        'view_type': 'graph',
+        'type': 'graph',
         'custom_arch': False,
         'subclass_model': lambda s, c, u, cxt=None: s._name,
     }
