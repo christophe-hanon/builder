@@ -89,8 +89,12 @@ class ModelImport(models.TransientModel):
                     'name': model.name,
                     'model': model.model,
                     'osv_memory': model.osv_memory,
-                    'inherit_model': self.set_inherited and model.model or False
+                    # 'inherit_model': self.set_inherited and model.model or False
                 })
+
+                if self.set_inherited:
+                    new_model['inherit_model_ids'] = [{'model_source': 'system', 'system_model_id': model.id, 'system_model_name': model.model}]
+
                 model_map[model.model] = new_model
 
         if self.create_fields:

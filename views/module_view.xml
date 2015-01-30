@@ -85,9 +85,10 @@
                                         <field name="id" invisible="1"/>
                                         <field name="special_states_field_id" invisible="1"/>
                                         <field name="model"/>
-                                        <field name="name"/>
+                                        <!--<field name="name"/>-->
                                         <field name="osv_memory"/>
                                         <field name="is_inherited"/>
+                                        <field name="inherit_type"/>
                                     </tree>
                                 </field>
                             </page>

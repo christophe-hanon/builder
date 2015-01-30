@@ -23,7 +23,8 @@ class IrModel(models.Model):
     inherit_model_ids = fields.One2many('builder.ir.model.inherit', 'model_id', 'Inherit')
     inherits_model_ids = fields.One2many('builder.ir.model.inherits', 'model_id', 'Inherits')
 
-    is_inherited = fields.Boolean('Inherited', compute='_compute_is_inherited_model', store=True)
+    is_inherited = fields.Boolean('Inherited', compute='_compute_inherited', store=True)
+    inherit_type = fields.Selection([('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')], 'Inherit Type', compute='_compute_inherited', store=True)
 
     #access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
 
@@ -62,9 +63,22 @@ class IrModel(models.Model):
     #         raise Warning(_('The model name is not valid.'))
 
     @api.one
-    @api.depends('inherit_model_ids')
-    def _compute_is_inherited_model(self):
+    @api.depends('inherit_model_ids', 'inherits_model_ids')
+    def _compute_inherited(self):
         self.is_inherited = len(self.inherit_model_ids) > 0
+
+        self.inherit_type = False
+        if len(self.inherit_model_ids):
+            if (len(self.inherit_model_ids) == 1) and ( self.inherit_model_ids[0].model_display == self.model ):
+                self.inherit_type = 'class'
+            else:
+                self.inherit_type = 'prototype'
+        else:
+            if len(self.inherits_model_ids):
+                self.inherit_type = 'delegation'
+
+        if len(self.inherit_model_ids) and len(self.inherits_model_ids):
+            self.inherit_type = 'mixed'
 
     @api.onchange('model')
     def on_model_change(self):
