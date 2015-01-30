@@ -23,6 +23,8 @@ class IrModel(models.Model):
     inherit_model_ids = fields.One2many('builder.ir.model.inherit', 'model_id', 'Inherit')
     inherits_model_ids = fields.One2many('builder.ir.model.inherits', 'model_id', 'Inherits')
 
+    is_inherited = fields.Boolean('Inherited', compute='_compute_is_inherited_model', store=True)
+
     #access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
 
     view_ids = fields.One2many('builder.ir.ui.view', 'model_id', 'Views')
@@ -58,6 +60,11 @@ class IrModel(models.Model):
     # def check_model_name(self):
     #     if not check_object_name(self.name):
     #         raise Warning(_('The model name is not valid.'))
+
+    @api.one
+    @api.depends('inherit_model_ids')
+    def _compute_is_inherited_model(self):
+        self.is_inherited = len(self.inherit_model_ids) > 0
 
     @api.onchange('model')
     def on_model_change(self):

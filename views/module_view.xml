@@ -87,6 +87,7 @@
                                         <field name="model"/>
                                         <field name="name"/>
                                         <field name="osv_memory"/>
+                                        <field name="is_inherited"/>
                                     </tree>
                                 </field>
                             </page>
