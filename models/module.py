@@ -94,6 +94,13 @@ class Module(models.Model):
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
 
     data_file_ids = fields.One2many('builder.data.file', 'module_id', 'Data Files')
+    snippet_bookmarklet_url = fields.Char('Link', compute='_compute_snippet_bookmarklet_url')
+
+    @api.one
+    @api.depends('name')
+    def _compute_snippet_bookmarklet_url(self):
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        self.snippet_bookmarklet_url = "{base}/builder/snippets/{db}/{module}/bookmarklet".format(base=base_url, module=self.name, db=self.env.cr.dbname)
 
     @api.one
     def dependencies_as_list(self):
