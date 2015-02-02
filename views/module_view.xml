@@ -73,59 +73,68 @@
                                     </form>
                                 </field>
                             </page>
-                            <page string="Models">
-                                <div class="oe_right oe_button_box" name="buttons">
-                                    <button class="oe_inline oe_stat_button" string="UML Diagram" name="action_diagram" type="object"
-                                            icon="fa-magic" context="{}"/>
-                                    <button class="oe_inline oe_stat_button" string="Import Models" name="%(act_builder_ir_model_import_wizard)d" type="action"
-                                            icon="fa-reply" context="{}"/>
-                                </div>
-                                <field name="model_ids" editable="bottom" context="{'default_module_id': active_id}">
-                                    <tree string="Models" context="{'default_module_id': active_id}">
-                                        <field name="id" invisible="1"/>
-                                        <field name="special_states_field_id" invisible="1"/>
-                                        <field name="model"/>
-                                        <!--<field name="name"/>-->
-                                        <field name="osv_memory"/>
-                                        <field name="is_inherited"/>
-                                        <field name="inherit_type"/>
-                                    </tree>
-                                </field>
+                            <page string="Data">
+                                <field name="data_file_ids" nolabel="1"/>
                             </page>
-                            <page string="Views">
-                                <div class="oe_right oe_button_box" name="buttons">
-                                    <button class="oe_inline oe_stat_button" string="Model View" name="%(act_builder_views_selector)d" type="action" icon="fa-plus" context="{'default_module_id': id}"/>
-                                </div>
-                                <field name="view_ids" nolabel="1">
-                                    <tree string="Views" create="1" edit="1" delete="1">
-                                        <field name="model_id"/>
-                                        <field name="type"/>
-                                        <field name="xml_id"/>
-                                        <field name="inherit_id"/>
-                                        <button name="action_open_view" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
-                                    </tree>
-                                </field>
+                            <page string="Backend">
+                                <notebook>
+                                    <page string="Models">
+                                        <div class="oe_right oe_button_box" name="buttons">
+                                            <button class="oe_inline oe_stat_button" string="UML Diagram" name="action_diagram" type="object"
+                                                    icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Import Models" name="%(act_builder_ir_model_import_wizard)d" type="action"
+                                                    icon="fa-reply" context="{}"/>
+                                        </div>
+                                        <field name="model_ids" editable="bottom" context="{'default_module_id': active_id}">
+                                            <tree string="Models" context="{'default_module_id': active_id}">
+                                                <field name="id" invisible="1"/>
+                                                <field name="special_states_field_id" invisible="1"/>
+                                                <field name="model"/>
+                                                <!--<field name="name"/>-->
+                                                <field name="osv_memory"/>
+                                                <field name="is_inherited"/>
+                                                <field name="inherit_type"/>
+                                            </tree>
+                                        </field>
+                                    </page>
+                                    <page string="Views">
+                                        <div class="oe_right oe_button_box" name="buttons">
+                                            <button class="oe_inline oe_stat_button" string="Model View" name="%(act_builder_views_selector)d" type="action" icon="fa-plus" context="{'default_module_id': id}"/>
+                                        </div>
+                                        <field name="view_ids" nolabel="1">
+                                            <tree string="Views" create="1" edit="1" delete="1">
+                                                <field name="model_id"/>
+                                                <field name="type"/>
+                                                <field name="xml_id"/>
+                                                <field name="inherit_id"/>
+                                                <button name="action_open_view" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
+                                            </tree>
+                                        </field>
+                                    </page>
+                                    <page string="Actions">
+                                        <field name="action_window_ids" nolabel="1" context="{'default_module_id': active_id}">
+                                            <tree string="Actions">
+                                                <field name="name"/>
+                                                <field name="model_id"/>
+                                                <field name="view_mode"/>
+                                                <field name="view_type"/>
+                                                <field name="target"/>
+                                            </tree>
+                                        </field>
+                                    </page>
+                                    <page string="Menus">
+                                        <field name="menu_ids" nolabel="1" context="{'default_module_id': active_id}">
+                                            <tree string="Menus">
+                                                <field name="sequence"/>
+                                                <field name="xml_id"/>
+                                                <field name="complete_name"/>
+                                            </tree>
+                                        </field>
+                                    </page>
+
+                                </notebook>
                             </page>
-                            <page string="Actions">
-                                <field name="action_window_ids" nolabel="1" context="{'default_module_id': active_id}">
-                                    <tree string="Actions">
-                                        <field name="name"/>
-                                        <field name="model_id"/>
-                                        <field name="view_mode"/>
-                                        <field name="view_type"/>
-                                        <field name="target"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Menus">
-                                <field name="menu_ids" nolabel="1" context="{'default_module_id': active_id}">
-                                    <tree string="Menus">
-                                        <field name="sequence"/>
-                                        <field name="xml_id"/>
-                                        <field name="complete_name"/>
-                                    </tree>
-                                </field>
-                            </page>
+
                         </notebook>
                     </sheet>
                 </form>
@@ -239,6 +248,41 @@
                 <p>You should try others search criteria.</p>
             </field>
         </record>
+
+
+        <!-- Data File -->
+        <record model="ir.ui.view" id="builder_data_file_tree_view">
+            <field name="name">builder.data.file.tree</field>
+            <field name="model">builder.data.file</field>
+            <field name="arch" type="xml">
+                <tree string="Data File">
+                    <field name="path"/>
+                    <field name="content_type"/>
+                    <field name="extension"/>
+                    <field name="size"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_data_file_form_view">
+            <field name="name">builder.data.file.form</field>
+            <field name="model">builder.data.file</field>
+            <field name="arch" type="xml">
+                <form string="Data File" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="path"/>
+                                <field name="content" filename="filename"/>
+                            </group>
+                            <group></group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Data File -->
 
     </data>
 </openerp>

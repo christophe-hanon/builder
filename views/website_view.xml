@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_ir_module_module_form_view_inherit">
+            <field name="name">builder.ir.module.module.form.inherit</field>
+            <field name="model">builder.ir.module.module</field>
+            <field name="inherit_id" ref="builder.module_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Website">
+                        <notebook class="ui-tabs-vertical">
+                            <page string="Pages">
+                                <field name="website_page_ids" />
+                            </page>
+                            <page string="Themes">
+
+                            </page>
+                            <page string="Snippets">
+
+                            </page>
+                            <page string="Assets">
+
+                            </page>
+                            <page string="Menus">
+
+                            </page>
+                        </notebook>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Page -->
+        <record model="ir.ui.view" id="builder_website_page_tree_view">
+            <field name="name">builder.website.page.tree</field>
+            <field name="model">builder.website.page</field>
+            <field name="arch" type="xml">
+                <tree string="Page">
+                    <field name="attr_id"/>
+                    <field name="attr_name"/>
+                    <field name="attr_inherit_id"/>
+                    <field name="attr_page"/>
+                    <field name="wrap_layout"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_website_page_form_view">
+            <field name="name">builder.website.page.form</field>
+            <field name="model">builder.website.page</field>
+            <field name="arch" type="xml">
+                <form string="Page" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="attr_name"/>
+                                <field name="attr_id"/>
+                            </group>
+                            <group>
+                                <field name="attr_page"/>
+                                <field name="attr_inherit_id"/>
+                                <field name="wrap_layout"/>
+                            </group>
+                        </group>
+                        <field name="content" nolabel="1" widget="ace" theme="tomorrow" mode="html" style="min-height:200px;width:90%"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- Page -->
+    </data>
+</openerp>

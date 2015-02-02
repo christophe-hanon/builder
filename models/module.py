@@ -90,6 +90,8 @@ class Module(models.Model):
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
 
+    data_file_ids = fields.One2many('builder.data.file', 'module_id', 'Data Files')
+
     @api.one
     def dependencies_as_list(self):
         return [str(dep.name) for dep in self.dependency_ids]
@@ -193,4 +195,18 @@ class Module(models.Model):
                 'diagram_view': True
             },
         }
+
+
+class DataFile(models.Model):
+    _name = 'builder.data.file'
+
+    _rec_name = 'path'
+
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
+    path = fields.Char(string='Path', required=True)
+    filename = fields.Char('Filename')
+    content_type = fields.Char('Content Type')
+    extension = fields.Char('Extension')
+    size = fields.Integer('Size')
+    content = fields.Binary('Content')
 
