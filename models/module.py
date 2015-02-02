@@ -1,5 +1,8 @@
+from base64 import decodestring
 import re
 from types import MethodType
+import os
+import mimetypes
 from openerp import models, fields, api
 from openerp.api import Environment
 from openerp.osv import fields as fields_old
@@ -205,8 +208,21 @@ class DataFile(models.Model):
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     path = fields.Char(string='Path', required=True)
     filename = fields.Char('Filename')
-    content_type = fields.Char('Content Type')
-    extension = fields.Char('Extension')
-    size = fields.Integer('Size')
+    content_type = fields.Char('Content Type', compute='_compute_stats', store=True)
+    extension = fields.Char('Extension', compute='_compute_stats', store=True)
+    size = fields.Integer('Size', compute='_compute_stats', store=True)
     content = fields.Binary('Content')
 
+    @api.one
+    @api.depends('content', 'filename')
+    def _compute_stats(self):
+        self.size = False
+        self.filename = False
+        self.extension = False
+        self.content_type = False
+        if self.content:
+            self.size = len(decodestring(self.content))
+
+        self.filename = os.path.basename(self.path)
+        self.extension = os.path.splitext(self.path)[1]
+        self.content_type = mimetypes.guess_type(self.filename)[0] if mimetypes.guess_type(self.filename) else False

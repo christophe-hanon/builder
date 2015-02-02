@@ -1,35 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="builder_ir_module_module_form_view_inherit">
-            <field name="name">builder.ir.module.module.form.inherit</field>
-            <field name="model">builder.ir.module.module</field>
-            <field name="inherit_id" ref="builder.module_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//notebook" position="inside">
-                    <page string="Website">
-                        <notebook class="ui-tabs-vertical">
-                            <page string="Pages">
-                                <field name="website_page_ids" />
-                            </page>
-                            <page string="Themes">
-
-                            </page>
-                            <page string="Snippets">
-
-                            </page>
-                            <page string="Assets">
-
-                            </page>
-                            <page string="Menus">
-
-                            </page>
-                        </notebook>
-                    </page>
-                </xpath>
-            </field>
-        </record>
-
         <!-- Page -->
         <record model="ir.ui.view" id="builder_website_page_tree_view">
             <field name="name">builder.website.page.tree</field>
@@ -68,5 +39,57 @@
             </field>
         </record>
         <!-- Page -->
+
+        <!-- Asset -->
+        <record model="ir.ui.view" id="builder_website_asset_tree_view">
+            <field name="name">builder.website.asset.tree</field>
+            <field name="model">builder.website.asset</field>
+            <field name="arch" type="xml">
+                <tree string="Asset">
+                    <field name="attr_id"/>
+                    <field name="attr_name"/>
+                    <field name="attr_active"/>
+                    <field name="attr_customize_show"/>
+                    <field name="attr_priority"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_website_asset_form_view">
+            <field name="name">builder.website.asset.form</field>
+            <field name="model">builder.website.asset</field>
+            <field name="arch" type="xml">
+                <form string="Asset" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="attr_id"/>
+                                <field name="attr_name"/>
+                                <field name="attr_active"/>
+                                <field name="attr_customize_show"/>
+                            </group>
+                            <group>
+                                <field name="attr_priority"/>
+                                <field name="type"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Files">
+                                <field name="item_ids" nolabel="1" mode="tree">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle" />
+                                        <field name="file_id" domain="[('extension', 'in', ['.js', '.css'])]"/>
+                                    </tree>
+                                </field>
+                                <!--<field nolabel="1" name="file_ids" domain="[('extension', 'in', ['.js', '.css'])]" />-->
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Asset -->
     </data>
 </openerp>

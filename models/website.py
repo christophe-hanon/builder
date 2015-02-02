@@ -19,7 +19,24 @@ class Assets(models.Model):
                                 ('website.assets_editor', 'website.assets_editor'),
                                 ('website.assets_frontend', 'website.assets_frontend'),
                                 ('website.assets_backend', 'website.assets_backend'),
-    ], 'Type')
+    ], 'Type', required=True)
+
+    # file_ids = fields.Many2many('builder.data.file', 'builder_website_asset_item', 'asset_id', 'file_id', 'Resources')
+    item_ids = fields.One2many('builder.website.asset.item', 'asset_id', 'Items')
+
+    @api.onchange('type')
+    def onchange_type(self):
+        if self.type in ['website.theme']:
+            self.attr_customize_show = True
+            self.attr_customize_show = False
+
+
+class AssetItem(models.Model):
+    _name = 'builder.website.asset.item'
+
+    sequence = fields.Integer('Sequence')
+    file_id = fields.Many2one('builder.data.file', 'File', ondelete='CASCADE')
+    asset_id = fields.Many2one('builder.website.asset', 'Asset', ondelete='CASCADE')
 
 
 class Pages(models.Model):
