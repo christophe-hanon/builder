@@ -33,7 +33,8 @@
                                 <field name="wrap_layout"/>
                             </group>
                         </group>
-                        <field name="content" nolabel="1" widget="ace" theme="tomorrow" mode="html" style="min-height:200px;width:90%"/>
+                        <field name="content" nolabel="1" widget="ace" theme="tomorrow" mode="html"
+                               style="min-height:200px;width:90%"/>
                     </sheet>
                 </form>
             </field>
@@ -78,7 +79,7 @@
                             <page string="Files">
                                 <field name="item_ids" nolabel="1" mode="tree">
                                     <tree editable="bottom">
-                                        <field name="sequence" widget="handle" />
+                                        <field name="sequence" widget="handle"/>
                                         <field name="file_id" domain="[('extension', 'in', ['.js', '.css'])]"/>
                                     </tree>
                                 </field>
@@ -91,5 +92,49 @@
         </record>
 
         <!-- Asset -->
+
+        <!-- Theme -->
+        <record model="ir.ui.view" id="builder_website_theme_tree_view">
+            <field name="name">builder.website.theme.tree</field>
+            <field name="model">builder.website.theme</field>
+            <field name="arch" type="xml">
+                <tree string="Theme">
+                    <field name="attr_id"/>
+                    <field name="attr_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_website_theme_form_view">
+            <field name="name">builder.website.theme.form</field>
+            <field name="model">builder.website.theme</field>
+            <field name="arch" type="xml">
+                <form string="Theme" version="7.0">
+                    <sheet>
+                        <div>
+                            <field name="image" widget="image"  class="oe_avatar oe_left"/>
+                        </div>
+                        <div class="oe_title">
+                            <label for="attr_name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="attr_name" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="module_id" invisible="1"/>
+                                <field name="attr_id"/>
+                                <field name="asset_id" domain="[('module_id', '=', module_id)]"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <field name="attr_description" nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Theme -->
     </data>
 </openerp>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_data_import_wizard_form_view">
+            <field name="name">builder.data.import.wizard.form</field>
+            <field name="model">builder.data.import.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Module Import">
+                    <group>
+                        <group>
+                            <field name="path_prefix" />
+                            <field name="file" />
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_import" string="Import Zip" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_data_import_wizard">
+            <field name="name">Data Import</field>
+            <field name="res_model">builder.data.import.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

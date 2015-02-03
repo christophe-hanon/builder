@@ -63,12 +63,11 @@ class Theme(models.Model):
     _rec_name = 'attr_name'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
-    attr_name = fields.Char(string='Name')
-    attr_description = fields.Char('Description')
-    attr_id = fields.Char('XML ID')
-    asset_ref = fields.Char('Asset')
-    asset_id = fields.Many2one('builder.website.asset', 'Asset')
-    asset_selection_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Type', required=True)
+    attr_name = fields.Char(string='Name', required=True)
+    attr_description = fields.Html('Description')
+    attr_id = fields.Char('XML ID', required=True)
+    asset_id = fields.Many2one('builder.website.asset', 'Asset', required=True)
+    image = fields.Binary(string='Image')
 
 
 class Menu(models.Model):

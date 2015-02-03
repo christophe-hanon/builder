@@ -55,6 +55,7 @@ This module aims to help in the development of new modules
 
         'views/website_view.xml',
 
+        'wizard/module_data_import_view.xml',
         'wizard/module_import_view.xml',
         'wizard/model_import_view.xml',
         'wizard/model_export_view.xml',
