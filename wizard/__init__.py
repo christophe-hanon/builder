@@ -7,4 +7,5 @@ from . import model_lookup_wizard
 from . import menu_lookup_wizard
 from . import action_lookup_wizard
 from . import module_data_import
+from . import website_asset_bulk_add
 # from . import model_view_wizard

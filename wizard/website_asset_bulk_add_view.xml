@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_website_asset_data_wizard_form_view">
+            <field name="name">builder.website.asset.data.wizard.form</field>
+            <field name="model">builder.website.asset.data.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Data Select">
+                    <group>
+                        <field name="module_id" invisible="1"/>
+                        <field name="data_ids" domain="[('module_id', '=', module_id), ('extension', 'in', ['.js', '.css'])]"/>
+                    </group>
+                    <footer>
+                        <button name="action_import" string="Import" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_website_asset_data_wizard">
+            <field name="name">Data Select</field>
+            <field name="res_model">builder.website.asset.data.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

@@ -42,6 +42,7 @@ This module aims to help in the development of new modules
         'wizard/model_lookup_wizard_view.xml',
         'wizard/menu_lookup_wizard_view.xml',
         'wizard/action_lookup_wizard_view.xml',
+        'wizard/website_asset_bulk_add_view.xml',
 
         'views/views/base_view.xml',
         'views/views/calendar_view.xml',
@@ -65,6 +66,8 @@ This module aims to help in the development of new modules
         'views/action_view.xml',
         'views/menu.xml',
         'views/backend_assets.xml',
+        'views/designer/website_page_designer.xml',
+        'views/designer/designer_snippets.xml',
     ],
     'test': [
         'test/test_demo.yml',

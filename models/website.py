@@ -54,8 +54,18 @@ class Pages(models.Model):
         ('website.layout', 'website.layout'),
         ('web.login_layout', 'web.login_layout'),
     ], default='website.layout')
-    content = fields.Text('Body')
+    content = fields.Html('Body', sanitize=False)
 
+    def action_edit_html(self, cr, uid, ids, context=None):
+        if not len(ids) == 1:
+            raise ValueError('One and only one ID allowed for this action')
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        return {
+            'name': _('Edit Template'),
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
+        }
 
 class Theme(models.Model):
     _name = 'builder.website.theme'
@@ -80,7 +90,6 @@ class Menu(models.Model):
     name = fields.Char(string='Name', required=True)
     url = fields.Char("URL")
     page_id = fields.Many2one('builder.website.page')
-    target_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Type', required=True)
     parent_id = fields.Many2one('builder.website.menu', 'Parent')
 
 
