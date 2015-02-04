@@ -39,7 +39,7 @@
                                     </group>
                                 </group>
                                 <field name="description_html" class='oe_styling_v8'/>
-
+                                <button string="Edit in Website" name="action_edit_description_html" type="object" class="oe_link"/>
                             </page>
                             <page string="Technical Data">
                                 <group col="4">
@@ -141,6 +141,7 @@
                             <page string="Website">
                                 <notebook class="ui-tabs-vertical">
                                     <page string="Pages">
+                                        <button string="Import Page" name="%(act_builder_website_page_import_wizard)d" type="action" class="oe_link" context="{'default_module_id': id}"/>
                                         <field name="website_page_ids" context="{'default_module_id': active_id}"/>
                                     </page>
                                     <page string="Themes">

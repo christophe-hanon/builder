@@ -95,24 +95,28 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
 {% include 'builder.python_file_header.py' ignore missing %}
 # noinspection PyStatementEffect
 {
-    "name" : "{{module.name}}",
+    "name" : "{{module.shortdesc}}",
 {% if module.installed_version %}    "version" : "{{module.installed_version}}",{% endif %}
 {% if module.author %}    "author" : "{{module.author}}",{% endif %}
 {% if module.website %}    "website" : "{{module.website}}",{% endif %}
 {% if module.category_id %}    "category" : "{{module.category_id}}",{% endif %}
     "licence" : "{{module.license}}",
     "description": """
-                    {{module.shortdesc}}
-                    ====================================
-                    {{module.summary}}
+{{module.shortdesc}}
+====================================
+{{module.summary}}
                     """,
     "depends" : {{ module.dependencies_as_list()[0] }},
     "data" : [
-                'security/ir.model.access.csv',
-                'views/menu.xml',
-                'views/views.xml',
+                {% for item in data -%}
+                '{{item}}',
+                {% endfor  -%}
             ],
-    "demo" : [ ],
+    "demo" : [
+            {%- for item in demo -%}
+                '{{item}}',
+            {%- endfor  -%}
+    ],
     "installable": True,
     "auto_install": {{module.auto_install}},
     "application": {{module.application}},
@@ -304,5 +308,102 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
 {%- endfor %}
 </search>]]></field>
         </record>
+        
+        <record model="document.template" id="builder_website_assets_xml">
+                    <field name="name">builder.website_assets.xml</field>
+                    <field name="title">builder.website_assets.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+    {% for asset in assets %}
+        <template id="{{module.name}}.{{asset.attr_id}}" name="{{asset.attr_name}}" inherit_id="{{asset.type}}" {% if asset.type == 'website.theme' %} {% if not asset.attr_active %}active="False"{% endif %} customize_show="{{asset.attr_customize_show}}" {% endif %}>
+            {% if asset.type == 'website.theme' -%}
+            <xpath expr="//link[@id='bootstrap_css']" position="after">
+            {% else -%}
+            <xpath expr="." position="inside">
+            {% endif -%}
+                {% for item in asset.item_ids -%}
+                    {% if item.file_id.extension == '.css' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.js' -%}
+                        <script type="text/javascript" src="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% endif -%}
+                {% endfor -%}
+            </xpath>
+        </template>
+    {% endfor %}
+{% endblock %}
+                    ]]></field>
+                </record>
+
+        <record model="document.template" id="builder_website_pages_xml">
+                    <field name="name">builder.website_pages.xml</field>
+                    <field name="title">builder.website_pages.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+    {% for page in pages %}
+        <template id="website.{{page.attr_id}}" name="{{page.attr_name}}" page="True" {% if page.priority %}priority="{{page.priority}}" {% endif %}>
+            <t t-call="{{page.wrap_layout}}">
+                <div id="wrap" class="oe_structure oe_empty">
+                    {{page.content}}
+                </div>
+            </t>
+        </template>
+
+    {% endfor %}
+
+    {% for menu in menus %}
+        <record id="website_menu_{{menu.page_id.attr_id}}" model="website.menu">
+            <field name="name">{{menu.name}}</field>
+            <field name="url">{{menu.url}}</field>
+            {% if menu.parent_id %}
+                <field name="parent_id" ref="{{module.name}}.website_menu_{{menu.parent_id.page_id.attr_id}}"/>
+            {% else %}
+                <field name="parent_id" ref="website.main_menu"/>
+            {% endif %}
+            <field name="sequence" type="int">{{menu.sequence}}</field>
+        </record>
+    {% endfor %}
+{% endblock %}
+                    ]]></field>
+                </record>
+
+        <record model="document.template" id="builder_website_themes_xml">
+                    <field name="name">builder.website_themes.xml</field>
+                    <field name="title">builder.website_themes.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+
+    <template id="themes" inherit_id="website.themes" name="Themes">
+            <xpath expr="//div[@id='themes-list']" position="inside">
+                {% for theme in themes %}
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        {% if theme.image %}
+                        <div class="image">
+                            <img class="img-responsive" src="/{{module.name}}/static/themes/{{theme.asset_id.attr_id}}.png" alt="{{theme.attr_name}}" style="width: 360px"/>
+                        </div>
+                        {% endif %}
+                        <div class="options">
+                            <h3>{{theme.attr_name}}</h3>
+                            <p>{{theme.attr_description}}</p>
+                            <a class="btn btn-info" href="/website/theme_change?theme_id={{module.name}}.{{theme.asset_id.attr_id}}">Apply</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </xpath>
+        </template>
+{% endblock %}
+                    ]]></field>
+                </record>
     </data>
 </openerp>

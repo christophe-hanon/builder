@@ -1,11 +1,10 @@
+__author__ = 'one'
+
 import StringIO
 from base64 import decodestring, encodestring
 import zipfile
-import os
-
-__author__ = 'one'
-
 from openerp import models, api, fields, _
+import posixpath
 
 
 class ModuleImport(models.TransientModel):
@@ -23,11 +22,10 @@ class ModuleImport(models.TransientModel):
 
         module = self.env[self.env.context.get('active_model')].search([('id', '=', self.env.context.get('active_id'))])
 
-
         for zitem in zfile.filelist:
             if not zitem.orig_filename.endswith('/'):
                 result = module.data_file_ids.create({
-                    'path': os.path.join(self.path_prefix or '', zitem.orig_filename),
+                    'path': posixpath.join('/', self.path_prefix or '', zitem.orig_filename),
                     'content': encodestring(zfile.read(zitem)),
                     'module_id': self.env.context.get('active_id')
                 })

@@ -40,7 +40,7 @@ class Module(models.Model):
     shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
-    description_html = fields.Html(string='Description HTML')
+    description_html = fields.Html(string='Description HTML', sanitize=False)
     author = fields.Char("Author", required=True)
     maintainer = fields.Char('Maintainer')
     contributors = fields.Text('Contributors')
@@ -204,6 +204,17 @@ class Module(models.Model):
                 'default_module_id': self.id,
                 'diagram_view': True
             },
+        }
+
+    def action_edit_description_html(self, cr, uid, ids, context=None):
+        if not len(ids) == 1:
+            raise ValueError('One and only one ID allowed for this action')
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        return {
+            'name': _('Edit Template'),
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
         }
 
 

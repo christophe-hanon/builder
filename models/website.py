@@ -13,7 +13,7 @@ class Assets(models.Model):
     attr_active = fields.Boolean('Active')
     attr_customize_show = fields.Boolean('Customize Show')
     attr_inherit_id = fields.Char('Inherit Asset')
-    attr_priority = fields.Integer('Priority')
+    attr_priority = fields.Integer('Priority', default=10)
     type = fields.Selection([
                                 ('website.theme', 'website.theme'),
                                 ('website.assets_editor', 'website.assets_editor'),
@@ -34,7 +34,7 @@ class Assets(models.Model):
 class AssetItem(models.Model):
     _name = 'builder.website.asset.item'
 
-    sequence = fields.Integer('Sequence')
+    sequence = fields.Integer('Sequence', default=10)
     file_id = fields.Many2one('builder.data.file', 'File', ondelete='CASCADE')
     asset_id = fields.Many2one('builder.website.asset', 'Asset', ondelete='CASCADE')
 
@@ -48,7 +48,7 @@ class Pages(models.Model):
     attr_name = fields.Char(string='Name', required=True)
     attr_id = fields.Char('XML ID', required=True)
     attr_inherit_id = fields.Char('Inherit Asset')
-    attr_priority = fields.Integer('Priority')
+    attr_priority = fields.Integer('Priority', default=10)
     attr_page = fields.Boolean('Page', default=True)
     wrap_layout = fields.Selection([
         ('website.layout', 'website.layout'),
@@ -75,7 +75,6 @@ class Theme(models.Model):
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     attr_name = fields.Char(string='Name', required=True)
     attr_description = fields.Html('Description')
-    attr_id = fields.Char('XML ID', required=True)
     asset_id = fields.Many2one('builder.website.asset', 'Asset', required=True)
     image = fields.Binary(string='Image')
 
@@ -86,12 +85,17 @@ class Menu(models.Model):
     _order = 'sequence, id'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
-    sequence = fields.Integer('Sequence')
+    sequence = fields.Integer('Sequence', default=60)
     name = fields.Char(string='Name', required=True)
     url = fields.Char("URL")
-    page_id = fields.Many2one('builder.website.page')
+    page_id = fields.Many2one('builder.website.page', 'Page', required=True)
     parent_id = fields.Many2one('builder.website.menu', 'Parent')
 
+    @api.onchange('page_id')
+    def onchange_page_id(self):
+        if not self.name and self.page_id:
+            self.name = self.page_id.attr_name
+            self.url = '/page/website.' + self.page_id.attr_id
 
 class Module(models.Model):
     _inherit = 'builder.ir.module.module'
