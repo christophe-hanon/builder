@@ -145,6 +145,7 @@
                                     </page>
                                     <page string="Snippets">
                                         <field name="snippet_bookmarklet_url" widget="url" readonly="1" />
+                                        <field name="website_snippet_ids" />
                                     </page>
                                     <page string="Assets">
                                         <field nolabel="1" name="website_asset_ids" />

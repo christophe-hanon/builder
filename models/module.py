@@ -1,5 +1,6 @@
 from base64 import decodestring
 import re
+from string import Template
 from types import MethodType
 import os
 import mimetypes
@@ -100,7 +101,21 @@ class Module(models.Model):
     @api.depends('name')
     def _compute_snippet_bookmarklet_url(self):
         base_url = self.env['ir.config_parameter'].get_param('web.base.url')
-        self.snippet_bookmarklet_url = "{base}/builder/snippets/{db}/{module}/bookmarklet".format(base=base_url, module=self.name, db=self.env.cr.dbname)
+        link = """
+javascript:(function(){
+    function script(url, callback){
+        var new_script = document.createElement('script');
+        new_script.src = url + '?__stamp=' + Math.random();
+        new_script.onload = new_script.onreadystatechange = callback;
+        document.getElementsByTagName('head')[0].appendChild(new_script);
+        new_script.type='text/javascript';
+    };
+    window.odooUrl = '$base_url';
+    window.newSnippetUrl = '$base_url/builder/$module/snippet/add';
+    script('$base_url/builder/static/src/js/snippet_loader.js');
+})();
+        """
+        self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name, db=self.env.cr.dbname)
 
     @api.one
     def dependencies_as_list(self):

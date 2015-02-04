@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim:fdn=3:
+-->
+<openerp>
+    <data>
+
+
+        <template id="snippet_form" name="Snippet Form">&lt;!DOCTYPE html&gt;
+            <html>
+                <head>
+                    <title>Snippet</title>
+
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                    <meta http-equiv="content-type" content="text/html, charset=utf-8"/>
+
+                    <meta name="viewport" content=" width=1024, user-scalable=no"/>
+                    <link rel="shortcut icon" href="/web/static/src/img/favicon.ico" type="image/x-icon"/>
+                    <link href="/web/static/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+                    <link href="/builder/static/src/css/snippet_form.css" media="all" rel="stylesheet"/>
+
+
+                </head>
+                <body>
+                    <form id="form-snippet" class="form-snippet" action="save" method="POST">
+                        <h2 class="form-snippet-heading">Snippet HTML</h2>
+                        <input id="name" name="name" type="text" placeholder="Name" class="form-control" />
+                        <input id="url" name="url" type="hidden" class="form-control" />
+                        <input id="xpath" name="xpath" type="hidden" class="form-control" />
+                        <textarea rows="6" id="html" name="html"></textarea>
+                        <label class="checkbox">
+                            <input id="copy-css" type="checkbox" value="copy-css" checked="checked"/>
+                            Copy CSS
+                        </label>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+                    </form>
+                    <script type="text/javascript" src="/web/static/lib/jquery/jquery.js"/>
+                    <script type="text/javascript" src="/builder/static/src/js/snippet_form.js"/>
+                </body>
+            </html>
+        </template>
+
+    </data>
+</openerp>

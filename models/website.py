@@ -1,3 +1,6 @@
+import random
+from jinja2 import Template
+
 __author__ = 'one'
 
 from openerp import models, fields, api, _
@@ -85,6 +88,86 @@ class Menu(models.Model):
     parent_id = fields.Many2one('builder.website.menu', 'Parent')
 
 
+SNIPPET_TEMPLATE = Template("""
+    <xpath expr="//div[@id='snippet_{{ category }}']" position="inside">
+        <!-- begin snippet declaration -->
+        <div>
+
+            <div class="oe_snippet_thumbnail">
+                <span class="oe_snippet_thumbnail_img" src="data:base64,{{ image }}"/>
+                <span class="oe_snippet_thumbnail_title">{{ name }}</span>
+            </div>
+
+            <div class="oe_snippet_body {{ snippet_id }}">
+                {{ content }}
+            </div>
+        </div>
+        <!-- end of snippet declaration -->
+
+
+    </xpath>
+
+    <xpath expr="//div[@id='snippet_options']" position="inside">
+        <div data-snippet-option-id='{{ snippet_id }}'
+             data-selector=".{{ snippet_id }}"
+             data-selector-siblings="{{ siblings|default('') }}"
+             data-selector-children="{{ children|default('') }}"
+             >
+        </div>
+    </xpath>
+""")
+
+
+class WebsiteSnippet(models.Model):
+    _name = 'builder.website.snippet'
+
+    name = fields.Char('Name', required=True)
+
+    sequence = fields.Integer('Sequence')
+    category = fields.Selection(
+        selection=[
+            ('structure', 'Structure'),
+            ('content', 'Content'),
+            ('features', 'Features'),
+            ('effects', 'Effects'),
+            ('custom', 'Custom'),
+        ],
+        string='Category',
+        required=True
+    )
+
+    is_custom_category = fields.Boolean('Is Custom Category', compute='_compute_is_custom_category')
+
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', required=True)
+
+    # Source
+    source_url = fields.Char('Source URL', readonly=True)
+    xpath = fields.Char('XPath', readonly=True)
+
+    # Snippet
+    snippet_id = fields.Char('ID', compute='_compute_snippet_id', store=True, readonly=False, required=True)
+    content = fields.Html('Content', required=True)
+    image = fields.Binary('Image')
+
+    # Options
+    siblings = fields.Char('Allowed Siblings')
+    children = fields.Char('Allowed Children')
+
+    _defaults = {
+        'category': 'custom'
+    }
+
+    @api.one
+    @api.depends('name')
+    def _compute_snippet_id(self):
+        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_')
+
+    @api.one
+    @api.depends('category')
+    def _compute_is_custom_category(self):
+        self.is_custom_category = self.category == 'custom'
+
+
 class Module(models.Model):
     _inherit = 'builder.ir.module.module'
 
@@ -92,3 +175,9 @@ class Module(models.Model):
     website_asset_ids = fields.One2many('builder.website.asset', 'module_id', 'Assets')
     website_theme_ids = fields.One2many('builder.website.theme', 'module_id', 'Themes')
     website_page_ids = fields.One2many('builder.website.page', 'module_id', 'Pages')
+    website_snippet_ids = fields.One2many('builder.website.snippet', 'module_id', 'Snippets')
+
+
+
+
+
