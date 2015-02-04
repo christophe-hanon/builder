@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!-- Template Choice page -->
-        <template id="page_designer" name="Page Designer">
+        <template id="builder.page_designer" name="Page Designer">
             <t t-call="website.layout">
                 <div id="wrap" class="container" t-ignore="True">
                     <div id="page_designer" class="mb32">
@@ -22,15 +22,15 @@
             <t t-set="website.footer"></t>
         </template>
 
-        <template id="page_designer_builder_website_page_content">
+        <template id="builder.page_designer_builder_website_page_content">
             <div t-field="record.content" id="page_content" class="o_page_content"/>
         </template>
 
-        <template id="page_designer_builder_ir_module_module_description_html">
+        <template id="builder.page_designer_builder_ir_module_module_description_html">
             <div t-field="record.description_html" id="page_content" class="o_page_content"/>
         </template>
 
-        <template id="module_description_designer" name="Page Designer">
+        <template id="builder.module_description_designer" name="Page Designer">
             <t t-call="website.layout">
                 <div id="wrap" class="container" t-ignore="True">
                     <div id="page_designer" class="mb32">

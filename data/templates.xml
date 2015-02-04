@@ -120,8 +120,7 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
     "installable": True,
     "auto_install": {{module.auto_install}},
     "application": {{module.application}},
-}
-                    ]]></field>
+}]]></field>
         </record>
         <record model="document.template" id="builder_python_file_header_py">
                     <field name="name">builder.python_file_header.py</field>
@@ -207,8 +206,7 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
             {% endfor -%}
         </sheet>
     </form>
-{% endmacro -%}
-                    ]]></field>
+{% endmacro -%}]]></field>
                 </record>
 
         <record model="document.template" id="builder_view_arch_gantt">
@@ -334,8 +332,7 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
             </xpath>
         </template>
     {% endfor %}
-{% endblock %}
-                    ]]></field>
+{% endblock %}]]></field>
                 </record>
 
         <record model="document.template" id="builder_website_pages_xml">
@@ -369,8 +366,7 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
             <field name="sequence" type="int">{{menu.sequence}}</field>
         </record>
     {% endfor %}
-{% endblock %}
-                    ]]></field>
+{% endblock %}]]></field>
                 </record>
 
         <record model="document.template" id="builder_website_themes_xml">
@@ -402,8 +398,7 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
                 {% endfor %}
             </xpath>
         </template>
-{% endblock %}
-                    ]]></field>
+{% endblock %}]]></field>
                 </record>
     </data>
 </openerp>

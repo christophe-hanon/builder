@@ -3,13 +3,11 @@ import re
 from types import MethodType
 import os
 import mimetypes
+
 from openerp import models, fields, api
-from openerp.api import Environment
-from openerp.osv import fields as fields_old
-from openerp import tools
-from openerp.osv import expression
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
+
 
 __author__ = 'one'
 
