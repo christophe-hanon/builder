@@ -31,9 +31,11 @@
                                 <field name="attr_page"/>
                                 <field name="attr_inherit_id"/>
                                 <field name="wrap_layout"/>
+                                <button string="Edit in Website" name="action_edit_html" type="object" class="oe_link"/>
                             </group>
                         </group>
-                        <field name="content" nolabel="1" widget="ace" theme="tomorrow" mode="html" style="min-height:200px;width:90%"/>
+                        <field name="content" nolabel="1" widget="ace" theme="tomorrow" mode="html"
+                               style="min-height:200px;width:90%"/>
                     </sheet>
                 </form>
             </field>
@@ -64,6 +66,7 @@
                     <sheet>
                         <group>
                             <group>
+                                <field name="module_id" invisible="1"/>
                                 <field name="attr_id"/>
                                 <field name="attr_name"/>
                                 <field name="attr_active"/>
@@ -76,9 +79,10 @@
                         </group>
                         <notebook>
                             <page string="Files">
+                                <button string="Bulk Import" name="%(act_builder_website_asset_data_wizard)d" type="action" class="oe_link" context="{'default_module_id': module_id, 'default_asset_id': context.get('active_id')}"/>
                                 <field name="item_ids" nolabel="1" mode="tree">
                                     <tree editable="bottom">
-                                        <field name="sequence" widget="handle" />
+                                        <field name="sequence" widget="handle"/>
                                         <field name="file_id" domain="[('extension', 'in', ['.js', '.css'])]"/>
                                     </tree>
                                 </field>
@@ -91,5 +95,86 @@
         </record>
 
         <!-- Asset -->
+
+        <!-- Theme -->
+        <record model="ir.ui.view" id="builder_website_theme_tree_view">
+            <field name="name">builder.website.theme.tree</field>
+            <field name="model">builder.website.theme</field>
+            <field name="arch" type="xml">
+                <tree string="Theme">
+                    <field name="attr_name"/>
+                    <field name="asset_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_website_theme_form_view">
+            <field name="name">builder.website.theme.form</field>
+            <field name="model">builder.website.theme</field>
+            <field name="arch" type="xml">
+                <form string="Theme" version="7.0">
+                    <sheet>
+                        <div>
+                            <field name="image" widget="image"  class="oe_avatar oe_left"/>
+                        </div>
+                        <div class="oe_title">
+                            <label for="attr_name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="attr_name" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="module_id" invisible="1"/>
+                                <field name="asset_id" domain="[('module_id', '=', module_id)]"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <field name="attr_description" nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Theme -->
+
+        <!-- Menu -->
+        <record model="ir.ui.view" id="builder_website_menu_tree_view">
+            <field name="name">builder.website.menu.tree</field>
+            <field name="model">builder.website.menu</field>
+            <field name="arch" type="xml">
+                <tree string="Menu">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="page_id"/>
+                    <field name="url"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_website_menu_form_view">
+            <field name="name">builder.website.menu.form</field>
+            <field name="model">builder.website.menu</field>
+            <field name="arch" type="xml">
+                <form string="Menu" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="module_id" invisible="1"/>
+                                <field name="parent_id" domain="[('module_id', '=', module_id)]"/>
+                            </group>
+                            <group>
+                                <field name="page_id" domain="[('module_id', '=', module_id)]"/>
+                                <field name="url"/>
+                                <field name="sequence" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- Menu -->
     </data>
 </openerp>

@@ -4,13 +4,11 @@ from string import Template
 from types import MethodType
 import os
 import mimetypes
+
 from openerp import models, fields, api
-from openerp.api import Environment
-from openerp.osv import fields as fields_old
-from openerp import tools
-from openerp.osv import expression
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
+
 
 __author__ = 'one'
 
@@ -41,7 +39,7 @@ class Module(models.Model):
     shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
-    description_html = fields.Html(string='Description HTML')
+    description_html = fields.Html(string='Description HTML', sanitize=False)
     author = fields.Char("Author", required=True)
     maintainer = fields.Char('Maintainer')
     contributors = fields.Text('Contributors')
@@ -219,6 +217,17 @@ javascript:(function(){
                 'default_module_id': self.id,
                 'diagram_view': True
             },
+        }
+
+    def action_edit_description_html(self, cr, uid, ids, context=None):
+        if not len(ids) == 1:
+            raise ValueError('One and only one ID allowed for this action')
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        return {
+            'name': _('Edit Template'),
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
         }
 
 

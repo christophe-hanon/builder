@@ -16,7 +16,7 @@ class Assets(models.Model):
     attr_active = fields.Boolean('Active')
     attr_customize_show = fields.Boolean('Customize Show')
     attr_inherit_id = fields.Char('Inherit Asset')
-    attr_priority = fields.Integer('Priority')
+    attr_priority = fields.Integer('Priority', default=10)
     type = fields.Selection([
                                 ('website.theme', 'website.theme'),
                                 ('website.assets_editor', 'website.assets_editor'),
@@ -37,7 +37,7 @@ class Assets(models.Model):
 class AssetItem(models.Model):
     _name = 'builder.website.asset.item'
 
-    sequence = fields.Integer('Sequence')
+    sequence = fields.Integer('Sequence', default=10)
     file_id = fields.Many2one('builder.data.file', 'File', ondelete='CASCADE')
     asset_id = fields.Many2one('builder.website.asset', 'Asset', ondelete='CASCADE')
 
@@ -51,14 +51,24 @@ class Pages(models.Model):
     attr_name = fields.Char(string='Name', required=True)
     attr_id = fields.Char('XML ID', required=True)
     attr_inherit_id = fields.Char('Inherit Asset')
-    attr_priority = fields.Integer('Priority')
+    attr_priority = fields.Integer('Priority', default=10)
     attr_page = fields.Boolean('Page', default=True)
     wrap_layout = fields.Selection([
         ('website.layout', 'website.layout'),
         ('web.login_layout', 'web.login_layout'),
     ], default='website.layout')
-    content = fields.Text('Body')
+    content = fields.Html('Body', sanitize=False)
 
+    def action_edit_html(self, cr, uid, ids, context=None):
+        if not len(ids) == 1:
+            raise ValueError('One and only one ID allowed for this action')
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        return {
+            'name': _('Edit Template'),
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
+        }
 
 class Theme(models.Model):
     _name = 'builder.website.theme'
@@ -66,12 +76,10 @@ class Theme(models.Model):
     _rec_name = 'attr_name'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
-    attr_name = fields.Char(string='Name')
-    attr_description = fields.Char('Description')
-    attr_id = fields.Char('XML ID')
-    asset_ref = fields.Char('Asset')
-    asset_id = fields.Many2one('builder.website.asset', 'Asset')
-    asset_selection_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Type', required=True)
+    attr_name = fields.Char(string='Name', required=True)
+    attr_description = fields.Html('Description')
+    asset_id = fields.Many2one('builder.website.asset', 'Asset', required=True)
+    image = fields.Binary(string='Image')
 
 
 class Menu(models.Model):
@@ -80,13 +88,17 @@ class Menu(models.Model):
     _order = 'sequence, id'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
-    sequence = fields.Integer('Sequence')
+    sequence = fields.Integer('Sequence', default=60)
     name = fields.Char(string='Name', required=True)
     url = fields.Char("URL")
-    page_id = fields.Many2one('builder.website.page')
-    target_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Type', required=True)
+    page_id = fields.Many2one('builder.website.page', 'Page', required=True)
     parent_id = fields.Many2one('builder.website.menu', 'Parent')
 
+    @api.onchange('page_id')
+    def onchange_page_id(self):
+        if not self.name and self.page_id:
+            self.name = self.page_id.attr_name
+            self.url = '/page/website.' + self.page_id.attr_id
 
 SNIPPET_TEMPLATE = Template("""
     <xpath expr="//div[@id='snippet_{{ category }}']" position="inside">
