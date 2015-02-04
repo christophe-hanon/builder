@@ -3,7 +3,10 @@ import re
 from types import MethodType
 import os
 import mimetypes
-
+from StringIO import StringIO
+import zipfile
+import base64
+import posixpath
 from openerp import models, fields, api
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
@@ -214,6 +217,109 @@ class Module(models.Model):
             'url': url,
             'target': 'self',
         }
+
+    @api.multi
+    def get_zipped_module(self):
+
+        def write_template(template_obj, zf, fname, template, d, **params):
+            i = zipfile.ZipInfo(fname)
+            i.compress_type = zipfile.ZIP_DEFLATED
+            i.external_attr = 2175008768
+            zf.writestr(i, template_obj.render_template(template, d, **params))
+
+
+        templates = self.env['document.template']
+
+        functions = {
+            'filters': {
+                'dot2dashed': lambda x: x.replace('.', '_'),
+                'dot2name': lambda x: ''.join([s.capitalize() for s in x.split('.')]),
+                'cleargroup': lambda x: x.replace('.', '_'),
+            },
+        }
+
+        filename = "{name}.{ext}".format(name=self.name, ext="zip")
+        zfileIO = StringIO()
+
+        zfile = zipfile.ZipFile(zfileIO, 'w')
+
+        has_models = len(self.model_ids)
+        has_data = len(self.data_file_ids)
+        has_website = len(self.website_theme_ids) \
+                      or len(self.website_asset_ids) \
+                      or len(self.website_menu_ids) \
+                      or len(self.website_page_ids)
+
+        module_data = []
+
+        packages = ['models'] if has_models else []
+        write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py',
+                            {'packages': packages}, **functions)
+        if has_models:
+            module_data.append(self.name + '/views/menu.xml')
+
+            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self},
+                                **functions)
+
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {},
+                                **functions)
+            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py',
+                                {'models': self.model_ids},
+                                **functions)
+
+        if self.icon_image:
+            info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 2175008768
+            zfile.writestr(info, base64.decodestring(self.icon_image))
+
+        if self.description_html:
+            info = zipfile.ZipInfo(self.name + '/static/description/index.html')
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 2175008768
+            zfile.writestr(info, self.description_html)
+
+
+        #website stuff
+        for data in self.data_file_ids:
+            info = zipfile.ZipInfo(posixpath.join(self.name, data.path.strip('/')))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 2175008768
+            zfile.writestr(info, base64.decodestring(data.content))
+
+        for theme in self.website_theme_ids:
+            if theme.image:
+                info = zipfile.ZipInfo(self.name + '/static/themes/' + theme.asset_id.attr_id +'.png')
+                info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 2175008768
+                zfile.writestr(info, base64.decodestring(theme.image))
+
+        if self.website_asset_ids:
+            module_data.append('views/website_assets.xml')
+            write_template(templates, zfile, self.name + '/views/website_assets.xml', 'builder.website_assets.xml',
+                                {'module': self, 'assets': self.website_asset_ids},
+                                **functions)
+        if self.website_page_ids:
+            module_data.append('views/website_pages.xml')
+            write_template(templates, zfile, self.name + '/views/website_pages.xml', 'builder.website_pages.xml',
+                                {'module': self, 'pages': self.website_page_ids, 'menus': self.website_menu_ids},
+                                **functions)
+        if self.website_theme_ids:
+            module_data.append('views/website_themes.xml')
+            write_template(templates, zfile, self.name + '/views/website_themes.xml', 'builder.website_themes.xml',
+                                {'module': self, 'themes': self.website_theme_ids},
+                                **functions)
+
+        #end website stuff
+
+
+        #this must be last to include all resources
+        write_template(templates, zfile, self.name + '/__openerp__.py', 'builder.__openerp__.py',
+                            {'module': self, 'data': module_data}, **functions)
+
+        zfile.close()
+        zfileIO.flush()
+        return zfileIO
 
 
 class DataFile(models.Model):

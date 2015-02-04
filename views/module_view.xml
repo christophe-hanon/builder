@@ -73,7 +73,7 @@
                                     </form>
                                 </field>
                             </page>
-                            <page string="Data">
+                            <page string="Files">
                                 <div class="oe_right oe_button_box" name="buttons">
                                     <button class="oe_inline oe_stat_button" string="Import Zip" name="%(act_builder_data_import_wizard)d" type="action" icon="fa-reply" context="{}"/>
                                 </div>
@@ -148,7 +148,7 @@
                                         <field nolabel="1" name="website_theme_ids"  context="{'default_module_id': active_id}"/>
                                     </page>
                                     <page string="Snippets">
-                                        <field name="snippet_bookmarklet_url" widget="url" readonly="1" />
+                                        <field name="snippet_bookmarklet_url" widget="url" readonly="1" text="Bookmark" />
                                     </page>
                                     <page string="Assets">
                                         <field nolabel="1" name="website_asset_ids" context="{'default_module_id': active_id}"/>
