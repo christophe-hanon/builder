@@ -35,20 +35,53 @@
                     <field name="content"><![CDATA[
 {% include 'builder.python_file_header.py' ignore missing %}
 from openerp import models, fields, api, tools, _
-from openerp.osv import fields as fields_old
-import openerp.addons.decimal_precision as dp
+#from openerp.osv import fields as fields_old
+#import openerp.addons.decimal_precision as dp
 
 {% for model in models %}
-class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
+class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
     _name = '{{model.model}}'
-    {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif %}
-    {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif %}
-    {% if model.comment %}_description = '{{model.name}}'{% endif %}
+    {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif -%}
+    {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif -%}
+    {% if model.info %}_description = '{{model.info}}'{% endif -%}
     {% if model.handle_attribute %}_order = '{{model.handle_attribute.name}}' {% endif %}
 
-    {% for field in model.field_ids -%}
-        {{field.name}} = {{field.name}}
-    {% endfor -%}
+    {% for field in model.field_ids %}
+    {{field.name}} = fields.{{field.ttype}}({% if field.required %}required=True,{% endif %}
+                                            {%- if field.readonly %}readonly=True,{% endif %}
+                                            {%- if field.field_description %}string='{{field.field_description}}',{% endif %}
+                                            {%- if field.string %}help='{{field.string}}',{% endif %}
+                                            {%- if field.help %}help='{{field.help}}',{% endif %}
+                                            {%- if field.index %}index=True,{% endif %}
+                                            {%- if field.compute -%}compute='{{field.compute_method_name}}',{% endif %}
+                                            {%- if field.inverse -%}inverse='{{field.inverse_method_name}}',{% endif %}
+    {%- if field.ttype == 'char' %}
+                                            {%- if field.size %}size={{field.size}},{% endif %}
+                                            {%- if field.translate -%}translate=True,{% endif %}
+    {%- endif %}
+    {%- if field.ttype == 'text' %}
+                                            {%- if field.translate -%}translate=True,{% endif %}
+    {%- endif %}
+    {%- if field.ttype == 'selection' %}
+                                            {%- if field.selection -%}selection={{field.selection}},{% endif %}
+    {%- endif %}
+    {%- if field.ttype == 'float' %}
+                                            {%- if field.digits -%}digits=({{field.digits.total}},{{field.digits.decimal}}),{% endif %}
+    {%- endif -%})
+    {%- endfor %}
+
+
+    {% for field in models.field_ids %}
+    {%- if field.compute %}
+    {{field.compute_method|indent}}
+    {% endif %}
+    {%- endfor -%}
+
+    {% for field in models.field_ids %}
+    {%- if field.inverse %}
+    {{field.inverse_method|indent}}
+    {% endif %}
+    {%- endfor -%}
 
 {% endfor %}
                     ]]></field>
@@ -62,27 +95,27 @@ class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}mode
 {% include 'builder.python_file_header.py' ignore missing %}
 # noinspection PyStatementEffect
 {
-            "name" : "{{module.name}}",
-{% if module.installed_version %}           "version" : "{{module.installed_version}}",
-{% endif %} {% if module.author %}          "author" : "{{module.author}}",
-{% endif %} {% if module.website %}             "website" : "{{module.website}}",
-{% endif %} {% if module.category_id %}             "category" : "{{module.category_id}}",
-{% endif %}             "licence" : "{{module.license}}",
-            "description": """
-{{module.shortdesc}}
-====================================
-{{module.summary}}
-            """,
-            "depends" : {{ module.dependencies_as_list()[0] }},
-            "data" : [
-                        'security/ir.model.access.csv',
-                        'views/menu.xml',
-                        'views/views.xml',
+    "name" : "{{module.name}}",
+{% if module.installed_version %}    "version" : "{{module.installed_version}}",{% endif %}
+{% if module.author %}    "author" : "{{module.author}}",{% endif %}
+{% if module.website %}    "website" : "{{module.website}}",{% endif %}
+{% if module.category_id %}    "category" : "{{module.category_id}}",{% endif %}
+    "licence" : "{{module.license}}",
+    "description": """
+                    {{module.shortdesc}}
+                    ====================================
+                    {{module.summary}}
+                    """,
+    "depends" : {{ module.dependencies_as_list()[0] }},
+    "data" : [
+                'security/ir.model.access.csv',
+                'views/menu.xml',
+                'views/views.xml',
             ],
-            "demo" : [ ],
-            "installable": True,
-            "auto_install": {{module.auto_install}},
-            "application": {{module.application}},
+    "demo" : [ ],
+    "installable": True,
+    "auto_install": {{module.auto_install}},
+    "application": {{module.application}},
 }
                     ]]></field>
         </record>
@@ -273,4 +306,3 @@ class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}mode
         </record>
     </data>
 </openerp>
-

@@ -33,7 +33,7 @@ This module aims to help in the development of new modules
     'author': 'Soluciones Moebius',
     #"license": "AGPL-3",
     'website': 'http://www.solucionesmoebius.com/',
-    'depends': ['web', 'base_mixins', 'web_diagram', 'generic_document_render_jinja', 'web_ace_editor'],
+    'depends': ['web', 'base_mixins', 'web_diagram', 'generic_document_render_jinja', 'web_ace_editor', 'website'],
     'data': [
         # 'security/base_security.xml',
         # 'security/ir.model.access.csv',
@@ -42,6 +42,7 @@ This module aims to help in the development of new modules
         'wizard/model_lookup_wizard_view.xml',
         'wizard/menu_lookup_wizard_view.xml',
         'wizard/action_lookup_wizard_view.xml',
+        'wizard/website_asset_bulk_add_view.xml',
 
         'views/views/base_view.xml',
         'views/views/calendar_view.xml',
@@ -53,6 +54,9 @@ This module aims to help in the development of new modules
         'views/views/tree_view.xml',
         'views/views/selector_view.xml',
 
+        'views/website_view.xml',
+
+        'wizard/module_data_import_view.xml',
         'wizard/module_import_view.xml',
         'wizard/model_import_view.xml',
         'wizard/model_export_view.xml',
@@ -62,6 +66,8 @@ This module aims to help in the development of new modules
         'views/action_view.xml',
         'views/menu.xml',
         'views/backend_assets.xml',
+        'views/designer/website_page_designer.xml',
+        'views/designer/designer_snippets.xml',
     ],
     'test': [
         'test/test_demo.yml',

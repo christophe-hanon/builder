@@ -109,7 +109,9 @@
                                                     <group>
                                                         <field name="inverse"/>
                                                         <field name="inverse_method_name" attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
-                                                        <field name="inverse_method" widget="ace" style="min-width:150px" mode="python" theme="tomorrow" attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
+                                                        <field name="inverse_method" widget="ace"
+                                                               style="min-height:150px" mode="python" theme="tomorrow"
+                                                               attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
                                                     </group>
                                                 </group>
                                             </page>

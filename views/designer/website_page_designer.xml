@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Template Choice page -->
+        <template id="page_designer" name="Page Designer">
+            <t t-call="website.layout">
+                <div id="wrap" class="container" t-ignore="True">
+                    <div id="page_designer" class="mb32">
+                        <a class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
+                           t-attf-href="/web#return_label=#{record.attr_name}&amp;model=builder.ir.module.module&amp;id=#{record.module_id.id}&amp;view_type=form&amp;action=builder.open_module_tree">
+                            Back to module
+                        </a>
+                        <!-- body fields -->
+                        <div t-field="record.content" id="page_content" class="o_page_content"/>
+                    </div>
+                </div>
+            </t>
+            <t t-set="website.footer"></t>
+        </template>
+
+        <template id="designer" name="Generic Designer">
+            <t t-call="website.layout">
+                <div id="wrap" class="container" t-ignore="True">
+                    <div id="page_designer" class="mb32">
+                        <a t-if="return_url" class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
+                           t-attf-href="#{return_url}">
+                            Go Back
+                        </a>
+                        <div t-field="record.content"/>
+                    </div>
+                </div>
+            </t>
+            <t t-set="website.footer"></t>
+        </template>
+    </data>
+</openerp>
+
+
+

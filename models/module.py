@@ -1,5 +1,8 @@
+from base64 import decodestring
 import re
 from types import MethodType
+import os
+import mimetypes
 from openerp import models, fields, api
 from openerp.api import Environment
 from openerp.osv import fields as fields_old
@@ -89,6 +92,15 @@ class Module(models.Model):
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
+
+    data_file_ids = fields.One2many('builder.data.file', 'module_id', 'Data Files')
+    snippet_bookmarklet_url = fields.Char('Link', compute='_compute_snippet_bookmarklet_url')
+
+    @api.one
+    @api.depends('name')
+    def _compute_snippet_bookmarklet_url(self):
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        self.snippet_bookmarklet_url = "{base}/builder/snippets/{db}/{module}/bookmarklet".format(base=base_url, module=self.name, db=self.env.cr.dbname)
 
     @api.one
     def dependencies_as_list(self):
@@ -194,3 +206,30 @@ class Module(models.Model):
             },
         }
 
+
+class DataFile(models.Model):
+    _name = 'builder.data.file'
+
+    _rec_name = 'path'
+
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
+    path = fields.Char(string='Path', required=True)
+    filename = fields.Char('Filename')
+    content_type = fields.Char('Content Type', compute='_compute_stats', store=True)
+    extension = fields.Char('Extension', compute='_compute_stats', store=True)
+    size = fields.Integer('Size', compute='_compute_stats', store=True)
+    content = fields.Binary('Content')
+
+    @api.one
+    @api.depends('content', 'filename')
+    def _compute_stats(self):
+        self.size = False
+        self.filename = False
+        self.extension = False
+        self.content_type = False
+        if self.content:
+            self.size = len(decodestring(self.content))
+
+        self.filename = os.path.basename(self.path)
+        self.extension = os.path.splitext(self.path)[1]
+        self.content_type = mimetypes.guess_type(self.filename)[0] if mimetypes.guess_type(self.filename) else False
