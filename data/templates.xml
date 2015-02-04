@@ -39,8 +39,8 @@ from openerp import models, fields, api, tools, _
 #import openerp.addons.decimal_precision as dp
 
 {% for model in models %}
-class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
-    _name = '{{model.name}}'
+class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
+    _name = '{{model.model}}'
     {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif -%}
     {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif -%}
     {% if model.info %}_description = '{{model.info}}'{% endif -%}
