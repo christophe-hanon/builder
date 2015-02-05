@@ -172,7 +172,7 @@ class WebsiteSnippet(models.Model):
     @api.one
     @api.depends('name')
     def _compute_snippet_id(self):
-        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_') if self.name else ''
+        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_')
 
     @api.one
     @api.depends('category')
