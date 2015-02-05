@@ -7,7 +7,7 @@
             <field name="model">builder.website.snippet</field>
             <field name="arch" type="xml">
                 <tree string="Website Snippet">
-                    <field name="priority" widget="handle"/>
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="category"/>
                 </tree>
