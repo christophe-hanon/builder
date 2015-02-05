@@ -36,12 +36,15 @@ class BookmarkController(http.Controller):
         if not project:
             return request.not_found()
 
+        xml_id = request.httprequest.form.get('name').lower().replace(' ', '_').replace('.', '_') if request.httprequest.form.get('name') else ''
+
         request.env['builder.website.snippet'].create({
             'module_id': project.id,
             'name': request.httprequest.form.get('name'),
             'xpath': request.httprequest.form.get('xpath'),
             'source_url': request.httprequest.form.get('url'),
             'content': request.httprequest.form.get('html'),
+            'snippet_id': xml_id,
         })
 
         return request.redirect('/builder/{module}/snippet/add'.format(module=module))

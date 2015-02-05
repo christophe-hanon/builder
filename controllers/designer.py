@@ -57,6 +57,9 @@ class WebsiteDesigner(http.Controller):
         elif model == 'builder.website.page':
             field_template = 'builder.page_designer_builder_website_page_content'
             return_url = '/web#return_label=Website&model={model}&id={id}&view_type=form&action=builder.open_module_tree'.format(model=model, id=record.module_id.id)
+        elif model == 'builder.website.snippet':
+            field_template = 'builder.page_designer_builder_website_snippet_content'
+            return_url = '/web#return_label=Website&model={model}&id={id}&view_type=form&action=builder.open_module_tree'.format(model=model, id=record.module_id.id)
         else:
             return request.redirect('/')
 

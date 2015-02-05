@@ -26,6 +26,10 @@
             <div t-field="record.content" id="page_content" class="o_page_content"/>
         </template>
 
+        <template id="builder.page_designer_builder_website_snippet_content">
+            <div t-field="record.content" id="page_content" class="o_page_content"/>
+        </template>
+
         <template id="builder.page_designer_builder_ir_module_module_description_html">
             <div t-field="record.description_html" id="page_content" class="o_page_content"/>
         </template>

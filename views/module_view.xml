@@ -148,7 +148,7 @@
                                         <field nolabel="1" name="website_theme_ids"  context="{'default_module_id': active_id}"/>
                                     </page>
                                     <page string="Snippets">
-                                        <field name="snippet_bookmarklet_url" widget="url" readonly="1" text="Bookmarklet"/>
+                                        <field name="snippet_bookmarklet_url" widget="url" readonly="1" text="Create Snippet"/>
                                         <field name="website_snippet_ids" />
                                     </page>
                                     <page string="Assets">
