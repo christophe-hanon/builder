@@ -8,6 +8,7 @@
             $('#url').val(data.url);
             $('#xpath').val(data.xpath);
             $('#html').val(data.content);
+            $('#form-snippet').find('input, textarea').removeClass('error');
         }
     };
 
@@ -31,12 +32,30 @@
     });
 
     /*
-    * TODO: fields can not be empty
+    * TODO: when snippet contains images, replace them with its base64 data
     * */
 
-    //$('#snippet-form').submit(function (event){
-    //    $('input, textarea')
-    //});
+    $('#form-snippet').submit(function (event){
+        var has_errors = false;
+        $(this).find('input[type="text"], textarea').each(function (){
+            var $this = $(this);
+            var has_value = $this.val();
+            if (!has_value){
+                has_errors = true;
+            }
+            $this.toggleClass('error', !has_value);
+        });
+        if (has_errors){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        return !has_errors;
+    }).find('input, textarea').change(function (){
+        var $this = $(this);
+        $this.toggleClass('error', !$this.val());
+    });
+
 
 
 })();

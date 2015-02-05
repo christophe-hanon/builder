@@ -12,23 +12,15 @@ if (window.jQuery) {
         document.getElementsByTagName('head')[0].appendChild(new_script);
     }
 
-    function loadCss(url) {
-        $('<link />').attr({
-            "rel": "stylesheet",
-            "type": "text/css",
-            "href": url + '?__stamp=' + Math.random()
-        }).appendTo('head');
-    }
 
-    function iframe(url, callback) {
-        var iframe = $('#odooIframe');
-        if (!iframe.length) {
-            iframe = $('<iframe/>').attr('id', 'odooIframe').appendTo('body');
-        }
-        iframe.on('load', callback);
-        iframe.attr('src', url);
-        return iframe;
-    }
+    window.getBase64Image = function getBase64Image(img) {
+        var canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        return canvas.toDataURL("image/png");
+    };
 
     var odoo;
 
@@ -37,6 +29,24 @@ if (window.jQuery) {
     }
 
     script(window.odooUrl + '/builder/static/lib/jquery.js', function () {
+        function loadCss(url) {
+            $('<link />').attr({
+                "rel": "stylesheet",
+                "type": "text/css",
+                "href": url + '?__stamp=' + Math.random()
+            }).appendTo('head');
+        }
+
+        function iframe(url, callback) {
+            var iframe = $('#odooIframe');
+            if (!iframe.length) {
+                iframe = $('<iframe/>').attr('id', 'odooIframe').appendTo('body');
+            }
+            iframe.on('load', callback);
+            iframe.attr('src', url);
+            return iframe;
+        }
+
         odoo = iframe(window.newSnippetUrl);
         var options = {
             css: {
@@ -49,7 +59,6 @@ if (window.jQuery) {
                 options = $.extend(options, data.options);
             }
         };
-
 
 
         window.addEventListener("message", function (event) {
@@ -160,70 +169,35 @@ if (window.jQuery) {
 
         }
 
-        var fixed = false,
-            $copy = $("<img />").attr({
-                src: window.odooUrl + "/builder/static/src/img/gear.png",
-                title: "Copy",
-                alt: "Copy"
-            }).addClass('bookmarklet-gear').on('click', processElement).appendTo('head');
 
-        function drawActive(elem) {
-            var $this = $(elem);
+        $(document).on('click', '*', function processElement(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            var $fixed = $(this);
             $('.bookmarklet-active').removeClass('bookmarklet-active');
-            $this.addClass('bookmarklet-active');
-            if (fixed) {
-                $this.prepend($copy.show());
-            } else {
-                $copy.hide().appendTo('head');
-            }
-        }
-
-        function processElement(event) {
-            if (event) {
-                event.stopPropagation();
-                event.preventDefault();
-            }
-
-            var $fixed = $(fixed);
-            $copy.hide().appendTo('body');
-            $fixed.removeClass('bookmarklet-active');
+            $fixed.addClass('bookmarklet-active');
             applyCssInline($fixed);
-            $fixed.find('*').each(function (index, value) {
-                applyCssInline($(value));
+            $fixed.find('*').each(function () {
+                applyCssInline($(this));
+            });
+
+            if ($fixed.is('img:not(.processed)')) {
+                $fixed.attr('src', getBase64Image($fixed[0])).addClass('processed');
+            }
+
+            $fixed.find('img:not(.processed)').each(function () {
+                var $this = $(this);
+                $this.attr('src', getBase64Image(this)).addClass('processed');
             });
 
             publish({
                 channel: 'snippet.html.set',
-                xpath: getXPath(fixed),
-                content: $fixed[0].outerHTML,
+                xpath: getXPath(this),
+                content: this.outerHTML,
                 url: window.location.href
             });
-            fixed = false;
 
-        }
-
-        $(document).on('mouseenter', '*', function (event) {
-            if (fixed) {
-                return;
-            }
-            event.stopPropagation();
-            event.preventDefault();
-
-            drawActive(this);
-
-        }).on('click', '*', function (event) {
-            event.stopPropagation();
-            event.preventDefault();
-
-            if (!fixed) {
-                fixed = this;
-                drawActive(this);
-            } else if (fixed == this) {
-                fixed = false;
-            } else {
-                fixed = this;
-                drawActive(this);
-            }
         });
     });
 

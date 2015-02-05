@@ -37,4 +37,8 @@ body {
     border-top-right-radius: 0;
     width: 300px
   }
+
+  & input.error[type="text"], & textarea.error {
+    border-color: red;
+  }
 }

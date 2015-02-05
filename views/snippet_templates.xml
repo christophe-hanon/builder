@@ -23,9 +23,9 @@
                 <body>
                     <form id="form-snippet" class="form-snippet" action="save" method="POST">
                         <h2 class="form-snippet-heading">Snippet HTML</h2>
-                        <input id="name" name="name" type="text" placeholder="Name" class="form-control" />
-                        <input id="url" name="url" type="hidden" class="form-control" />
-                        <input id="xpath" name="xpath" type="hidden" class="form-control" />
+                        <input id="name" name="name" type="text" placeholder="Name" class="form-control"/>
+                        <input id="url" name="url" type="hidden" class="form-control"/>
+                        <input id="xpath" name="xpath" type="hidden" class="form-control"/>
                         <textarea rows="6" id="html" name="html"></textarea>
                         <label class="checkbox">
                             <input id="copy-css" type="checkbox" value="copy-css" checked="checked"/>

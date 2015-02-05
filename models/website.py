@@ -158,7 +158,8 @@ class WebsiteSnippet(models.Model):
 
     # Snippet
     snippet_id = fields.Char('ID', compute='_compute_snippet_id', store=True, readonly=False, required=True)
-    content = fields.Html('Content', required=True)
+    # can't be Html because sanitize the images src
+    content = fields.Text('Content', required=True)
     image = fields.Binary('Image')
 
     # Options

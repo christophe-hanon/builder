@@ -38,7 +38,7 @@
                             </group>
                         </group>
                         <group>
-                            <field name="content"/>
+                            <field name="content" widget="html"/>
                         </group>
                     </sheet>
                 </form>
