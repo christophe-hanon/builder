@@ -33,11 +33,10 @@
                     <field name="title">builder.models.py</field>
                     <field name="type">jinja</field>
                     <field name="content"><![CDATA[
-{% include 'builder.python_file_header.py' ignore missing %}
+{%- include 'builder.python_file_header.py' ignore missing %}
 from openerp import models, fields, api, tools, _
 #from openerp.osv import fields as fields_old
 #import openerp.addons.decimal_precision as dp
-
 {% for model in models %}
 class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
     _name = '{{model.model}}'
@@ -47,7 +46,11 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
     {% if model.handle_attribute %}_order = '{{model.handle_attribute.name}}' {% endif %}
 
     {% for field in model.field_ids %}
-    {{field.name}} = fields.{{field.ttype}}({% if field.required %}required=True,{% endif %}
+    {{field.name}} = fields.{{field.ttype}}(
+    {%- if field.ttype == 'many2many' %}
+                                            '{{field.relation}}',
+    {% endif %}
+                                            {%- if field.required %}required=True,{% endif %}
                                             {%- if field.readonly %}readonly=True,{% endif %}
                                             {%- if field.field_description %}string='{{field.field_description}}',{% endif %}
                                             {%- if field.string %}help='{{field.string}}',{% endif %}
@@ -67,21 +70,18 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
     {%- endif %}
     {%- if field.ttype == 'float' %}
                                             {%- if field.digits -%}digits=({{field.digits.total}},{{field.digits.decimal}}),{% endif %}
-    {%- endif -%})
+    {%- endif %})
+
+
     {%- endfor %}
 
 
-    {% for field in models.field_ids %}
-    {%- if field.compute %}
-    {{field.compute_method|indent}}
-    {% endif %}
-    {%- endfor -%}
+    {% for field in model.field_ids %}
+    {%- if field.compute %}    {{field.compute_method|indent}}    {% endif %}
+    {%- if field.inverse %}    {{field.inverse_method|indent}}    {% endif %}
+    {%- endfor %}
 
-    {% for field in models.field_ids %}
-    {%- if field.inverse %}
-    {{field.inverse_method|indent}}
-    {% endif %}
-    {%- endfor -%}
+
 
 {% endfor %}
                     ]]></field>

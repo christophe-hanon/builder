@@ -34,17 +34,11 @@ class MainController(http.Controller):
 
         zfile = zipfile.ZipFile(zfileIO, 'w')
 
-        self.write_template(templates, zfile, module.name + '/__openerp__.py', 'builder.__openerp__.py',
-                            {'module': module}, **functions)
-        self.write_template(templates, zfile, module.name + '/__init__.py', 'builder.python.__init__.py',
-                            {'packages': ['base']}, **functions)
-        self.write_template(templates, zfile, module.name + '/views/menu.xml', 'builder.menu.xml', {'module': module},
-                            **functions)
-        self.write_template(templates, zfile, module.name + '/models/__init__.py', 'builder.python.__init__.py', {},
-                            **functions)
-        self.write_template(templates, zfile, module.name + '/models/models.py', 'builder.models.py',
-                            {'models': module.model_ids},
-                            **functions)
+        self.write_template(templates, zfile, module.name + '/__openerp__.py', 'builder.__openerp__.py',{'module': module}, **functions)
+        self.write_template(templates, zfile, module.name + '/__init__.py', 'builder.python.__init__.py',{'packages': ['base']}, **functions)
+        self.write_template(templates, zfile, module.name + '/views/menu.xml', 'builder.menu.xml', {'module': module},**functions)
+        self.write_template(templates, zfile, module.name + '/models/__init__.py', 'builder.python.__init__.py', {},**functions)
+        self.write_template(templates, zfile, module.name + '/models/models.py', 'builder.models.py',{'models': module.model_ids},**functions)
 
         if module.icon_image:
             info = zipfile.ZipInfo(module.name + '/static/description/icon.png')
