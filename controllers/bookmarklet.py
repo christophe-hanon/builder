@@ -38,6 +38,7 @@ class BookmarkController(http.Controller):
 
         request.env['builder.website.snippet'].create({
             'module_id': project.id,
+            'category': 'custom',  # this must be set by the default!
             'name': request.httprequest.form.get('name'),
             'xpath': request.httprequest.form.get('xpath'),
             'source_url': request.httprequest.form.get('url'),
