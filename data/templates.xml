@@ -35,20 +35,53 @@
                     <field name="content"><![CDATA[
 {% include 'builder.python_file_header.py' ignore missing %}
 from openerp import models, fields, api, tools, _
-from openerp.osv import fields as fields_old
-import openerp.addons.decimal_precision as dp
+#from openerp.osv import fields as fields_old
+#import openerp.addons.decimal_precision as dp
 
 {% for model in models %}
-class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
-    _name = '{{model.model}}'
-    {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif %}
-    {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif %}
-    {% if model.comment %}_description = '{{model.name}}'{% endif %}
+class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
+    _name = '{{model.name}}'
+    {% if model.parents_class_list %}_inherit = {{model.parents_class_list}}{% endif -%}
+    {% if model.inherits %}_inherits = {{model.inherits_class_dict}}{% endif -%}
+    {% if model.info %}_description = '{{model.info}}'{% endif -%}
     {% if model.handle_attribute %}_order = '{{model.handle_attribute.name}}' {% endif %}
 
-    {% for field in model.field_ids -%}
-        {{field.name}} = {{field.name}}
-    {% endfor -%}
+    {% for field in model.field_ids %}
+    {{field.name}} = fields.{{field.ttype}}({% if field.required %}required=True,{% endif %}
+                                            {%- if field.readonly %}readonly=True,{% endif %}
+                                            {%- if field.field_description %}string='{{field.field_description}}',{% endif %}
+                                            {%- if field.string %}help='{{field.string}}',{% endif %}
+                                            {%- if field.help %}help='{{field.help}}',{% endif %}
+                                            {%- if field.index %}index=True,{% endif %}
+                                            {%- if field.compute -%}compute='{{field.compute_method_name}}',{% endif %}
+                                            {%- if field.inverse -%}inverse='{{field.inverse_method_name}}',{% endif %}
+    {%- if field.ttype == 'char' %}
+                                            {%- if field.size %}size={{field.size}},{% endif %}
+                                            {%- if field.translate -%}translate=True,{% endif %}
+    {%- endif %}
+    {%- if field.ttype == 'text' %}
+                                            {%- if field.translate -%}translate=True,{% endif %}
+    {%- endif %}
+    {%- if field.ttype == 'selection' %}
+                                            {%- if field.selection -%}selection={{field.selection}},{% endif %}
+    {%- endif %}
+    {%- if field.ttype == 'float' %}
+                                            {%- if field.digits -%}digits=({{field.digits.total}},{{field.digits.decimal}}),{% endif %}
+    {%- endif -%})
+    {%- endfor %}
+
+
+    {% for field in models.field_ids %}
+    {%- if field.compute %}
+    {{field.compute_method|indent}}
+    {% endif %}
+    {%- endfor -%}
+
+    {% for field in models.field_ids %}
+    {%- if field.inverse %}
+    {{field.inverse_method|indent}}
+    {% endif %}
+    {%- endfor -%}
 
 {% endfor %}
                     ]]></field>
@@ -62,29 +95,32 @@ class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}mode
 {% include 'builder.python_file_header.py' ignore missing %}
 # noinspection PyStatementEffect
 {
-            "name" : "{{module.name}}",
-{% if module.installed_version %}           "version" : "{{module.installed_version}}",
-{% endif %} {% if module.author %}          "author" : "{{module.author}}",
-{% endif %} {% if module.website %}             "website" : "{{module.website}}",
-{% endif %} {% if module.category_id %}             "category" : "{{module.category_id}}",
-{% endif %}             "licence" : "{{module.license}}",
-            "description": """
+    "name" : "{{module.shortdesc}}",
+{% if module.installed_version %}    "version" : "{{module.installed_version}}",{% endif %}
+{% if module.author %}    "author" : "{{module.author}}",{% endif %}
+{% if module.website %}    "website" : "{{module.website}}",{% endif %}
+{% if module.category_id %}    "category" : "{{module.category_id}}",{% endif %}
+    "licence" : "{{module.license}}",
+    "description": """
 {{module.shortdesc}}
 ====================================
 {{module.summary}}
-            """,
-            "depends" : {{ module.dependencies_as_list()[0] }},
-            "data" : [
-                        'security/ir.model.access.csv',
-                        'views/menu.xml',
-                        'views/views.xml',
+                    """,
+    "depends" : {{ module.dependencies_as_list()[0] }},
+    "data" : [
+                {% for item in data -%}
+                '{{item}}',
+                {% endfor  -%}
             ],
-            "demo" : [ ],
-            "installable": True,
-            "auto_install": {{module.auto_install}},
-            "application": {{module.application}},
-}
-                    ]]></field>
+    "demo" : [
+            {%- for item in demo -%}
+                '{{item}}',
+            {%- endfor  -%}
+    ],
+    "installable": True,
+    "auto_install": {{module.auto_install}},
+    "application": {{module.application}},
+}]]></field>
         </record>
         <record model="document.template" id="builder_python_file_header_py">
                     <field name="name">builder.python_file_header.py</field>
@@ -170,8 +206,7 @@ class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}mode
             {% endfor -%}
         </sheet>
     </form>
-{% endmacro -%}
-                    ]]></field>
+{% endmacro -%}]]></field>
                 </record>
 
         <record model="document.template" id="builder_view_arch_gantt">
@@ -271,6 +306,164 @@ class {{model.name}}({% if model.osv_memory %}models.AbstractModel{% else %}mode
 {%- endfor %}
 </search>]]></field>
         </record>
+        
+        <record model="document.template" id="builder_website_assets_xml">
+                    <field name="name">builder.website_assets.xml</field>
+                    <field name="title">builder.website_assets.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+    {% for asset in assets %}
+        <template id="{{module.name}}.{{asset.attr_id}}" name="{{asset.attr_name}}" inherit_id="{{asset.type}}" {% if asset.type == 'website.theme' %} {% if not asset.attr_active %}active="False"{% endif %} customize_show="{{asset.attr_customize_show}}" {% endif %}>
+            {% if asset.type == 'website.theme' -%}
+            <xpath expr="//link[@id='bootstrap_css']" position="after">
+            {% else -%}
+            <xpath expr="." position="inside">
+            {% endif -%}
+                {% for item in asset.item_ids -%}
+                    {% if item.file_id.extension == '.css' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.js' -%}
+                        <script type="text/javascript" src="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% endif -%}
+                {% endfor -%}
+            </xpath>
+        </template>
+    {% endfor %}
+{% endblock %}]]></field>
+                </record>
+
+        <record model="document.template" id="builder_website_pages_xml">
+                    <field name="name">builder.website_pages.xml</field>
+                    <field name="title">builder.website_pages.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+    {% for page in pages %}
+        <template id="website.{{page.attr_id}}" name="{{page.attr_name}}" page="True" {% if page.priority %}priority="{{page.priority}}" {% endif %}>
+            <t t-call="{{page.wrap_layout}}">
+                <div id="wrap" class="oe_structure oe_empty">
+                    {{page.content}}
+                </div>
+            </t>
+        </template>
+
+    {% endfor %}
+
+    {% for menu in menus %}
+        <record id="website_menu_{{menu.page_id.attr_id}}" model="website.menu">
+            <field name="name">{{menu.name}}</field>
+            <field name="url">{{menu.url}}</field>
+            {% if menu.parent_id %}
+                <field name="parent_id" ref="{{module.name}}.website_menu_{{menu.parent_id.page_id.attr_id}}"/>
+            {% else %}
+                <field name="parent_id" ref="website.main_menu"/>
+            {% endif %}
+            <field name="sequence" type="int">{{menu.sequence}}</field>
+        </record>
+    {% endfor %}
+{% endblock %}]]></field>
+                </record>
+
+        <record model="document.template" id="builder_website_themes_xml">
+                    <field name="name">builder.website_themes.xml</field>
+                    <field name="title">builder.website_themes.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+
+    <template id="themes" inherit_id="website.themes" name="Themes">
+            <xpath expr="//div[@id='themes-list']" position="inside">
+                {% for theme in themes %}
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        {% if theme.image %}
+                        <div class="image">
+                            <img class="img-responsive" src="/{{module.name}}/static/themes/{{theme.asset_id.attr_id}}.png" alt="{{theme.attr_name}}" style="width: 360px"/>
+                        </div>
+                        {% endif %}
+                        <div class="options">
+                            <h3>{{theme.attr_name}}</h3>
+                            <p>{{theme.attr_description}}</p>
+                            <a class="btn btn-info" href="/website/theme_change?theme_id={{module.name}}.{{theme.asset_id.attr_id}}">Apply</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </xpath>
+        </template>
+{% endblock %}]]></field>
+                </record>
+
+        <record model="document.template" id="builder_website_snippets_xml">
+                    <field name="name">builder.website_snippets.xml</field>
+                    <field name="title">builder.website_snippets.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+   <template id="{{module.name}}.snippets" inherit_id="website.snippets" name="Snippets">
+   {% for custom, snippets in snippet_type.items() %}
+       {% if custom %}
+                <xpath expr="//ul[@class='nav navbar-nav nav-tabs']" position="inside">
+                    <li>
+                        <a href="#snippet_{{module.name}}" data-toggle="tab">{{module.name}}</a>
+                    </li>
+                </xpath>
+
+                <xpath expr="//div[@class='tab-content']" position="inside">
+                    <div id="snippet_{{module.name}}" class="tab-pane fade">
+                        {% for snippet in snippets %}
+                            <div>
+                                <div class="oe_snippet_thumbnail">
+                                    {% if snippet.image %}
+                                        <img class="oe_snippet_thumbnail_img" src="data:image/png;base64,{{snippet.image}}"/>
+                                    {% else %}
+                                        <span data-size="fa-5x" class="fa-4x fa fa-question-circle" style="line-height: inherit;"></span>
+                                    {% endif %}
+                                    <span class="oe_snippet_thumbnail_title">{{snippet.name}}</span>
+                                </div>
+                                <section class="oe_snippet_body">
+                                    <div class="oe_structure">
+                                        {{snippet.content}}
+                                    </div>
+                                </section>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </xpath>
+        {% else  %}
+        <xpath expr="//div[@id='snippet_content']" position="inside">
+            {% for snippet in snippets %}
+                <div>
+                    <div class="oe_snippet_thumbnail">
+                        {% if snippet.image %}
+                            <img class="oe_snippet_thumbnail_img" src="data:image/png;base64,{{snippet.image}}"/>
+                        {% else %}
+                            <span data-size="fa-5x" class="fa-4x fa fa-question-circle" style="line-height: inherit;"></span>
+                        {% endif %}
+                        <span class="oe_snippet_thumbnail_title">{{snippet.name}}</span>
+                    </div>
+                    <section class="oe_snippet_body">
+                        <div class="oe_structure">
+                            {{snippet.content}}
+                        </div>
+                    </section>
+                </div>
+            {% endfor %}
+        </xpath>
+    {% endif  %}
+   {% endfor %}
+   </template>
+{% endblock %}
+]]></field>
+                </record>
     </data>
 </openerp>
-

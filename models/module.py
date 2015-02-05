@@ -1,12 +1,18 @@
+from base64 import decodestring
+from collections import defaultdict
 import re
+from string import Template
 from types import MethodType
+import os
+import mimetypes
+from StringIO import StringIO
+import zipfile
+import base64
+import posixpath
 from openerp import models, fields, api
-from openerp.api import Environment
-from openerp.osv import fields as fields_old
-from openerp import tools
-from openerp.osv import expression
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
+
 
 __author__ = 'one'
 
@@ -37,7 +43,7 @@ class Module(models.Model):
     shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
-    description_html = fields.Html(string='Description HTML')
+    description_html = fields.Html(string='Description HTML', sanitize=False)
     author = fields.Char("Author", required=True)
     maintainer = fields.Char('Maintainer')
     contributors = fields.Text('Contributors')
@@ -89,6 +95,29 @@ class Module(models.Model):
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
+
+    data_file_ids = fields.One2many('builder.data.file', 'module_id', 'Data Files')
+    snippet_bookmarklet_url = fields.Char('Link', compute='_compute_snippet_bookmarklet_url')
+
+    @api.one
+    @api.depends('name')
+    def _compute_snippet_bookmarklet_url(self):
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        link = """
+javascript:(function(){
+    function script(url, callback){
+        var new_script = document.createElement('script');
+        new_script.src = url + '?__stamp=' + Math.random();
+        new_script.onload = new_script.onreadystatechange = callback;
+        document.getElementsByTagName('head')[0].appendChild(new_script);
+        new_script.type='text/javascript';
+    };
+    window.odooUrl = '$base_url';
+    window.newSnippetUrl = '$base_url/builder/$module/snippet/add';
+    script('$base_url/builder/static/src/js/snippet_loader.js');
+})();
+        """
+        self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name, db=self.env.cr.dbname)
 
     @api.one
     def dependencies_as_list(self):
@@ -194,3 +223,154 @@ class Module(models.Model):
             },
         }
 
+    def action_edit_description_html(self, cr, uid, ids, context=None):
+        if not len(ids) == 1:
+            raise ValueError('One and only one ID allowed for this action')
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        return {
+            'name': _('Edit Template'),
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
+        }
+
+    @api.multi
+    def get_zipped_module(self):
+
+        def write_template(template_obj, zf, fname, template, d, **params):
+            i = zipfile.ZipInfo(fname)
+            i.compress_type = zipfile.ZIP_DEFLATED
+            i.external_attr = 2175008768
+            zf.writestr(i, template_obj.render_template(template, d, **params))
+
+
+        templates = self.env['document.template']
+
+        functions = {
+            'filters': {
+                'dot2dashed': lambda x: x.replace('.', '_'),
+                'dot2name': lambda x: ''.join([s.capitalize() for s in x.split('.')]),
+                'cleargroup': lambda x: x.replace('.', '_'),
+            },
+        }
+
+        filename = "{name}.{ext}".format(name=self.name, ext="zip")
+        zfileIO = StringIO()
+
+        zfile = zipfile.ZipFile(zfileIO, 'w')
+
+        has_models = len(self.model_ids)
+        has_data = len(self.data_file_ids)
+        has_website = len(self.website_theme_ids) \
+                      or len(self.website_asset_ids) \
+                      or len(self.website_menu_ids) \
+                      or len(self.website_page_ids)
+
+        module_data = []
+
+        packages = ['models'] if has_models else []
+        write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py',
+                            {'packages': packages}, **functions)
+        if has_models:
+            module_data.append(self.name + '/views/menu.xml')
+
+            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self},
+                                **functions)
+
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {},
+                                **functions)
+            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py',
+                                {'models': self.model_ids},
+                                **functions)
+
+        if self.icon_image:
+            info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 2175008768
+            zfile.writestr(info, base64.decodestring(self.icon_image))
+
+        if self.description_html:
+            info = zipfile.ZipInfo(self.name + '/static/description/index.html')
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 2175008768
+            zfile.writestr(info, self.description_html)
+
+
+        #website stuff
+        for data in self.data_file_ids:
+            info = zipfile.ZipInfo(posixpath.join(self.name, data.path.strip('/')))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 2175008768
+            zfile.writestr(info, base64.decodestring(data.content))
+
+        for theme in self.website_theme_ids:
+            if theme.image:
+                info = zipfile.ZipInfo(self.name + '/static/themes/' + theme.asset_id.attr_id +'.png')
+                info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 2175008768
+                zfile.writestr(info, base64.decodestring(theme.image))
+
+        if self.website_asset_ids:
+            module_data.append('views/website_assets.xml')
+            write_template(templates, zfile, self.name + '/views/website_assets.xml', 'builder.website_assets.xml',
+                                {'module': self, 'assets': self.website_asset_ids},
+                                **functions)
+        if self.website_page_ids:
+            module_data.append('views/website_pages.xml')
+            write_template(templates, zfile, self.name + '/views/website_pages.xml', 'builder.website_pages.xml',
+                                {'module': self, 'pages': self.website_page_ids, 'menus': self.website_menu_ids},
+                                **functions)
+        if self.website_theme_ids:
+            module_data.append('views/website_themes.xml')
+            write_template(templates, zfile, self.name + '/views/website_themes.xml', 'builder.website_themes.xml',
+                                {'module': self, 'themes': self.website_theme_ids},
+                                **functions)
+
+        if self.website_snippet_ids:
+            snippet_type = defaultdict(list)
+            for snippet in self.website_snippet_ids:
+                snippet_type[snippet.is_custom_category].append(snippet)
+
+            module_data.append('views/website_snippets.xml')
+            write_template(templates, zfile, self.name + '/views/website_snippets.xml', 'builder.website_snippets.xml',
+                                {'module': self, 'snippet_type': snippet_type},
+                                **functions)
+
+        #end website stuff
+
+
+        #this must be last to include all resources
+        write_template(templates, zfile, self.name + '/__openerp__.py', 'builder.__openerp__.py',
+                            {'module': self, 'data': module_data}, **functions)
+
+        zfile.close()
+        zfileIO.flush()
+        return zfileIO
+
+
+class DataFile(models.Model):
+    _name = 'builder.data.file'
+
+    _rec_name = 'path'
+
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
+    path = fields.Char(string='Path', required=True)
+    filename = fields.Char('Filename')
+    content_type = fields.Char('Content Type', compute='_compute_stats', store=True)
+    extension = fields.Char('Extension', compute='_compute_stats', store=True)
+    size = fields.Integer('Size', compute='_compute_stats', store=True)
+    content = fields.Binary('Content')
+
+    @api.one
+    @api.depends('content', 'filename')
+    def _compute_stats(self):
+        self.size = False
+        self.filename = False
+        self.extension = False
+        self.content_type = False
+        if self.content:
+            self.size = len(decodestring(self.content))
+
+        self.filename = os.path.basename(self.path)
+        self.extension = os.path.splitext(self.path)[1]
+        self.content_type = mimetypes.guess_type(self.filename)[0] if mimetypes.guess_type(self.filename) else False

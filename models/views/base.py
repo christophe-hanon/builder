@@ -40,27 +40,30 @@ FIELD_WIDGETS_ALL = [
     ('x2many_counter', "X2ManyCounter"),
 ]
 
+
 class ViewSelector(models.TransientModel):
     _name = 'builder.views.selector'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade', required=True)
-    special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field', related='model_id.special_states_field_id')
-    model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields', related='model_id.groups_date_field_ids')
-    type = fields.Selection([
-                                ('form', 'Form'),
-                                ('tree', 'Tree'),
-                                ('calendar', 'Calendar'),
-                                ('gantt', 'Gantt'),
-                                ('kanban', 'Kanban'),
-                                ('graph', 'Graph'),
-                                ('search', 'Search'),
-                                ('diagram', 'Diagram'),
-    ], 'Type', required=True, default='form')
+    special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field',
+                                              related='model_id.special_states_field_id')
+    model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields',
+                                                  related='model_id.groups_date_field_ids')
+    type = fields.Selection(
+        [
+            ('form', 'Form'),
+            ('tree', 'Tree'),
+            ('calendar', 'Calendar'),
+            ('gantt', 'Gantt'),
+            ('kanban', 'Kanban'),
+            ('graph', 'Graph'),
+            ('search', 'Search'),
+            ('diagram', 'Diagram'),
+        ], 'Type', required=True, default='form')
 
     @api.multi
     def action_show_view(self):
-
         view_type_names = {
             'form': _('Form View View'),
             'tree': _('Tree View View'),
@@ -100,6 +103,7 @@ VIEW_TYPES = {
     'diagram': 'builder.ir.ui.view',
 }
 
+
 class View(models.Model):
     _name = 'builder.ir.ui.view'
     _rec_name = 'xml_id'
@@ -108,20 +112,24 @@ class View(models.Model):
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
     model_id = fields.Many2one('builder.ir.model', ondelete='cascade')
-    special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field', related='model_id.special_states_field_id')
-    model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields', related='model_id.groups_date_field_ids')
+    special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field',
+                                              related='model_id.special_states_field_id')
+    model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields',
+                                                  related='model_id.groups_date_field_ids')
 
     # type = fields.Char('View Type')
-    type = fields.Selection([
-                                ('form', 'Form'),
-                                ('tree', 'Tree'),
-                                ('calendar', 'Calendar'),
-                                ('gantt', 'Gantt'),
-                                ('kanban', 'Kanban'),
-                                ('graph', 'Graph'),
-                                ('search', 'Search'),
-                                ('diagram', 'Diagram'),
-    ], 'Type', required=True, default='form')
+    type = fields.Selection(
+        [
+            ('form', 'Form'),
+            ('tree', 'Tree'),
+            ('calendar', 'Calendar'),
+            ('gantt', 'Gantt'),
+            ('kanban', 'Kanban'),
+            ('graph', 'Graph'),
+            ('search', 'Search'),
+            ('diagram', 'Diagram'),
+            ('qweb', 'QWeb'),
+        ], 'Type', required=True, default='form')
 
     name = fields.Char('View Name', required=True)
     arch = fields.Text('Arch')
@@ -130,7 +138,7 @@ class View(models.Model):
     priority = fields.Integer('Sequence')
 
     inherit_id = fields.Many2one('builder.ir.ui.view', 'Inherited View', ondelete='cascade', select=True)
-    inherit_children_ids = fields.One2many('builder.ir.ui.view','inherit_id', 'Inherit Views')
+    inherit_children_ids = fields.One2many('builder.ir.ui.view', 'inherit_id', 'Inherit Views')
     field_parent = fields.Char('Child Field')
 
     @api.multi
@@ -142,8 +150,8 @@ class View(models.Model):
 
     # @api.multi
     # def write(self, vals):
-    #     vals['custom_arch'] = True
-    #     return super(View, self).write(vals)
+    # vals['custom_arch'] = True
+    # return super(View, self).write(vals)
     #
     #
     # @api.model
@@ -164,7 +172,6 @@ class View(models.Model):
         return {'type': 'ir.actions.act_window_close'}
 
 
-
 class AbstractViewField(models.AbstractModel):
     _name = 'builder.views.abstract.field'
 
@@ -176,7 +183,8 @@ class AbstractViewField(models.AbstractModel):
     field_id = fields.Many2one('builder.ir.model.fields', string='Field', required=True, ondelete='cascade')
     field_ttype = fields.Char(string='Field Type', compute='_compute_field_type')
     model_id = fields.Many2one('builder.ir.model', related='view_id.model_id', string='Model')
-    special_states_field_id = fields.Many2one('builder.ir.model.fields', related='view_id.model_id.special_states_field_id', string='States Field')
+    special_states_field_id = fields.Many2one('builder.ir.model.fields',
+                                              related='view_id.model_id.special_states_field_id', string='States Field')
     module_id = fields.Many2one('builder.ir.model', related='view_id.model_id.module_id', string='Module')
 
 
