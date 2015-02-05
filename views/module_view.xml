@@ -79,6 +79,9 @@
                                 </div>
                                 <field name="data_file_ids" nolabel="1"/>
                             </page>
+                            <page string="Data">
+                                <field name="data_ids" nolabel="1" context="{'default_module_id': active_id}" />
+                            </page>
                             <page string="Backend">
                                 <notebook>
                                     <page string="Models">
