@@ -126,6 +126,9 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Data">
+                                <field name="data_ids" nolabel="1" context="{'default_module_id': active_id}" />
+                            </page>
                         </notebook>
                     </sheet>
                 </form>

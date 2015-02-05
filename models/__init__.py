@@ -7,3 +7,4 @@ from . import fields
 from . import views
 from . import menus
 from . import actions
+from . import data

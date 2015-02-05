@@ -60,6 +60,8 @@ This module aims to help in the development of new modules
         'views/module_view.xml',
         'views/model_view.xml',
         'views/action_view.xml',
+        'views/data_view.xml',
+        'views/lambda_view.xml',
         'views/menu.xml',
         'views/backend_assets.xml',
     ],
