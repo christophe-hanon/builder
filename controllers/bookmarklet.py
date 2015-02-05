@@ -44,6 +44,5 @@ class BookmarkController(http.Controller):
             'source_url': request.httprequest.form.get('url'),
             'content': request.httprequest.form.get('html'),
         })
-        print request.httprequest.form.get('html')
 
         return request.redirect('/builder/{module}/snippet/add'.format(module=module))
