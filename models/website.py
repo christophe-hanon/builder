@@ -100,48 +100,50 @@ class Menu(models.Model):
             self.name = self.page_id.attr_name
             self.url = '/page/website.' + self.page_id.attr_id
 
-SNIPPET_TEMPLATE = Template("""
-    <xpath expr="//div[@id='snippet_{{ category }}']" position="inside">
-        <!-- begin snippet declaration -->
+SNIPPET_TEMPLATE = Template("""<data name="{{ object.name }}" inherit_id="website.snippets">
+    <xpath expr="//div[@id='snippet_{{ object.category if not object.is_custom_category else 'effect' }}']" position="inside">
         <div>
-
             <div class="oe_snippet_thumbnail">
-                <span class="oe_snippet_thumbnail_img" src="data:base64,{{ image }}"/>
-                <span class="oe_snippet_thumbnail_title">{{ name }}</span>
+                <span class="oe_snippet_thumbnail_img" src="data:base64,{{ object.image }}"/>
+                <span class="oe_snippet_thumbnail_title">{{ object.name }}</span>
             </div>
-
-            <div class="oe_snippet_body {{ snippet_id }}">
-                {{ content }}
+            <div class="oe_snippet_body {{ object.snippet_id }}">
+                {{ object.content }}
             </div>
         </div>
-        <!-- end of snippet declaration -->
-
-
     </xpath>
-
     <xpath expr="//div[@id='snippet_options']" position="inside">
-        <div data-snippet-option-id='{{ snippet_id }}'
-             data-selector=".{{ snippet_id }}"
-             data-selector-siblings="{{ siblings|default('') }}"
-             data-selector-children="{{ children|default('') }}"
+        <div data-snippet-option-id='{{ object.snippet_id }}'
+             data-selector=".{{ object.snippet_id }}"
+             data-selector-siblings="{{ object.siblings|default('') }}"
+             data-selector-children="{{ object.children|default('') }}"
              >
         </div>
     </xpath>
+</data>
 """)
 
 
 class WebsiteSnippet(models.Model):
     _name = 'builder.website.snippet'
+    _inherit = ['ir.mixin.orm.onchange.bugfix']
 
-    name = fields.Char('Name', required=True)
+    _inherits = {
+        'ir.ui.view': 'view_id'
+    }
 
-    sequence = fields.Integer('Sequence')
+    # name is a field of the view
+    # name = fields.Char('Name', required=True)
+
+    # in the view this field is priority
+    # sequence = fields.Integer('Sequence')
+
     category = fields.Selection(
         selection=[
             ('structure', 'Structure'),
             ('content', 'Content'),
-            ('features', 'Features'),
-            ('effects', 'Effects'),
+            ('feature', 'Features'),
+            ('effect', 'Effects'),
             ('custom', 'Custom'),
         ],
         string='Category',
@@ -151,6 +153,7 @@ class WebsiteSnippet(models.Model):
     is_custom_category = fields.Boolean('Is Custom Category', compute='_compute_is_custom_category')
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', required=True)
+    view_id = fields.Many2one('ir.ui.view', 'View', ondelete='restrict', required=True)
 
     # Source
     source_url = fields.Char('Source URL', readonly=True)
@@ -166,19 +169,36 @@ class WebsiteSnippet(models.Model):
     siblings = fields.Char('Allowed Siblings')
     children = fields.Char('Allowed Children')
 
+    @api.model
+    def _default_inherit_id(self):
+        return self.env.ref('website.snippets')
+
     _defaults = {
-        'category': 'custom'
+        'category': 'custom',
+        'priority': 0,
+        'type': 'qweb',
+        'mode': 'extension',
+        'inherit_id': _default_inherit_id
     }
 
     @api.one
     @api.depends('name')
     def _compute_snippet_id(self):
-        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_')
+        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_') if self.name else False
 
     @api.one
     @api.depends('category')
     def _compute_is_custom_category(self):
         self.is_custom_category = self.category == 'custom'
+
+    @api.onchange('content', 'name', 'image', 'snippet_id', 'category', 'siblings', 'children')
+    def compute_arch(self):
+        # bug: arch field has a limit in the string size
+        self.arch = SNIPPET_TEMPLATE.render(object=self)
+
+    @api.onchange('snippet_id')
+    def compute_xml_id(self):
+        self.xml_id = self.snippet_id
 
 
 class Module(models.Model):
