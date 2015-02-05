@@ -158,8 +158,7 @@ class WebsiteSnippet(models.Model):
 
     # Snippet
     snippet_id = fields.Char('ID', compute='_compute_snippet_id', store=True, readonly=False, required=True)
-    # can't be Html because sanitize the images src
-    content = fields.Text('Content', required=True)
+    content = fields.Html('Content', sanitize=False, required=True)
     image = fields.Binary('Image')
 
     # Options
@@ -173,13 +172,23 @@ class WebsiteSnippet(models.Model):
     @api.one
     @api.depends('name')
     def _compute_snippet_id(self):
-        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_')
+        self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_') if self.name else ''
 
     @api.one
     @api.depends('category')
     def _compute_is_custom_category(self):
         self.is_custom_category = self.category == 'custom'
 
+    def action_edit_html(self, cr, uid, ids, context=None):
+        if not len(ids) == 1:
+            raise ValueError('One and only one ID allowed for this action')
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        return {
+            'name': _('Edit Snippet'),
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
+        }
 
 class Module(models.Model):
     _inherit = 'builder.ir.module.module'

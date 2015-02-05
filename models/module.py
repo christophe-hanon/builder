@@ -1,4 +1,5 @@
 from base64 import decodestring
+from collections import defaultdict
 import re
 from string import Template
 from types import MethodType
@@ -323,6 +324,16 @@ javascript:(function(){
             module_data.append('views/website_themes.xml')
             write_template(templates, zfile, self.name + '/views/website_themes.xml', 'builder.website_themes.xml',
                                 {'module': self, 'themes': self.website_theme_ids},
+                                **functions)
+
+        if self.website_snippet_ids:
+            snippet_type = defaultdict(list)
+            for snippet in self.website_snippet_ids:
+                snippet_type[snippet.is_custom_category].append(snippet)
+
+            module_data.append('views/website_snippets.xml')
+            write_template(templates, zfile, self.name + '/views/website_snippets.xml', 'builder.website_snippets.xml',
+                                {'module': self, 'snippet_type': snippet_type},
                                 **functions)
 
         #end website stuff

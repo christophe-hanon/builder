@@ -20,17 +20,19 @@
             <field name="arch" type="xml">
                 <form string="Website Snippet" version="7.0">
                     <sheet>
+                        <div>
+                            <field name="image" widget="image"  class="oe_avatar oe_left"/>
+                        </div>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only"/>
-                            <h2>
+                            <h1>
                                 <field name="name" class="oe_inline"/>
-                            </h2>
+                            </h1>
                         </div>
                         <group>
                             <group string="Attributes">
                                 <field name="category"/>
                                 <field name="snippet_id"/>
-                                <field name="image" widget="image"/>
                             </group>
                             <group string="Options">
                                 <field name="siblings"/>
@@ -38,8 +40,9 @@
                             </group>
                         </group>
                         <group>
-                            <field name="content" widget="html"/>
+                            <button string="Edit in Website" name="action_edit_html" type="object" class="oe_link"/>
                         </group>
+                        <field name="content" nolabel="1"/>
                     </sheet>
                 </form>
             </field>
