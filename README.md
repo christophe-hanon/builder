@@ -23,4 +23,3 @@ TODO
 
 fix inherit view
 fix m2m relations with the current mudule
-
