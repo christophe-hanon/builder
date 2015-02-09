@@ -316,7 +316,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="content"><![CDATA[
 {%- extends 'builder.base.xml' %}
 {% block content %}
-{% for view in view_ids %}
+{% for view in models %}
             <record model="ir.ui.view" id="{{view.xml_id}}">
                 <field name="name">{{view.name}}</field>
                 <field name="model">{{view.model_id.model}}</field>

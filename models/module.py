@@ -271,7 +271,7 @@ javascript:(function(){
             module_data.append('views/views.xml')
             module_data.append('views/menu.xml')
 
-            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {}, **functions)
+            write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py', {}, **functions)
             write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self}, **functions)
             write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml', {'models': self.view_ids}, **functions)
             write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {'packages': ['models']},**functions)
