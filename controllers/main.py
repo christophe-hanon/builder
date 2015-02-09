@@ -37,6 +37,7 @@ class MainController(http.Controller):
         self.write_template(templates, zfile, module.name + '/__openerp__.py', 'builder.__openerp__.py',{'module': module}, **functions)
         self.write_template(templates, zfile, module.name + '/__init__.py', 'builder.python.__init__.py',{'packages': ['base']}, **functions)
         self.write_template(templates, zfile, module.name + '/views/menu.xml', 'builder.menu.xml', {'module': module},**functions)
+        self.write_template(templates, zfile, module.name + '/views/views.py', 'builder.view.xml',{'models': module.view_ids},**functions)
         self.write_template(templates, zfile, module.name + '/models/__init__.py', 'builder.python.__init__.py', {},**functions)
         self.write_template(templates, zfile, module.name + '/models/models.py', 'builder.models.py',{'models': module.model_ids},**functions)
 
