@@ -254,7 +254,6 @@ javascript:(function(){
             },
         }
 
-        filename = "{name}.{ext}".format(name=self.name, ext="zip")
         zfileIO = StringIO()
 
         zfile = zipfile.ZipFile(zfileIO, 'w')
@@ -272,16 +271,14 @@ javascript:(function(){
         write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py',
                             {'packages': packages}, **functions)
         if has_models:
-            module_data.append(self.name + '/views/menu.xml')
+            module_data.append('views/views.xml')
+            module_data.append('views/menu.xml')
 
-            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self},
-                                **functions)
-
-            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {},
-                                **functions)
-            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py',
-                                {'models': self.model_ids},
-                                **functions)
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {}, **functions)
+            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self}, **functions)
+            # write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml', {'models': self.view_ids}, **functions)
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {'packages': ['models']},**functions)
+            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py', {'models': self.model_ids}, **functions)
 
         if self.icon_image:
             info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
