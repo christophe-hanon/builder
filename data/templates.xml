@@ -483,7 +483,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                 </div>
             {% endfor %}
         </xpath>
-    {% endif  %}
+        {% endif  %}
    {% endfor %}
    </template>
 {% endblock %}
