@@ -267,9 +267,6 @@ javascript:(function(){
 
         module_data = []
 
-        packages = ['models'] if has_models else []
-        write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py',
-                            {'packages': packages}, **functions)
         if has_models:
             module_data.append('views/views.xml')
             module_data.append('views/menu.xml')
