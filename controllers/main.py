@@ -21,7 +21,7 @@ class MainController(http.Controller):
 
         filename = "{name}.{ext}".format(name=module.name, ext="zip")
 
-        zfileIO = module.get_zipped_module()
+       zfileIO = module.get_zipped_module()
 
         return request.make_response(
             zfileIO.getvalue(),

@@ -33,14 +33,13 @@
                     <field name="title">builder.models.py</field>
                     <field name="type">jinja</field>
                     <field name="content"><![CDATA[
-{% include 'builder.python_file_header.py' ignore missing %}
+{%- include 'builder.python_file_header.py' ignore missing %}
 from openerp import models, fields, api, tools, _
 #from openerp.osv import fields as fields_old
 #import openerp.addons.decimal_precision as dp
-
 {% for model in models %}
-class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
-    _name = '{{model.name}}'
+class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
+    _name = '{{model.model}}'
     {% if model.inherit_model_ids -%}_inherit = [{%- for inherit in model.inherit_model_ids -%}
             {%- if inherit.system_model_id.model -%}
                 '{{inherit.system_model_id.model}}',
@@ -77,45 +76,18 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
                     {%- if field.selection %} selection={{field.selection}},{% endif %}
                     {%- if field.compute -%} compute='{{field.compute_method_name}}',{% endif %}
                     {%- if field.inverse -%} inverse='{{field.inverse_method_name}}',{% endif %})
-    {{field.name}} = fields.{{field.ttype}}({% if field.required %}required=True,{% endif %}
-                                            {%- if field.readonly %}readonly=True,{% endif %}
-                                            {%- if field.field_description %}string='{{field.field_description}}',{% endif %}
-                                            {%- if field.string %}help='{{field.string}}',{% endif %}
-                                            {%- if field.help %}help='{{field.help}}',{% endif %}
-                                            {%- if field.index %}index=True,{% endif %}
-                                            {%- if field.compute -%}compute='{{field.compute_method_name}}',{% endif %}
-                                            {%- if field.inverse -%}inverse='{{field.inverse_method_name}}',{% endif %}
-    {%- if field.ttype == 'char' %}
-                                            {%- if field.size %}size={{field.size}},{% endif %}
-                                            {%- if field.translate -%}translate=True,{% endif %}
-    {%- endif %}
-    {%- if field.ttype == 'text' %}
-                                            {%- if field.translate -%}translate=True,{% endif %}
-    {%- endif %}
-    {%- if field.ttype == 'selection' %}
-                                            {%- if field.selection -%}selection={{field.selection}},{% endif %}
-    {%- endif %}
-    {%- if field.ttype == 'float' %}
-                                            {%- if field.digits -%}digits=({{field.digits.total}},{{field.digits.decimal}}),{% endif %}
-    {%- endif -%})
     {%- endfor %}
-
-
-    {% for field in models.field_ids %}
+    {% for field in model.field_ids %}
     {%- if field.compute %}
     {{field.compute_method|indent}}
     {% endif %}
-    {%- if field.inverse %}
-    {{field.inverse_method|indent}}
-    {% endif %}
     {%- endfor -%}
 
     {% for field in models.field_ids %}
     {%- if field.inverse %}
     {{field.inverse_method|indent}}
     {% endif %}
-    {%- endfor -%}
-
+    {%- endfor %}
 {% endfor %}
                     ]]></field>
         </record>
@@ -128,7 +100,7 @@ class {{model.model}}({% if model.osv_memory %}models.AbstractModel{% else %}mod
 {%- include 'builder.python_file_header.py' ignore missing %}
 # noinspection PyStatementEffect
 {
-    "name" : "{{module.shortdesc}}",
+    "name" : "{{module.name}}",
 {% if module.installed_version %}    "version" : "{{module.installed_version}}",{% endif %}
 {% if module.author %}    "author" : "{{module.author}}",{% endif %}
 {% if module.website %}    "website" : "{{module.website}}",{% endif %}

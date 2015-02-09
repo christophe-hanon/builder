@@ -126,7 +126,7 @@
                                     <group string="Inherit">
                                         <field nolabel="1" name="inherit_model_ids" domain="[('module_id', '=', module_id)]" context="{'default_module_id': module_id, 'default_model_id': id}">
                                             <tree>
-                                                <field name="sequence" widget="handle"/>
+                                                <!--<field name="sequence" widget="handle"/>-->
                                                 <field name="model_display"/>
                                             </tree>
                                         </field>
