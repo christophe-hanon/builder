@@ -31,7 +31,7 @@
                                 <field name="attr_page"/>
                                 <field name="attr_inherit_id"/>
                                 <field name="wrap_layout"/>
-                                <button string="Edit Template" name="action_edit_html" type="object" class="oe_link"/>
+                                <button string="Edit in Website" name="action_edit_html" type="object" class="oe_link"/>
                             </group>
                         </group>
                         <field name="content" nolabel="1" widget="ace" theme="tomorrow" mode="html"
@@ -102,8 +102,8 @@
             <field name="model">builder.website.theme</field>
             <field name="arch" type="xml">
                 <tree string="Theme">
-                    <field name="attr_id"/>
                     <field name="attr_name"/>
+                    <field name="asset_id"/>
                 </tree>
             </field>
         </record>
@@ -126,7 +126,6 @@
                         <group>
                             <group>
                                 <field name="module_id" invisible="1"/>
-                                <field name="attr_id"/>
                                 <field name="asset_id" domain="[('module_id', '=', module_id)]"/>
                             </group>
                             <group>

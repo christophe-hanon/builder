@@ -8,3 +8,4 @@ from . import views
 from . import menus
 from . import actions
 from . import website
+from . import data

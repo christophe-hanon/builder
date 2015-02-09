@@ -9,6 +9,8 @@ class IrModel(models.Model):
     _description = "Models"
     _order = 'model'
 
+    _rec_name = 'model'
+
     module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True, select=1, ondelete='cascade')
 
     name = fields.Char('Description', required=True)
@@ -53,6 +55,7 @@ class IrModel(models.Model):
     groups_m2m_field_ids = fields.One2many('builder.ir.model.fields','model_id', string='M2m Fields', compute='_compute_field_groups')
     groups_m2o_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='M2o Fields', compute='_compute_field_groups')
     groups_binary_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='M2o Fields', compute='_compute_field_groups')
+    groups_inherited_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='Inherited Fields', compute='_compute_field_groups')
 
     order_field_id = fields.Many2one('builder.ir.model.fields', 'Order Field')
     order_direction = fields.Selection([('asc', 'asc'), ('desc', 'desc')], 'Order Field', default='asc')
@@ -119,6 +122,7 @@ class IrModel(models.Model):
         self.groups_m2m_field_ids = self.find_field_by_type(['many2many'])
         self.groups_m2o_field_ids = self.find_field_by_type(['many2one'])
         self.groups_binary_field_ids = self.find_field_by_type(['binary'])
+        self.groups_inherited_field_ids = self.env['builder.ir.model.fields'].search([('model_id', '=', self.id), ('is_inherited', '=', True)])
 
 
 class ModelMethod(models.Model):

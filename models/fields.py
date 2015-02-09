@@ -59,7 +59,7 @@ class IrFields(models.Model):
         ]
         )
 
-    model_id = fields.Many2one('builder.ir.model', 'Model', select=1, on_delete='cascade')
+    model_id = fields.Many2one('builder.ir.model', 'Model', select=1, ondelete='cascade')
 
     name = fields.Char('Name', required=True, select=1)
     position = fields.Integer('Position')
@@ -68,7 +68,7 @@ class IrFields(models.Model):
     relation = fields.Char('Object Relation',
                            help="For relationship fields, the technical name of the target model")
 
-    relation_model_id = fields.Many2one('builder.ir.model', 'Model', on_delete='set null')
+    relation_model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='set null')
 
     relation_many2many_comodel_name = fields.Char('Comodel Name')
     relation_many2many_relation = fields.Char('Relation Name')
@@ -114,6 +114,8 @@ class IrFields(models.Model):
     inverse = fields.Boolean('Inverse')
     inverse_method_name = fields.Char('Inverse Method Name')
     inverse_method = fields.Text('Inverse Method')
+
+    is_inherited = fields.Boolean('Inherited')
 
     @api.onchange('compute', 'inverse')
     def _compute_method_names(self):

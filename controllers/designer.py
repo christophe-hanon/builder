@@ -39,7 +39,7 @@ class WebsiteDesigner(http.Controller):
 
 
     @http.route('/builder/page/designer', type='http', auth="user", website=True)
-    def index(self, model, res_id, template_model=None, **kw):
+    def index(self, model, res_id, **kw):
         if not model or not model in request.registry or not res_id:
             return request.redirect('/')
         model_fields = request.registry[model]._fields
@@ -51,11 +51,24 @@ class WebsiteDesigner(http.Controller):
         cr, uid, context = request.cr, request.uid, request.context
         record = request.registry[model].browse(cr, uid, res_id, context=context)
 
+        if model == 'builder.ir.module.module':
+            field_template = 'builder.page_designer_builder_ir_module_module_description_html'
+            return_url = '/web#return_label=Website&model={model}&id={id}&view_type=form&action=builder.open_module_tree'.format(model=model, id=record.id)
+        elif model == 'builder.website.page':
+            field_template = 'builder.page_designer_builder_website_page_content'
+            return_url = '/web#return_label=Website&model={model}&id={id}&view_type=form&action=builder.open_module_tree'.format(model=model, id=record.module_id.id)
+        elif model == 'builder.website.snippet':
+            field_template = 'builder.page_designer_builder_website_snippet_content'
+            return_url = '/web#return_label=Website&model={model}&id={id}&view_type=form&action=builder.open_module_tree'.format(model=model, id=record.module_id.id)
+        else:
+            return request.redirect('/')
+
         values = {
             'record': record,
-            'templates': None,
             'model': model,
-            'res_id': res_id
+            'res_id': res_id,
+            'returnUrl': return_url,
+            'field_template': field_template
         }
 
         return request.website.render("builder.page_designer", values)

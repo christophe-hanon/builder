@@ -9,17 +9,27 @@
                     <group>
                         <group>
                             <field name="model_id" invisible="1" />
+                            <field name="model_name" invisible="1" />
+                            <field name="type" invisible="1" />
                             <field name="name" />
                             <field name="xml_id"  />
-                            <field name="attr_create" />
-                            <field name="attr_edit"  />
-                            <field name="attr_delete"  />
+                            <field name="model_inherit_type" invisible="1" />
+                            <field name="attr_create" attrs="{'invisible': [('inherit_view', '=', True)], 'readonly': [('inherit_view', '=', True)]}"/>
+                            <field name="attr_edit"  attrs="{'invisible': [('inherit_view', '=', True)], 'readonly': [('inherit_view', '=', True)]}"/>
+                            <field name="attr_delete"  attrs="{'invisible': [('inherit_view', '=', True)], 'readonly': [('inherit_view', '=', True)]}"/>
+                            <field name="inherit_view_type" attrs="{'invisible': [('inherit_view', '=', False)]}"/>
+                            <field name="inherit_view_field_id" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('inherit_view_type', 'not in', ['field'])]}"/>
+                            <field name="inherit_view_xpath" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('inherit_view_type', 'not in', ['xpath'])]}"/>
+                            <field name="inherit_view_position" attrs="{'invisible': [('inherit_view', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="special_states_field_id" invisible="1" />
                             <field name="show_status_bar" />
                             <field name="states_clickable" attrs="{'invisible': ['|', ('show_status_bar', '=', False), ('special_states_field_id', '=', False)]}" />
                             <field name="visible_states" attrs="{'invisible': ['|', ('show_status_bar', '=', False), ('special_states_field_id', '=', False)]}" />
+                            <field name="inherit_view" attrs="{'invisible': [('model_inherit_type', 'in', [False])]}"/>
+                            <field name="inherit_view_id" options="{'no_create': True, 'no_open': True}" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('model_inherit_type', 'in', [False])]}" domain="[('model', '=', model_name), ('type', '=', type)]"/>
+                            <field name="inherit_view_ref" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('model_inherit_type', 'in', [False])], 'required': [('inherit_view', '=', True), ('model_inherit_type', 'not in', [False])]}"/>
                         </group>
                     </group>
                     <notebook>

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- Website Snippet -->
+        <record model="ir.ui.view" id="builder_website_snippet_tree_view">
+            <field name="name">builder.website.snippet.tree</field>
+            <field name="model">builder.website.snippet</field>
+            <field name="arch" type="xml">
+                <tree string="Website Snippet">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="category"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_website_snippet_form_view">
+            <field name="name">builder.website.snippet.form</field>
+            <field name="model">builder.website.snippet</field>
+            <field name="arch" type="xml">
+                <form string="Website Snippet" version="7.0">
+                    <sheet>
+                        <div>
+                            <field name="image" widget="image"  class="oe_avatar oe_left"/>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Attributes">
+                                <field name="category"/>
+                                <field name="snippet_id"/>
+                            </group>
+                            <group string="Options">
+                                <field name="siblings"/>
+                                <field name="children"/>
+                            </group>
+                        </group>
+                        <group>
+                            <button string="Edit in Website" name="action_edit_html" type="object" class="oe_link"/>
+                        </group>
+                        <field name="content" nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_website_snippet">
+            <field name="name">Website Snippet</field>
+            <field name="res_model">builder.website.snippet</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Website Snippet -->
+    </data>
+</openerp>

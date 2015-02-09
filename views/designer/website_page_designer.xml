@@ -2,16 +2,53 @@
 <openerp>
     <data>
         <!-- Template Choice page -->
-        <template id="page_designer" name="Page Designer">
+        <template id="builder.page_designer" name="Page Designer">
             <t t-call="website.layout">
                 <div id="wrap" class="container" t-ignore="True">
                     <div id="page_designer" class="mb32">
                         <a class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
-                           t-attf-href="/web#return_label=#{record.attr_name}&amp;model=builder.ir.module.module&amp;id=#{record.module_id.id}&amp;view_type=form&amp;action=builder.open_module_tree">
+                           t-attf-href="#{returnUrl}">
+                            Back to module
+                        </a>
+                        <t t-call="#{field_template}" >
+                            <t t-set="record" t-value="record"/>
+                            <t t-set="model" t-value="model"/>
+                            <t t-set="res_id" t-value="res_id"/>
+                            <t t-set="returnUrl" t-value="returnUrl"/>
+                        </t>
+                    </div>
+                </div>
+            </t>
+            <t t-set="website.footer"></t>
+        </template>
+
+        <template id="builder.page_designer_builder_website_page_content">
+            <div t-field="record.content" id="page_content" class="o_page_content"/>
+        </template>
+
+        <template id="builder.page_designer_builder_website_snippet_content">
+            <div t-field="record.content" id="page_content" class="o_page_content"/>
+        </template>
+
+        <template id="builder.page_designer_builder_ir_module_module_description_html">
+            <div t-field="record.description_html" id="page_content" class="o_page_content"/>
+        </template>
+
+        <template id="builder.module_description_designer" name="Page Designer">
+            <t t-call="website.layout">
+                <div id="wrap" class="container" t-ignore="True">
+                    <div id="page_designer" class="mb32">
+                        <a t-if="model == 'builder.website.page'" class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
+                           t-attf-href="/web#return_label=Website&amp;model=builder.ir.module.module&amp;id=#{record.module_id.id}&amp;view_type=form&amp;action=builder.open_module_tree">
+                            Back to module
+                        </a>
+                        <a t-if="model == 'builder.ir.module.module'" class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
+                           t-attf-href="/web#return_label=Website&amp;model=builder.ir.module.module&amp;id=#{record.id}&amp;view_type=form&amp;action=builder.open_module_tree">
                             Back to module
                         </a>
                         <!-- body fields -->
-                        <div t-field="record.content" id="page_content" class="o_page_content"/>
+                        <div t-if="model == 'builder.website.page'" t-field="record.content" id="page_content" class="o_page_content"/>
+                        <div t-if="model == 'builder.ir.module.module'" t-field="record.description_html" id="page_content" class="o_page_content"/>
                     </div>
                 </div>
             </t>
