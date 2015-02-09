@@ -19,6 +19,7 @@ class ModelImport(models.TransientModel):
     create_fields = fields.Boolean('Include Fields')
     relations_only = fields.Boolean('Relations Only')
     set_inherited = fields.Boolean('Set as Inherit', default=True)
+    exclude_auto_fields = fields.Boolean('Exclude Auto Fields', default=True)
 
     @api.one
     def _create_model_fields(self, module, model_items, model_map, relations_only=True):
@@ -29,6 +30,9 @@ class ModelImport(models.TransientModel):
             module_model = self.env['builder.ir.model'].search([('module_id', '=', module.id), ('model', '=', model.model)])
 
             for field in model.field_id:
+                if not self.set_inherited and self.exclude_auto_fields and field.name in ['id', 'write_date', 'create_date']:
+                    continue
+
                 if not self.env['builder.ir.model.fields'].search([('model_id', '=', module_model.id), ('name', '=', field.name)]):
                     values = {
                         'model_id': model_map[model.model].id,
@@ -44,6 +48,7 @@ class ModelImport(models.TransientModel):
                         'on_delete': field.on_delete,
                         'domain': field.domain,
                         'selectable': field.selectable,
+                        'is_inherited': self.set_inherited
                     }
 
                     if field.ttype in ['one2many', 'many2many', 'many2one']:
@@ -97,8 +102,6 @@ class ModelImport(models.TransientModel):
 
                 model_map[model.model] = new_model
 
-        if self.create_fields:
             self._create_model_fields(module, self.model_ids, model_map, self.relations_only)
-            return {'type': 'ir.actions.act_window_close'}
 
         return {'type': 'ir.actions.act_window_close'}

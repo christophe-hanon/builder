@@ -1,4 +1,5 @@
 from openerp.addons.builder.models.fields import snake_case
+from openerp.exceptions import ValidationError
 from openerp import models, fields, api, _
 from .base import FIELD_WIDGETS_ALL
 from collections import defaultdict
@@ -27,6 +28,43 @@ class FormView(models.Model):
     statusbar_button_ids = fields.One2many('builder.views.form.statusbar.button', 'view_id', 'Status Bar Buttons')
     field_ids = fields.One2many('builder.views.form.field', 'view_id', 'Items')
 
+    inherit_view = fields.Boolean('Inherit')
+    inherit_view_id = fields.Many2one('ir.ui.view', 'Inherit View')
+    inherit_view_ref = fields.Char('Inherit View Ref')
+    inherit_view_type = fields.Selection([('field', 'Field'), ('xpath', 'XPath')], 'Inherit View Type', default='field')
+    inherit_view_field_id = fields.Many2one('builder.ir.model.fields', 'Inherit View Field')
+    inherit_view_xpath = fields.Char('Inherit View XPath')
+    inherit_view_position = fields.Selection([('after', 'After'), ('before', 'Before'), ('inside', 'Inside'), ('replace', 'Replace')], 'Inherit View Position', default='after')
+
+    @api.onchange('inherit_view_id')
+    def onchange_inherit_view_id(self):
+        self.inherit_view_ref = False
+        if self.inherit_view_id:
+            data = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view'), ('res_id', '=', self.inherit_view_id.id)])
+            self.inherit_view_ref = "{module}.{id}".format(module=data.module, id=data.name) if data else False
+
+    @api.onchange('type')
+    def onchange_type(self):
+        self.inherit_view_ref = False
+        self.inherit_view_id = False
+
+    @api.onchange('inherit_view')
+    def onchange_inherit_view(self):
+        if self.inherit_view and self.model_id:
+            views = self.env['ir.ui.view'].search([('type', '=', 'form'), ('model', '=', self.model_id.model)])
+            if views:
+                self.inherit_view_id = views[0].id
+
+    @api.one
+    @api.constrains('inherit_view_ref')
+    def _check_view_ref(self):
+        exists = self.env['ir.model.data'].xmlid_lookup(self.inherit_view_ref)
+        if exists:
+            view = self.env['ir.model.data'].get_object(*self.inherit_view_ref.split('.'))
+            if not view.model == self.model_id.model:
+                raise ValidationError("View Ref is not a valid view reference")
+
+
     _defaults = {
         'type': 'form',
         'custom_arch': False,
@@ -38,11 +76,13 @@ class FormView(models.Model):
         self.name = self.model_id.name
         self.xml_id = "view_{snake}_form".format(snake = snake_case(self.model_id.model))
         self.show_status_bar = True if self.model_id.special_states_field_id.id else False
+        self.model_inherit_type = self.model_id.inherit_type #shouldnt be doing that
+        self.model_name = self.model_id.model #shouldnt be doing that
 
         if not len(self.field_ids):
             field_list = []
             for field in self.model_id.field_ids:
-                if field.name in ['state']: continue
+                if field.name in ['state'] or field.is_inherited: continue
                 field_list.append({'field_id': field.id, 'widget': DEFAULT_WIDGETS_BY_TYPE.get(field.ttype), 'field_ttype': field.ttype, 'model_id': self.model_id.id, 'special_states_field_id': self.model_id.special_states_field_id.id})
 
             self.field_ids = field_list
