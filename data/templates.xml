@@ -77,13 +77,14 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
     {%- endfor %}
     {% for field in model.field_ids %}
     {%- if field.compute %}
-    {{field.compute_method|indent}}
+    @api.one()
+    def {{ field.compute_method_name }}(self):
+        {{field.compute_method|indent}}
     {% endif %}
-    {%- endfor -%}
-
-    {% for field in model.field_ids %}
     {%- if field.inverse %}
-    {{field.inverse_method|indent}}
+    @api.one()
+    def {{ field.inverse_method_name }}(self):
+        {{ field.inverse_method|indent}}
     {% endif %}
     {%- endfor %}
 {% endfor %}]]></field>
@@ -306,6 +307,28 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
     <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
 {%- endfor %}
 </search>]]></field>
+        </record>
+
+        <record model="document.template" id="builder_view_arch_form">
+                    <field name="name">builder.view.xml</field>
+                    <field name="title">builder.view.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+{% block content %}
+{% for view in view_ids %}
+            <record model="ir.ui.view" id="{{view.xml_id}}">
+                <field name="name">{{view.name}}</field>
+                <field name="model">{{view.model_id.model}}</field>
+                <field name="priority" eval="16"/>
+                <field name="arch" type="xml">
+                <{{view.type}}>
+                    {{view.arch|indent}}
+                </{{view.type}}>
+                </field>
+            </record>
+{% endfor %}
+{% endblock %}]]></field>
         </record>
         
         <record model="document.template" id="builder_website_assets_xml">
