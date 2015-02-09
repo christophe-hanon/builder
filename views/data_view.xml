@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- Model Data -->
+        <record model="ir.ui.view" id="builder_model_data_tree_view">
+            <field name="name">builder.model.data.tree</field>
+            <field name="model">builder.model.data</field>
+            <field name="arch" type="xml">
+                <tree string="Model Data">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_model_data_form_view">
+            <field name="name">builder.model.data.form</field>
+            <field name="model">builder.model.data</field>
+            <field name="arch" type="xml">
+                <form string="Model Data" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="model_id"/>
+                                <field name="model"/>
+                                <field name="importer"/>
+                            </group>
+                            <group>
+                                <field name="input_file"/>
+                                <field name="input_text" invisible="True"/>
+                                <field name="result_file"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Attributes">
+                                <field name="attribute_ids">
+                                    <tree string="Attribute">
+                                        <field name="name"/>
+                                        <field name="model_attr"/>
+                                        <field name="visible"/>
+                                        <field name="xml_id"/>
+                                    </tree>
+                                    <form string="Attribute" version="7.0">
+                                        <sheet>
+                                            <group>
+                                                <group>
+                                                    <field name="name"/>
+                                                    <field name="model_attr"/>
+                                                    <field name="xml_attr"/>
+                                                </group>
+                                                <group>
+                                                    <field name="visible"/>
+                                                    <field name="xml_id"/>
+                                                </group>
+                                            </group>
+                                            <notebook>
+                                                <page string="Changes">
+                                                    <field name="change_ids">
+                                                        <tree string="Changes" editable="bottom">
+                                                            <field name="sequence" widget="handle" />
+                                                            <field name="lambda_id"/>
+                                                            <field name="parameters"/>
+                                                        </tree>
+                                                    </field>
+                                                </page>
+                                            </notebook>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Result">
+                                <group>
+                                    <field name="result_text"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_model_data">
+            <field name="name">Model Data</field>
+            <field name="res_model">builder.model.data</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    </data>
+</openerp>
