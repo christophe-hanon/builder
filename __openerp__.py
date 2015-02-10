@@ -76,8 +76,8 @@ This module aims to help in the development of new modules
     'test': [
         'test/test_demo.yml',
     ],
-    'qweb': [],
-    # 'qweb': ['static/src/xml/templates.xml'],
+    #'qweb': [],
+     'qweb': ['static/src/xml/templates.xml'],
     'installable': True,
     'application': True,
     'auto_install': False,

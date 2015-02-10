@@ -1,11 +1,13 @@
 from StringIO import StringIO
 import base64
+import json
 import zipfile
 import os
 from openerp.addons.web import http
 from openerp.addons.web.controllers.main import content_disposition
 import posixpath
 from openerp.addons.web.http import request
+from controllers.export import ExportJson
 
 
 class MainController(http.Controller):
@@ -31,4 +33,19 @@ class MainController(http.Controller):
 
     @http.route('/builder/export/<string:format>/<model("builder.ir.module.module"):module>', type='http', auth="user")
     def export(self, module, format, **kwargs):
-        return "exported"
+        dct_module = ExportJson(request.env).build_json(module)
+
+        json_module = json.dumps(dct_module)
+
+        filename = "{name}.{ext}".format(name=module.name, ext="json")
+
+        fileIO = StringIO()
+
+        fileIO.write(json_module)
+
+        fileIO.flush()
+
+        return request.make_response(
+                    fileIO.getvalue(),
+                    headers=[('Content-Type', 'plain/text' or 'application/octet-stream'),
+                             ('Content-Disposition', content_disposition(filename))])
