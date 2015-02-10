@@ -330,7 +330,37 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 {% endfor %}
 {% endblock %}]]></field>
         </record>
-        
+
+
+        <record model="document.template" id="builder_view_arch_form">
+                    <field name="name">builder.actions.xml</field>
+                    <field name="title">builder.actions.xml</field>
+                    <field name="type">jinja</field>
+                    <field name="content"><![CDATA[
+{%- extends 'builder.base.xml' %}
+{% block content %}
+(% for action in models.action_window_ids %}
+<record model="ir.actions.act_window" id="{{action.name}}">
+    <field name="name">{{action.name}}</field>
+    <field name="res_model">{{action.model}}</field>
+    <field name="src_model">{{action.src_model}}</field>
+    <field name="domain">[{{action.domain}}]</field>
+    <field name="context">{{action.context}}</field>
+    <field name="view_ids" ref="{{action.view_id}}"/>
+    <field name="view_mode">{{action.view_mode}}</field>
+    <field name="view_type">{{action.view_type}}</field>
+    <field name="usage">{{action.usage}}</field>
+    <field name="target">{{action.target}}</field>
+    <field name="search_view" ref="{{action.search_view_id}}"/>
+    <field name="limit">{{action.limit}}</field>
+    <field name="auto_refresh">{{action.auto_refresh}}</field>
+    <field name="auto_search">{{action.auto_search}}</field>
+    <field name="multi">{{action.multi}}</field>
+</record>
+{% endfor %}
+{% endblock %}]]></field>
+        </record>
+
         <record model="document.template" id="builder_website_assets_xml">
                     <field name="name">builder.website_assets.xml</field>
                     <field name="title">builder.website_assets.xml</field>
@@ -431,7 +461,6 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="type">jinja</field>
                     <field name="content"><![CDATA[
 {%- extends 'builder.base.xml' %}
-
 {% block content %}
    <template id="{{module.name}}.snippets" inherit_id="website.snippets" name="Snippets">
    {% for custom, snippets in snippet_type.items() %}

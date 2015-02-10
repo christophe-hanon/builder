@@ -23,3 +23,5 @@ TODO
 - add models constrains
 - add models Onchange
 - fix m2m, m2o, o2m, o2o, relations with the current mudule
+
+- actions fix view_id -> view_ids o2m
