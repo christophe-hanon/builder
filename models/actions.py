@@ -62,9 +62,9 @@ class ir_actions_act_window(osv.osv):
     def _invalid_model_msg(self, cr, uid, ids, context=None):
         return _('Invalid model name in the action definition.')
 
-    _constraints = [
-        (_check_model, _invalid_model_msg, ['res_model','src_model'])
-    ]
+    # _constraints = [
+    #     (_check_model, _invalid_model_msg, ['res_model','src_model'])
+    # ]
 
     def _views_get_fnc(self, cr, uid, ids, name, arg, context=None):
         """Returns an ordered list of the specific view modes that should be
