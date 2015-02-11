@@ -51,6 +51,7 @@ class ir_actions_act_window(osv.osv):
     _inherit = 'builder.ir.actions.actions'
     _sequence = 'builder_ir_actions_id_seq'
 
+    # @api.constrains('res_model','src_model')
     def _check_model(self, cr, uid, ids, context=None):
         for action in self.browse(cr, uid, ids, context):
             if action.res_model not in self.pool:
@@ -58,13 +59,6 @@ class ir_actions_act_window(osv.osv):
             if action.src_model and action.src_model not in self.pool:
                 return False
         return True
-
-    def _invalid_model_msg(self, cr, uid, ids, context=None):
-        return _('Invalid model name in the action definition.')
-
-    _constraints = [
-        (_check_model, _invalid_model_msg, ['res_model','src_model'])
-    ]
 
     def _views_get_fnc(self, cr, uid, ids, name, arg, context=None):
         """Returns an ordered list of the specific view modes that should be
@@ -152,7 +146,7 @@ class ir_actions_act_window(osv.osv):
     @api.onchange('model_id')
     def onchange_model_id(self):
         if not self.name and self.model_id:
-            self.name = self.model_id.name
+            self.name = "act_{model}".format(model =self.model_id.name)
 
         if self.model_id:
             available_view_types = list(set([view.type for view in self.model_id.view_ids]) - {'search'})

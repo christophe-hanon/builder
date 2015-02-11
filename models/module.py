@@ -119,7 +119,7 @@ javascript:(function(){
         """
         self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name, db=self.env.cr.dbname)
 
-    @api.one
+    @api.multi
     def dependencies_as_list(self):
         return [str(dep.name) for dep in self.dependency_ids]
 
@@ -271,9 +271,8 @@ javascript:(function(){
             module_data.append('views/views.xml')
             module_data.append('views/menu.xml')
 
-            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {}, **functions)
             write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml', {'models': self.view_ids}, **functions)
+            write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml', {'view_ids': self.view_ids}, **functions)
             write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {'packages': ['models']},**functions)
             write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py', {'models': self.model_ids}, **functions)
 

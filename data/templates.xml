@@ -109,7 +109,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 ====================================
 {{module.summary}}
                     """,
-    "depends" : {{ module.dependencies_as_list()[0] }},
+    "depends" : {{ module.dependencies_as_list() }},
     "data" : [
                 {% for item in data -%}
                 '{{item}}',
@@ -322,9 +322,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                 <field name="model">{{view.model_id.model}}</field>
                 <field name="priority" eval="16"/>
                 <field name="arch" type="xml">
-                <{{view.type}}>
                     {{view.arch|indent}}
-                </{{view.type}}>
                 </field>
             </record>
 {% endfor %}
