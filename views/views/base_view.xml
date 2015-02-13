@@ -22,6 +22,9 @@
                         <page string="Arch">
                             <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" />
                         </page>
+                        <page string="Groups">
+                            <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
+                        </page>
                     </notebook>
                 </form>
             </field>

@@ -10,6 +10,7 @@
                     <sheet>
                         <group>
                             <group>
+                                <field name="module_id" invisible="1"/>
                                 <field name="model_id" readonly="1"/>
                                 <field name="name" readonly="1"/>
                                 <field name="xml_id" readonly="1"/>
@@ -22,8 +23,11 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Arch">
+                            <page string="Archs">
                                 <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" readonly="1"/>
+                            </page>
+                            <page string="Groups">
+                                <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
                             </page>
                         </notebook>
                     </sheet>
