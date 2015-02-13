@@ -28,7 +28,7 @@ class IrModel(models.Model):
     is_inherited = fields.Boolean('Inherited', compute='_compute_inherited', store=True)
     inherit_type = fields.Selection([('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')], 'Inherit Type', compute='_compute_inherited', store=True)
 
-    #access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
+    access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
 
     view_ids = fields.One2many('builder.ir.ui.view', 'model_id', 'Views')
 

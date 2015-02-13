@@ -11,6 +11,7 @@ class actions(osv.osv):
     _order = 'name'
     _columns = {
         'module_id': fields.many2one('builder.ir.module.module', 'Module', ondelete='cascade'),
+        'xml_id': fields.char('XML ID', required=True),
         'name': fields.char('Name', required=True),
         'type': fields.char('Action Type', required=True),
         'usage': fields.char('Action Usage'),
@@ -99,7 +100,6 @@ class ir_actions_act_window(osv.osv):
         return res
 
     _columns = {
-
         'name': fields.char('Action Name', translate=True),
         'view_id': fields.many2one('builder.ir.ui.view', 'View Ref.', ondelete='set null'),
         'domain': fields.char('Domain Value',
@@ -146,7 +146,8 @@ class ir_actions_act_window(osv.osv):
     @api.onchange('model_id')
     def onchange_model_id(self):
         if not self.name and self.model_id:
-            self.name = "act_{model}".format(model =self.model_id.name)
+            self.xml_id = "act_{model}".format(model =self.model_id.model)
+            self.name = self.model_id.name
 
         if self.model_id:
             available_view_types = list(set([view.type for view in self.model_id.view_ids]) - {'search'})

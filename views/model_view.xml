@@ -153,7 +153,17 @@
                                 </field>
                             </page>
                              <page string="Access Rights">
-                            </page>
+                                 <field name="access_ids">
+                                    <tree string="Access Rules" editable="bottom">
+                                        <field name="group_id" domain="[('module_id', '=', parent.module_id)]"/>
+                                        <field name="perm_read"/>
+                                        <field name="perm_write"/>
+                                        <field name="perm_create"/>
+                                        <field name="perm_unlink"/>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                             </page>
                             <page string="Notes">
                                 <field name="info"/>
                             </page>

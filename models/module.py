@@ -92,6 +92,7 @@ class Module(models.Model):
     model_ids = fields.One2many('builder.ir.model', 'module_id', 'Models')
     view_ids = fields.One2many('builder.ir.ui.view', 'module_id', 'Views')
     menu_ids = fields.One2many('builder.ir.ui.menu', 'module_id', 'Menus')
+    group_ids = fields.One2many('builder.res.groups', 'module_id', 'Groups')
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
@@ -272,12 +273,11 @@ javascript:(function(){
             module_data.append('views/menu.xml')
             module_data.append('views/actions.xml')
 
-            
             write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py' , {}, **functions)
             write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py' , {'packages': ['models']},**functions)
-            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml'           , {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml'        , {'module': self}, **functions)
             write_template(templates, zfile, self.name + '/views/views.xml'   , 'builder.view.xml'           , {'view_ids': self.view_ids}, **functions)
+            write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml'        , {'module': self}, **functions)
+            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml'           , {'module': self}, **functions)
             write_template(templates, zfile, self.name + '/models/models.py'  , 'builder.models.py'          , {'models': self.model_ids}, **functions)
 
         if self.icon_image:

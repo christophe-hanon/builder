@@ -338,7 +338,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 {%- extends 'builder.base.xml' %}
 {% block content %}
 {% for action in module.action_window_ids %}
-<record model="ir.actions.act_window" id="{{action.name}}">
+<record model="ir.actions.act_window" id="{{action.xml_id}}">
     {% if action.name %} <field name="name">{{action.name}}</field> {% endif %}
     {% if action.model_id.model %} <field name="res_model">{{action.model_id.model}}</field>{% endif %}
     {% if action.src_model %} <field name="src_model">{{action.src_model}}</field>{% endif %}

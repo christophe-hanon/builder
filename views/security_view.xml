@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- Groups -->
+        <record model="ir.ui.view" id="builder_res_groups_tree_view">
+            <field name="name">builder.res.groups.tree</field>
+            <field name="model">builder.res.groups</field>
+            <field name="arch" type="xml">
+                <tree string="Groups">
+                    <field name="xml_id"/>
+                    <field name="full_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_res_groups_form_view">
+            <field name="name">builder.res.groups.form</field>
+            <field name="model">builder.res.groups</field>
+            <field name="arch" type="xml">
+                <form string="Groups" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="module_id" invisible="1"/>
+                                <field name="xml_id"/>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="category_type"/>
+                                <field name="category_id" attrs="{'invisible': [('category_type', 'not in', 'system')], 'readonly': [('category_type', 'not in', 'system')], }"/>
+                                <field name="category_ref" attrs="{'invisible': [('category_type', 'not in', 'system')], 'readonly': [('category_type', 'not in', 'system')], 'required': [('category_type', 'in', 'system')]}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Inherited">
+                                <label string="Users added to this group are automatically added in the following groups."/>
+                                <field name="implied_ids" domain="[('module_id', '=', module_id)]"/>
+                            </page>
+                            <page string="Menus">
+                                <field name="menu_access" domain="[('module_id', '=', module_id)]"/>
+                            </page>
+                            <page string="Views">
+                                <field name="view_access" domain="[('module_id', '=', module_id)]"/>
+                            </page>
+                            <page string="Access Rights">
+                                <field name="model_access">
+                                    <tree string="Access Rules" editable="top">
+                                        <field name="model_id" domain="[('module_id', '=', module_id)]"/>
+                                        <field name="perm_read"/>
+                                        <field name="perm_write"/>
+                                        <field name="perm_create"/>
+                                        <field name="perm_unlink"/>
+                                        <field name="name"/>
+                                    </tree>
+                                    <form string="Access Controls">
+                                        <group col="4">
+                                            <field name="name"/>
+                                            <field name="model_id" domain="[('module_id', '=', module_id)]"/>
+                                            <newline/>
+                                            <field name="perm_read"/>
+                                            <field name="perm_write"/>
+                                            <field name="perm_create"/>
+                                            <field name="perm_unlink"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <!--<page string="Rules">
+                                <field name="rule_groups">
+                                    <tree string="Rules">
+                                        <field name="name"/>
+                                        <field name="model_id"/>
+                                        <field name="global"/>
+                                    </tree>
+                                </field>
+                            </page>-->
+                            <page string="Notes">
+                                <field name="comment"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_res_groups">
+            <field name="name">Groups</field>
+            <field name="res_model">builder.res.groups</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Groups -->
+    </data>
+</openerp>

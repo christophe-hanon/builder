@@ -67,6 +67,7 @@ This module aims to help in the development of new modules
         'views/action_view.xml',
         'views/data_view.xml',
         'views/lambda_view.xml',
+        'views/security_view.xml',
         'views/menu.xml',
         'views/backend_assets.xml',
         'views/snippet_templates.xml',

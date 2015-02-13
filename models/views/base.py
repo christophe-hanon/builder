@@ -157,6 +157,7 @@ class View(models.Model):
                                               related='model_id.special_states_field_id')
     model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields',
                                                   related='model_id.groups_date_field_ids')
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_view_group_rel', 'view_id', 'group_id', string='Groups', help="If this field is empty, the view applies to all users. Otherwise, the view applies to the users of those groups only.")
 
     # type = fields.Char('View Type')
     type = fields.Selection(
