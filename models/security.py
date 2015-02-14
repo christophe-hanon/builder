@@ -48,10 +48,10 @@ class Groups(osv.osv):
         'name': fields.char('Name', required=True, translate=True),
         # 'users': fields.many2many('res.users', 'res_groups_users_rel', 'gid', 'uid', 'Users'),
         'model_access': fields.one2many('builder.ir.model.access', 'group_id', 'Access Controls', copy=True),
-        # 'rule_groups': fields.many2many('ir.rule', 'builder_rule_group_rel', 'group_id', 'rule_group_id', 'Rules', domain=[('global', '=', False)]),
+        'rule_groups': fields.many2many('builder.ir.rule', 'builder_rule_group_rel', 'group_id', 'rule_group_id', 'Rules', domain=[('global', '=', False)]),
         'menu_access': fields.many2many('builder.ir.ui.menu', 'builder_ir_ui_menu_group_rel', 'gid', 'menu_id', 'Access Menu'),
         'view_access': fields.many2many('builder.ir.ui.view', 'builder_ir_ui_view_group_rel', 'group_id', 'view_id', 'Views'),
-        'comment' : fields.text('Comment', size=250, translate=True),
+        'comment': fields.text('Comment', size=250, translate=True),
         'category_type': fields.selection([('custom', 'Custom'), ('module', 'Module'), ('system', 'System')], 'Application Type'),
         'category_id': fields.many2one('ir.module.category', 'System Application', select=True, ondelete='set null'),
         'category_ref': fields.char('System Application Ref'),
@@ -104,3 +104,54 @@ class IrModelAccess(osv.osv):
         'perm_create': fields.boolean('Create Access'),
         'perm_unlink': fields.boolean('Delete Access'),
     }
+
+
+class IrRule(osv.osv):
+    _name = 'builder.ir.rule'
+    _order = 'name'
+
+    def _get_value(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for rule in self.browse(cr, uid, ids, context):
+            if not rule.groups:
+                res[rule.id] = True
+            else:
+                res[rule.id] = False
+        return res
+
+    def _check_model_obj(self, cr, uid, ids, context=None):
+        return not any(rule.model_id.osv_memory for rule in self.browse(cr, uid, ids, context))
+
+    def _check_model_name(self, cr, uid, ids, context=None):
+        # Don't allow rules on rules records (this model).
+        return not any(rule.model_id.model == 'ir.rule' for rule in self.browse(cr, uid, ids, context))
+
+    _columns = {
+        'module_id': fields.many2one('builder.ir.module.module', 'Module', ondelete='cascade'),
+        'name': fields.char('Name', select=1),
+        'model_id': fields.many2one('builder.ir.model', 'Object', select=1, required=True, ondelete="cascade"),
+        'global': fields.function(_get_value, string='Global', type='boolean', store=True, help="If no group is specified the rule is global and applied to everyone"),
+        'groups': fields.many2many('builder.res.groups', 'builder_rule_group_rel', 'rule_group_id', 'group_id', 'Groups'),
+        'domain': fields.text('Domain'),
+        'perm_read': fields.boolean('Apply for Read'),
+        'perm_write': fields.boolean('Apply for Write'),
+        'perm_create': fields.boolean('Apply for Create'),
+        'perm_unlink': fields.boolean('Apply for Delete')
+    }
+
+    _order = 'model_id DESC'
+
+    _defaults = {
+        'perm_read': True,
+        'perm_write': True,
+        'perm_create': True,
+        'perm_unlink': True,
+        'global': True,
+    }
+    _sql_constraints = [
+        ('no_access_rights', 'CHECK (perm_read!=False or perm_write!=False or perm_create!=False or perm_unlink!=False)', 'Rule must have at least one checked access right !'),
+    ]
+    _constraints = [
+        (_check_model_obj, 'Rules can not be applied on Transient models.', ['model_id']),
+        (_check_model_name, 'Rules can not be applied on the Record Rules model.', ['model_id']),
+    ]

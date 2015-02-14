@@ -140,6 +140,9 @@
                                     <page string="Groups">
                                         <field name="group_ids" nolabel="1" context="{'default_module_id': active_id}" />
                                     </page>
+                                    <page string="Rules">
+                                        <field name="rule_ids" nolabel="1" context="{'default_module_id': active_id}" />
+                                    </page>
 
                                 </notebook>
                             </page>

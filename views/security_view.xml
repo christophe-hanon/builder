@@ -46,7 +46,7 @@
                             <page string="Access Rights">
                                 <field name="model_access">
                                     <tree string="Access Rules" editable="top">
-                                        <field name="model_id" domain="[('module_id', '=', module_id)]"/>
+                                        <field name="model_id" domain="[('module_id', '=', parent.module_id)]"/>
                                         <field name="perm_read"/>
                                         <field name="perm_write"/>
                                         <field name="perm_create"/>
@@ -56,7 +56,7 @@
                                     <form string="Access Controls">
                                         <group col="4">
                                             <field name="name"/>
-                                            <field name="model_id" domain="[('module_id', '=', module_id)]"/>
+                                            <field name="model_id" domain="[('module_id', '=', parent.module_id)]"/>
                                             <newline/>
                                             <field name="perm_read"/>
                                             <field name="perm_write"/>
@@ -66,15 +66,15 @@
                                     </form>
                                 </field>
                             </page>
-                            <!--<page string="Rules">
-                                <field name="rule_groups">
+                            <page string="Rules">
+                                <field name="rule_groups" context="{'default_module_id': module_id}">
                                     <tree string="Rules">
                                         <field name="name"/>
-                                        <field name="model_id"/>
+                                        <field name="model_id" domain="[('module_id', '=', parent.module_id)]"/>
                                         <field name="global"/>
                                     </tree>
                                 </field>
-                            </page>-->
+                            </page>
                             <page string="Notes">
                                 <field name="comment"/>
                             </page>
@@ -92,5 +92,70 @@
         </record>
 
         <!-- Groups -->
+
+        <!-- Rules -->
+        <record model="ir.ui.view" id="builder_ir_rule_tree_view">
+            <field name="name">builder.ir.rule.tree</field>
+            <field name="model">builder.ir.rule</field>
+            <field name="arch" type="xml">
+                <tree string="Record rules">
+                    <field name="model_id"/>
+                    <field name="name"/>
+                    <field name="global"/>
+                    <field name="domain"/>
+                    <field name="perm_read"/>
+                    <field name="perm_write"/>
+                    <field name="perm_create"/>
+                    <field name="perm_unlink"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_rule_form_view">
+            <field name="name">builder.ir.rule.form</field>
+            <field name="model">builder.ir.rule</field>
+            <field name="arch" type="xml">
+                <form string="Record rules">
+                  <sheet>
+                    <group>
+                        <group string="General">
+                            <field name="module_id" invisible="1"/>
+                            <field name="name"/>
+                            <field name="model_id" domain="[('module_id', '=', module_id)]"/>
+                        </group>
+                        <group col="4" string="Access Rights">
+                            <field name="perm_read"/>
+                            <field name="perm_write"/>
+                            <field name="perm_create"/>
+                            <field name="perm_unlink"/>
+                        </group>
+                    </group>
+                    <separator string="Rule Definition (Domain Filter)"/>
+                    <field name="domain" colspan="2" nolabel="1"/>
+                    <group string="Groups (no group = global)">
+                        <field name="global"/>
+                        <field name="groups" nolabel="1" colspan="4"/>
+                    </group>
+                    <group string="Interaction between rules">
+                        <label colspan="2" string="Global rules (non group-specific) are restrictions, and cannot be bypassed. Group-local rules grant additional permissions, but are constrained within the bounds of global ones. The first group rules restrict further than global rules, but any additional group rule will add more permissions"/>
+                        <label colspan="2" string="Detailed algorithm:"/>
+                        <label colspan="2" string="1. Global rules are combined together with a logical AND operator, and with the result of the following steps"/>
+                        <label colspan="2" string="2. Group-specific rules are combined together with a logical OR operator"/>
+                        <label colspan="2" string="3. If user belongs to several groups, the results from step 2 are combined with logical OR operator"/>
+                        <label colspan="2" string="Example: GLOBAL_RULE_1 AND GLOBAL_RULE_2 AND ( (GROUP_A_RULE_1 OR GROUP_A_RULE_2) OR (GROUP_B_RULE_1 OR GROUP_B_RULE_2) )"/>
+                    </group>
+                   </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_rule">
+            <field name="name">Rules</field>
+            <field name="res_model">builder.ir.rule</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Rules -->
     </data>
 </openerp>

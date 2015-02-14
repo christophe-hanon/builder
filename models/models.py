@@ -125,6 +125,7 @@ class IrModel(models.Model):
         self.groups_inherited_field_ids = self.env['builder.ir.model.fields'].search([('model_id', '=', self.id), ('is_inherited', '=', True)])
 
 
+
 class ModelMethod(models.Model):
     _name = 'builder.ir.model.method'
 
