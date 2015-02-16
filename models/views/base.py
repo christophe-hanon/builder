@@ -182,6 +182,15 @@ class View(models.Model):
     inherit_children_ids = fields.One2many('builder.ir.ui.view', 'inherit_id', 'Inherit Views')
     field_parent = fields.Char('Child Field')
 
+    inherit_view = fields.Boolean('Inherit')
+    inherit_view_id = fields.Many2one('ir.ui.view', 'Inherit View')
+    inherit_view_ref = fields.Char('Inherit View Ref')
+    inherit_view_type = fields.Selection([('field', 'Field'), ('xpath', 'XPath')], 'Inherit View Type', default='field')
+    inherit_view_field_id = fields.Many2one('builder.ir.model.fields', 'Inherit View Field')
+    inherit_view_xpath = fields.Char('Inherit View XPath')
+    inherit_view_position = fields.Selection([('after', 'After'), ('before', 'Before'), ('inside', 'Inside'), ('replace', 'Replace')], 'Inherit View Position', default='after')
+
+
     @api.multi
     def action_open_view(self):
         model = self.pool.get(self._name)

@@ -11,10 +11,6 @@
                             <field name="module_id" invisible="1" />
                             <field name="model_id" domain="[('module_id', '=', module_id)]"/>
                             <field name="model_name" invisible="1" />
-                            <field name="model_inherit_type" invisible="1" />
-                            <field name="inherit_view" attrs="{'invisible': [('model_inherit_type', 'in', [False])]}"/>
-                            <field name="inherit_view_id" options="{'no_create': True, 'no_open': True}" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('model_inherit_type', 'in', [False])]}" domain="[('model', '=', model_name), ('type', '=', type)]"/>
-                            <field name="inherit_view_ref" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('model_inherit_type', 'in', [False])], 'required': [('inherit_view', '=', True), ('model_inherit_type', 'not in', [False])]}"/>
                         </group>
                         <group>
                             <field name="type" />

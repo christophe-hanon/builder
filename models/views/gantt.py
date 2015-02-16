@@ -31,12 +31,15 @@ class GanttView(models.Model):
         'type': 'gantt',
         'custom_arch': False,
         'subclass_model': lambda s, c, u, cxt=None: s._name,
+        'inherit_view_xpath': '//gantt'
     }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
         self.name = self.model_id.name
         self.xml_id = "view_{snake}_gantt".format(snake = snake_case(self.model_id.model))
+        self.model_inherit_type = self.model_id.inherit_type #shouldn`t be doing that
+        self.model_name = self.model_id.model #shouldn`t be doing that
 
     @api.onchange('custom_arch', 'attr_create', 'attr_edit', 'attr_delete', 'attr_date_start_field_id', 'attr_date_stop_field_id', 'attr_date_delay_field_id', 'attr_progress_field_id', 'attr_default_group_by_field_id', 'name')
     def _onchange_generate_arch(self):

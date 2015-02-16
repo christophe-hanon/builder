@@ -28,13 +28,6 @@ class FormView(models.Model):
     statusbar_button_ids = fields.One2many('builder.views.form.statusbar.button', 'view_id', 'Status Bar Buttons')
     field_ids = fields.One2many('builder.views.form.field', 'view_id', 'Items')
 
-    inherit_view = fields.Boolean('Inherit')
-    inherit_view_id = fields.Many2one('ir.ui.view', 'Inherit View')
-    inherit_view_ref = fields.Char('Inherit View Ref')
-    inherit_view_type = fields.Selection([('field', 'Field'), ('xpath', 'XPath')], 'Inherit View Type', default='field')
-    inherit_view_field_id = fields.Many2one('builder.ir.model.fields', 'Inherit View Field')
-    inherit_view_xpath = fields.Char('Inherit View XPath')
-    inherit_view_position = fields.Selection([('after', 'After'), ('before', 'Before'), ('inside', 'Inside'), ('replace', 'Replace')], 'Inherit View Position', default='after')
 
     @api.onchange('inherit_view_id')
     def onchange_inherit_view_id(self):
@@ -64,11 +57,11 @@ class FormView(models.Model):
             if not view.model == self.model_id.model:
                 raise ValidationError("View Ref is not a valid view reference")
 
-
     _defaults = {
         'type': 'form',
         'custom_arch': False,
         'subclass_model': lambda s, c, u, cxt=None: s._name,
+        'inherit_view_xpath': '//form'
     }
 
     @api.onchange('model_id')
@@ -76,8 +69,8 @@ class FormView(models.Model):
         self.name = self.model_id.name
         self.xml_id = "view_{snake}_form".format(snake = snake_case(self.model_id.model))
         self.show_status_bar = True if self.model_id.special_states_field_id.id else False
-        self.model_inherit_type = self.model_id.inherit_type #shouldnt be doing that
-        self.model_name = self.model_id.model #shouldnt be doing that
+        self.model_inherit_type = self.model_id.inherit_type #shouldn`t be doing that
+        self.model_name = self.model_id.model #shouldn`t be doing that
 
         if not len(self.field_ids):
             field_list = []
@@ -87,7 +80,8 @@ class FormView(models.Model):
 
             self.field_ids = field_list
 
-    @api.onchange('custom_arch', 'name', 'field_ids', 'attr_create', 'attr_edit', 'attr_delete', 'states_clickable', 'show_status_bar', 'visible_states' )
+    @api.onchange('custom_arch', 'name', 'field_ids', 'attr_create', 'attr_edit', 'attr_delete', 'states_clickable', 'show_status_bar', 'visible_states',
+                  'inherit_view', 'inherit_view_id', 'inherit_view_ref', 'inherit_view_type', 'inherit_view_field_id', 'inherit_view_xpath', 'inherit_view_position' )
     def _onchange_generate_arch(self):
         self.arch = self._get_view_arch()
 

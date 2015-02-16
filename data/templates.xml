@@ -302,14 +302,32 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="name">builder.view_arch_form.xml</field>
                     <field name="title">builder.view_arch_form.xml</field>
                     <field name="type">jinja</field>
-                    <field name="content"><![CDATA[<form version="7.0" string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
+                    <field name="content"><![CDATA[
+{% if not this.inherit_view -%}
+<form version="7.0" string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
+{% else -%}
+{% if this.inherit_view_type == 'field' %}
+<field name="{{this.inherit_view_field_id.name}}" position="{{this.inherit_view_position}}">
+{% elif this.inherit_view_type == 'xpath' %}
+<xpath expr="{{this.inherit_view_xpath}}" position="{{this.inherit_view_position}}">
+{% endif -%}
+{% endif -%}
 {% for field in flat_fields %}
     <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
 {%- endfor %}
-</search>]]></field>
+{% if not this.inherit_view -%}
+</form>
+{% else -%}
+{% if this.inherit_view_type == 'field' %}
+</field>
+{% elif this.inherit_view_type == 'xpath' %}
+</xpath>
+{% endif -%}
+{% endif -%}
+]]></field>
         </record>
 
-        <record model="document.template" id="builder_view_arch_form">
+        <record model="document.template" id="builder_view_xml">
                     <field name="name">builder.view.xml</field>
                     <field name="title">builder.view.xml</field>
                     <field name="type">jinja</field>
