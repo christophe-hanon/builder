@@ -302,21 +302,39 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="name">builder.view_arch_form.xml</field>
                     <field name="title">builder.view_arch_form.xml</field>
                     <field name="type">jinja</field>
-                    <field name="content"><![CDATA[<form version="7.0" string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
+                    <field name="content"><![CDATA[
+{% if not this.inherit_view -%}
+<form version="7.0" string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
+{% else -%}
+{% if this.inherit_view_type == 'field' %}
+<field name="{{this.inherit_view_field_id.name}}" position="{{this.inherit_view_position}}">
+{% elif this.inherit_view_type == 'xpath' %}
+<xpath expr="{{this.inherit_view_xpath}}" position="{{this.inherit_view_position}}">
+{% endif -%}
+{% endif -%}
 {% for field in flat_fields %}
     <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
 {%- endfor %}
-</search>]]></field>
+{% if not this.inherit_view -%}
+</form>
+{% else -%}
+{% if this.inherit_view_type == 'field' %}
+</field>
+{% elif this.inherit_view_type == 'xpath' %}
+</xpath>
+{% endif -%}
+{% endif -%}
+]]></field>
         </record>
 
-        <record model="document.template" id="builder_views_xml">
+        <record model="document.template" id="builder_view_xml">
                     <field name="name">builder.view.xml</field>
                     <field name="title">builder.view.xml</field>
                     <field name="type">jinja</field>
                     <field name="content"><![CDATA[
 {%- extends 'builder.base.xml' %}
 {% block content %}
-{% for view in view_ids %}
+{% for view in models %}
             <record model="ir.ui.view" id="{{view.xml_id}}">
                 <field name="name">{{view.name}}</field>
                 <field name="model">{{view.model_id.model}}</field>
@@ -328,37 +346,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 {% endfor %}
 {% endblock %}]]></field>
         </record>
-
-
-        <record model="document.template" id="builder_actions_xml">
-                    <field name="name">builder.actions.xml</field>
-                    <field name="title">builder.actions.xml</field>
-                    <field name="type">jinja</field>
-                    <field name="content"><![CDATA[
-{%- extends 'builder.base.xml' %}
-{% block content %}
-{% for action in module.action_window_ids %}
-<record model="ir.actions.act_window" id="{{action.xml_id}}">
-    {% if action.name %} <field name="name">{{action.name}}</field> {% endif %}
-    {% if action.model_id.model %} <field name="res_model">{{action.model_id.model}}</field>{% endif %}
-    {% if action.src_model %} <field name="src_model">{{action.src_model}}</field>{% endif %}
-    {% if action.domain %} <field name="domain">[{{action.domain}}]</field>{% endif %}
-    {% if action.context %} <field name="context">{{action.context}}</field>{% endif %}
-    {% if action.view_id %} <field name="view_ids" ref="{{action.view_id}}"/>{% endif %}
-    {% if action.view_mode %} <field name="view_mode">{{action.view_mode}}</field>{% endif %}
-    {% if action.view_type %} <field name="view_type">{{action.view_type}}</field>{% endif %}
-    {% if action.usage %} <field name="usage">{{action.usage}}</field>{% endif %}
-    {% if action.target %} <field name="target">{{action.target}}</field>{% endif %}
-    {% if action.search_view_id %} <field name="search_view" ref="{{action.search_view_id}}"/>{% endif %}
-    {% if action.limit %} <field name="limit">{{action.limit}}</field>{% endif %}
-    {% if action.auto_refresh %} <field name="auto_refresh">{{action.auto_refresh}}</field>{% endif %}
-    {% if action.auto_search %} <field name="auto_search">{{action.auto_search}}</field>{% endif %}
-    {% if action.multi %} <field name="multi">{{action.multi}}</field>{% endif %}
-</record>
-{% endfor %}
-{% endblock %}]]></field>
-        </record>
-
+        
         <record model="document.template" id="builder_website_assets_xml">
                     <field name="name">builder.website_assets.xml</field>
                     <field name="title">builder.website_assets.xml</field>
@@ -459,6 +447,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="type">jinja</field>
                     <field name="content"><![CDATA[
 {%- extends 'builder.base.xml' %}
+
 {% block content %}
    <template id="{{module.name}}.snippets" inherit_id="website.snippets" name="Snippets">
    {% for custom, snippets in snippet_type.items() %}
