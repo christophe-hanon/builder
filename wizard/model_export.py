@@ -18,5 +18,9 @@ class ModelImport(models.TransientModel):
     @api.one
     def action_export(self):
         module = self.env[self.env.context.get('active_model')].search([('id', '=', self.env.context.get('active_id'))])
-        print "exported!!"
-        return {'type': 'ir.actions.act_window_close'}
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/builder/export/{format_}/{id}'.format(id=module.id,format_=self.export_type),
+            'target': 'self'
+        }

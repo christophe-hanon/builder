@@ -12,4 +12,10 @@
         <t t-jquery="li>a[data-menu='odoo_support']" t-operation="replace" />
         <t t-jquery="li>a[data-menu='help']" t-operation="replace" />
     </t>
+
+    <t t-extend="FieldBinaryFile">
+        <t t-jquery="a[class='oe_form_binary_file_save_data']">
+            this.parent().remove();
+        </t>
+    </t>
 </templates>
