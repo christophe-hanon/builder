@@ -10,5 +10,4 @@ from .tools.graph import process_order
 
 _logger = logging.getLogger(__name__)
 
-
 graph.process_order = process_order

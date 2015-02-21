@@ -37,18 +37,18 @@ class JsonExport:
                 not module._fields[column].compute and record.get(column)]
 
 
-    def build_json(self, module, inverse_field=[]):
+    def build_json(self, model, inverse_field=[]):
 
-        record = self.__get_column_values(module, inverse_field)
+        record = self.__get_column_values(model, inverse_field)
 
-        link_columns = self.__get_link_column(module, record)
+        link_columns = self.__get_link_column(model, record)
 
         for column in link_columns:
-            comodel_name = module._fields[column].comodel_name
+            comodel_name = model._fields[column].comodel_name
 
             values = record.pop(column)
 
-            relational_multi = issubclass(module._fields[column].__class__, _RelationalMulti)
+            relational_multi = issubclass(model._fields[column].__class__, _RelationalMulti)
 
             record[column] = {'comodel_name': comodel_name,
                               'relational_multi': 1 if relational_multi else 0}
@@ -58,7 +58,7 @@ class JsonExport:
                 for value in values:
                     recordset = self.env[comodel_name].search([['id', '=', value]])
                     record[column]['recordset'].append(
-                        self.build_json(recordset, [module._fields[column].inverse_name]))
+                        self.build_json(recordset, [model._fields[column].inverse_name]))
             else:
 
                 recordset = self.env[comodel_name].search([['id', "=", values[0]]])
@@ -83,8 +83,55 @@ class JsonExport:
             'data': data
         }
 
-        raw = zlib.decompress(simplejson.dumps(json_module), zlib.Z_BEST_COMPRESSION, zlib.DEFLATED)
+        raw = zlib.compress(simplejson.dumps(json_module), zlib.Z_BEST_COMPRESSION)
 
         zfileIO.write(raw)
         zfileIO.flush()
         return zfileIO
+
+
+class JsonImport:
+    env = None
+
+    def __init__(self, enviroment):
+        self.env = enviroment
+
+    def build(self, model_obj, file_data):
+        json_dump = simplejson.loads(zlib.decompress(file_data))
+        return self.build_model(model_obj, json_dump['data'])
+
+    def build_model(self, model_obj, data, inverse_field={}):
+        relational_multi = {}
+        relational = {}
+        related_fields = {}
+
+        for k,v in data.iteritems():
+            if isinstance(v,dict):
+                if v['relational_multi'] == 1:
+                    relational_multi[k] = v
+                else:
+                    relational[k] = v
+            else:
+                related_fields[k] = v
+
+        if len(inverse_field) > 0:
+            k,v = inverse_field.items()[0]
+            related_fields[k] = v
+
+        record = model_obj.create(related_fields)
+
+        for k,v in relational_multi.iteritems():
+            comodel = self.env[v['comodel_name']]
+
+            for rec_ in v['recordset']:
+              self.build_model(comodel,rec_,{record._fields[k].inverse_name:record.id})
+
+
+        for k,v in relational.iteritems():
+            comodel = self.env[v['comodel_name']]
+
+            search_query =[(k_,"=",v_) for k_,v_ in v['recordset'].iteritems()]
+            rec_ = comodel.search(search_query,limit = 1)
+            record.write({k:rec_.id})
+
+        return record

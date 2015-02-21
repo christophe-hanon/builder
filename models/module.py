@@ -93,6 +93,8 @@ class Module(models.Model):
     model_ids = fields.One2many('builder.ir.model', 'module_id', 'Models')
     view_ids = fields.One2many('builder.ir.ui.view', 'module_id', 'Views')
     menu_ids = fields.One2many('builder.ir.ui.menu', 'module_id', 'Menus')
+    group_ids = fields.One2many('builder.res.groups', 'module_id', 'Groups')
+    rule_ids = fields.One2many('builder.ir.rule', 'module_id', 'Rules')
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
@@ -118,9 +120,10 @@ javascript:(function(){
     script('$base_url/builder/static/src/js/snippet_loader.js');
 })();
         """
-        self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name, db=self.env.cr.dbname)
+        self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name,
+                                                                 db=self.env.cr.dbname)
 
-    @api.one
+    @api.multi
     def dependencies_as_list(self):
         return [str(dep.name) for dep in self.dependency_ids]
 
@@ -145,33 +148,6 @@ javascript:(function(){
     @api.depends('model_ids')
     def _compute_models_count(self):
         self.models_count = len(self.model_ids)
-
-
-    def get_available_import_formats(self, cr, uid, context=None):
-        return [
-            {
-                'type': 'raw',
-                'action': 'import_base_form',
-                'name': _('Import Module')
-            },
-            {
-                'type': 'dia',
-                'action': 'import_base_form',
-                'name': _('Import from Dia')
-            }
-        ]
-
-    def get_available_export_formats(self, cr, uid, context=None):
-        return [
-            {
-                'name': _('Export Module'),
-                'type': 'raw'
-            },
-            {
-                'name': _('Export to Dia'),
-                'type': 'dia'
-            }
-        ]
 
     @api.multi
     def button_download(self):
@@ -213,7 +189,7 @@ javascript:(function(){
             'view_type': 'form',
             'view_mode': 'diagram',
             'res_model': 'builder.ir.module.module',
-            'views': [(diagram_view and diagram_view.id or False, 'diagram'),],
+            'views': [(diagram_view and diagram_view.id or False, 'diagram'), ],
             'view_id': diagram_view and diagram_view.id,
             'res_id': self.id,
             'target': 'new',
@@ -227,7 +203,7 @@ javascript:(function(){
     def action_edit_description_html(self, cr, uid, ids, context=None):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
-        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format(id=ids[0], model=self._name)
         return {
             'name': _('Edit Template'),
             'type': 'ir.actions.act_url',
@@ -344,8 +320,13 @@ javascript:(function(){
         return zfileIO
 
     @api.multi
-    def _export_json(self):
+    def _export_odoo(self):
         return json.JsonExport(self.env).export(self)
+
+    @api.model
+    def _import_odoo(self, importer):
+        print "clling impoer"
+        return json.JsonImport(self.env).build(self, decodestring(importer.file))
 
 
 class DataFile(models.Model):

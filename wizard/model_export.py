@@ -10,7 +10,6 @@ class ModelImport(models.TransientModel):
 
     @api.model
     def _get_export_types(self):
-        print '*'*20, get_module_exporters(self.env['builder.ir.module.module'])
         return get_module_exporters(self.env['builder.ir.module.module'])
 
     export_type = fields.Selection(_get_export_types, 'Format', required=True)

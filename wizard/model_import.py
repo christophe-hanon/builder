@@ -84,7 +84,7 @@ class ModelImport(models.TransientModel):
         for model in self.model_ids:
             module_model = self.env['builder.ir.model'].search([('module_id', '=', module.id), ('model', '=', model.model)])
 
-            model_in_modules = model.modules.split(', ') if  model.modules else []
+            model_in_modules = model.modules.split(', ') if model.modules else []
 
             module.add_dependency(model_in_modules)
 

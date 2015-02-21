@@ -8,6 +8,7 @@
                 <form string="Module Import">
                     <group>
                         <group>
+                            <field name="import_type" />
                             <field name="file" />
                         </group>
                         <group>

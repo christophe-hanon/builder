@@ -34,9 +34,9 @@ class MainController(http.Controller):
     @http.route('/builder/export/<string:format>/<model("builder.ir.module.module"):module>', type='http', auth="user")
     def export(self, module, format, **kwargs):
 
-        filename = "{name}.{ext}".format(name=module.name, ext="json")
+        filename = "{name}.{ext}".format(name=module.name, ext=format)
 
-        fileIO = module._export_json()
+        fileIO = getattr(module, '_export_{format}'.format(format=format))()
 
         return request.make_response(
                     fileIO.getvalue(),
