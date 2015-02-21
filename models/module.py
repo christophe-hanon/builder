@@ -9,6 +9,7 @@ from StringIO import StringIO
 import zipfile
 import base64
 import posixpath
+
 from openerp import models, fields, api
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
@@ -17,13 +18,18 @@ from openerp.addons.builder.tools import simple_selection
 __author__ = 'one'
 
 MODULE_EXPORTER_RE = re.compile('_export_\w[\w_]+')
+
+
 def get_module_exporters(model):
     return [
         (attr.replace('_export_', ''), attr.replace('_export_', '').capitalize()) for attr in dir(model)
         if MODULE_EXPORTER_RE.match(attr) and isinstance(getattr(model, attr), MethodType)
     ]
 
+
 MODULE_IMPORTER_RE = re.compile('_import_\w[\w_]+')
+
+
 def get_module_importers(model):
     return [
         (attr.replace('_import_', ''), attr.replace('_import_', '').capitalize()) for attr in dir(model)
@@ -39,7 +45,7 @@ class Module(models.Model):
         return [(c.name, c.name) for c in self.env['ir.module.category'].search([])]
 
     name = fields.Char("Technical Name", required=True, select=True)
-    category_id = fields.Selection(simple_selection('ir.module.category', 'name') , 'Category')
+    category_id = fields.Selection(simple_selection('ir.module.category', 'name'), 'Category')
     shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
@@ -58,18 +64,18 @@ class Module(models.Model):
     sequence = fields.Integer('Sequence')
     # dependencies_id = fields.One2many('programming.module.dependency', 'module_id', 'Dependencies')
     auto_install = fields.Boolean('Automatic Installation',
-                                   help='An auto-installable module is automatically installed by the '
-                                        'system when all its dependencies are satisfied. '
-                                        'If the module has no dependency, it is always installed.')
+                                  help='An auto-installable module is automatically installed by the '
+                                       'system when all its dependencies are satisfied. '
+                                       'If the module has no dependency, it is always installed.')
     license = fields.Selection([
-        ('GPL-2', 'GPL Version 2'),
-        ('GPL-2 or any later version', 'GPL-2 or later version'),
-        ('GPL-3', 'GPL Version 3'),
-        ('GPL-3 or any later version', 'GPL-3 or later version'),
-        ('AGPL-3', 'Affero GPL-3'),
-        ('Other OSI approved licence', 'Other OSI Approved Licence'),
-        ('Other proprietary', 'Other Proprietary')
-    ], string='License', default='AGPL-3')
+                                   ('GPL-2', 'GPL Version 2'),
+                                   ('GPL-2 or any later version', 'GPL-2 or later version'),
+                                   ('GPL-3', 'GPL Version 3'),
+                                   ('GPL-3 or any later version', 'GPL-3 or later version'),
+                                   ('AGPL-3', 'Affero GPL-3'),
+                                   ('Other OSI approved licence', 'Other OSI Approved Licence'),
+                                   ('Other proprietary', 'Other Proprietary')
+                               ], string='License', default='AGPL-3')
 
     application = fields.Boolean('Application')
     icon = fields.Char('Icon URL')
@@ -117,7 +123,8 @@ javascript:(function(){
     script('$base_url/builder/static/src/js/snippet_loader.js');
 })();
         """
-        self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name, db=self.env.cr.dbname)
+        self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name,
+                                                                 db=self.env.cr.dbname)
 
     @api.one
     def dependencies_as_list(self):
@@ -144,33 +151,6 @@ javascript:(function(){
     @api.depends('model_ids')
     def _compute_models_count(self):
         self.models_count = len(self.model_ids)
-
-
-    def get_available_import_formats(self, cr, uid, context=None):
-        return [
-            {
-                'type': 'raw',
-                'action': 'import_base_form',
-                'name': _('Import Module')
-            },
-            {
-                'type': 'dia',
-                'action': 'import_base_form',
-                'name': _('Import from Dia')
-            }
-        ]
-
-    def get_available_export_formats(self, cr, uid, context=None):
-        return [
-            {
-                'name': _('Export Module'),
-                'type': 'raw'
-            },
-            {
-                'name': _('Export to Dia'),
-                'type': 'dia'
-            }
-        ]
 
     @api.multi
     def button_download(self):
@@ -212,7 +192,7 @@ javascript:(function(){
             'view_type': 'form',
             'view_mode': 'diagram',
             'res_model': 'builder.ir.module.module',
-            'views': [(diagram_view and diagram_view.id or False, 'diagram'),],
+            'views': [(diagram_view and diagram_view.id or False, 'diagram'), ],
             'view_id': diagram_view and diagram_view.id,
             'res_id': self.id,
             'target': 'new',
@@ -226,7 +206,7 @@ javascript:(function(){
     def action_edit_description_html(self, cr, uid, ids, context=None):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
-        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format(id=ids[0], model=self._name)
         return {
             'name': _('Edit Template'),
             'type': 'ir.actions.act_url',
@@ -272,10 +252,14 @@ javascript:(function(){
             module_data.append('views/menu.xml')
 
             write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py', {}, **functions)
-            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml', {'models': self.view_ids}, **functions)
-            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {'packages': ['models']},**functions)
-            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py', {'models': self.model_ids}, **functions)
+            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self},
+                           **functions)
+            write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml',
+                           {'models': self.view_ids}, **functions)
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py',
+                           {'packages': ['models']}, **functions)
+            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py',
+                           {'models': self.model_ids}, **functions)
 
         if self.icon_image:
             info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
@@ -290,7 +274,7 @@ javascript:(function(){
             zfile.writestr(info, self.description_html)
 
 
-        #website stuff
+        # website stuff
         for data in self.data_file_ids:
             info = zipfile.ZipInfo(posixpath.join(self.name, data.path.strip('/')))
             info.compress_type = zipfile.ZIP_DEFLATED
@@ -299,7 +283,7 @@ javascript:(function(){
 
         for theme in self.website_theme_ids:
             if theme.image:
-                info = zipfile.ZipInfo(self.name + '/static/themes/' + theme.asset_id.attr_id +'.png')
+                info = zipfile.ZipInfo(self.name + '/static/themes/' + theme.asset_id.attr_id + '.png')
                 info.compress_type = zipfile.ZIP_DEFLATED
                 info.external_attr = 2175008768
                 zfile.writestr(info, base64.decodestring(theme.image))
@@ -307,18 +291,18 @@ javascript:(function(){
         if self.website_asset_ids:
             module_data.append('views/website_assets.xml')
             write_template(templates, zfile, self.name + '/views/website_assets.xml', 'builder.website_assets.xml',
-                                {'module': self, 'assets': self.website_asset_ids},
-                                **functions)
+                           {'module': self, 'assets': self.website_asset_ids},
+                           **functions)
         if self.website_page_ids:
             module_data.append('views/website_pages.xml')
             write_template(templates, zfile, self.name + '/views/website_pages.xml', 'builder.website_pages.xml',
-                                {'module': self, 'pages': self.website_page_ids, 'menus': self.website_menu_ids},
-                                **functions)
+                           {'module': self, 'pages': self.website_page_ids, 'menus': self.website_menu_ids},
+                           **functions)
         if self.website_theme_ids:
             module_data.append('views/website_themes.xml')
             write_template(templates, zfile, self.name + '/views/website_themes.xml', 'builder.website_themes.xml',
-                                {'module': self, 'themes': self.website_theme_ids},
-                                **functions)
+                           {'module': self, 'themes': self.website_theme_ids},
+                           **functions)
 
         if self.website_snippet_ids:
             snippet_type = defaultdict(list)
@@ -327,19 +311,23 @@ javascript:(function(){
 
             module_data.append('views/website_snippets.xml')
             write_template(templates, zfile, self.name + '/views/website_snippets.xml', 'builder.website_snippets.xml',
-                                {'module': self, 'snippet_type': snippet_type},
-                                **functions)
+                           {'module': self, 'snippet_type': snippet_type},
+                           **functions)
 
         #end website stuff
 
 
         #this must be last to include all resources
         write_template(templates, zfile, self.name + '/__openerp__.py', 'builder.__openerp__.py',
-                            {'module': self, 'data': module_data}, **functions)
+                       {'module': self, 'data': module_data}, **functions)
 
         zfile.close()
         zfileIO.flush()
         return zfileIO
+
+    @api.multi
+    def _export_json(self):
+        pass
 
 
 class DataFile(models.Model):

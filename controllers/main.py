@@ -7,7 +7,7 @@ from openerp.addons.web import http
 from openerp.addons.web.controllers.main import content_disposition
 import posixpath
 from openerp.addons.web.http import request
-from controllers.export import ExportJson
+from .export import ExportJson
 
 
 class MainController(http.Controller):

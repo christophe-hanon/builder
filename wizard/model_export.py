@@ -1,26 +1,26 @@
+from openerp.addons.builder.models.module import get_module_exporters
+
 __author__ = 'one'
 
 from openerp import models, api, fields, _
 
 
-
-
 class ModelImport(models.TransientModel):
     _name = 'builder.ir.model.export.wizard'
 
-    @api.one
+    @api.model
     def _get_export_types(self):
-        available_formats = self.env['builder.ir.module.module'].get_available_export_formats()
-        return [(r['type'], r['name']) for r in available_formats]
+        print '*'*20, get_module_exporters(self.env['builder.ir.module.module'])
+        return get_module_exporters(self.env['builder.ir.module.module'])
 
     export_type = fields.Selection(_get_export_types, 'Format', required=True)
 
-    @api.one
+    @api.multi
     def action_export(self):
         module = self.env[self.env.context.get('active_model')].search([('id', '=', self.env.context.get('active_id'))])
 
         return {
             'type': 'ir.actions.act_url',
-            'url': '/builder/export/{format_}/{id}'.format(id=module.id,format_=self.export_type),
+            'url': '/builder/export/{format}/{id}'.format(id=module.id, format=self.export_type),
             'target': 'self'
         }
