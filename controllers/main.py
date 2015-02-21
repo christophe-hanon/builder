@@ -7,7 +7,7 @@ from openerp.addons.web import http
 from openerp.addons.web.controllers.main import content_disposition
 import posixpath
 from openerp.addons.web.http import request
-from controllers.export import ExportJson
+from ..tools.formats.json import JsonExport
 
 
 class MainController(http.Controller):
@@ -33,17 +33,10 @@ class MainController(http.Controller):
 
     @http.route('/builder/export/<string:format>/<model("builder.ir.module.module"):module>', type='http', auth="user")
     def export(self, module, format, **kwargs):
-        dct_module = ExportJson(request.env).build_json(module)
-
-        json_module = json.dumps(dct_module)
 
         filename = "{name}.{ext}".format(name=module.name, ext="json")
 
-        fileIO = StringIO()
-
-        fileIO.write(json_module)
-
-        fileIO.flush()
+        fileIO = module._export_json()
 
         return request.make_response(
                     fileIO.getvalue(),

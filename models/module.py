@@ -12,6 +12,7 @@ import posixpath
 from openerp import models, fields, api
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
+from openerp.addons.builder.tools.formats import json
 
 
 __author__ = 'one'
@@ -92,8 +93,6 @@ class Module(models.Model):
     model_ids = fields.One2many('builder.ir.model', 'module_id', 'Models')
     view_ids = fields.One2many('builder.ir.ui.view', 'module_id', 'Views')
     menu_ids = fields.One2many('builder.ir.ui.menu', 'module_id', 'Menus')
-    group_ids = fields.One2many('builder.res.groups', 'module_id', 'Groups')
-    rule_ids = fields.One2many('builder.ir.rule', 'module_id', 'Rules')
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
@@ -121,7 +120,7 @@ javascript:(function(){
         """
         self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name, db=self.env.cr.dbname)
 
-    @api.multi
+    @api.one
     def dependencies_as_list(self):
         return [str(dep.name) for dep in self.dependency_ids]
 
@@ -274,13 +273,11 @@ javascript:(function(){
             module_data.append('views/menu.xml')
             module_data.append('views/actions.xml')
 
-            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py' , {'packages': ['models']},**functions)
-            write_template(templates, zfile, self.name + '/views/views.xml'   , 'builder.view.xml'           , {'view_ids': self.view_ids}, **functions)
-            write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml'        , {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml'           , {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/models/models.py'  , 'builder.models.py'          , {'models': self.model_ids}, **functions)
-
-        write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py' , {}, **functions)
+            write_template(templates, zfile, self.name + '/__init__.py', 'builder.python.__init__.py', {}, **functions)
+            write_template(templates, zfile, self.name + '/views/menu.xml', 'builder.menu.xml', {'module': self}, **functions)
+            write_template(templates, zfile, self.name + '/views/views.xml', 'builder.view.xml', {'models': self.view_ids}, **functions)
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py', {'packages': ['models']},**functions)
+            write_template(templates, zfile, self.name + '/models/models.py', 'builder.models.py', {'models': self.model_ids}, **functions)
 
         if self.icon_image:
             info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
@@ -345,6 +342,10 @@ javascript:(function(){
         zfile.close()
         zfileIO.flush()
         return zfileIO
+
+    @api.multi
+    def _export_json(self):
+        return json.JsonExport(self.env).export(self)
 
 
 class DataFile(models.Model):

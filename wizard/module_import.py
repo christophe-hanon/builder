@@ -1,3 +1,5 @@
+import StringIO
+from base64 import decodestring
 import json
 
 __author__ = 'one'
