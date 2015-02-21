@@ -13,6 +13,7 @@ import posixpath
 from openerp import models, fields, api
 from openerp import _
 from openerp.addons.builder.tools import simple_selection
+from openerp.addons.builder.tools.formats import json
 
 
 __author__ = 'one'
@@ -327,7 +328,7 @@ javascript:(function(){
 
     @api.multi
     def _export_json(self):
-        pass
+        return json.JsonExport(self.env).export(self)
 
 
 class DataFile(models.Model):
