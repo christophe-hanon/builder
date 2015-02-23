@@ -127,7 +127,7 @@ class ir_actions_act_window(osv.osv):
         'search_view_id': fields.many2one('builder.ir.ui.view', 'Search View Ref.'),
         'filter': fields.boolean('Filter'),
         'auto_search':fields.boolean('Auto Search'),
-        'search_view' : fields.function(_search_view, type='text', string='Search View'),
+        # 'search_view' : fields.function(_search_view, type='text', string='Search View'),
         'multi': fields.boolean('Restrict to lists', help="If checked and the action is bound to a model, it will only appear in the More menu on list views"),
     }
 
