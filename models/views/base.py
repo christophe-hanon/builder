@@ -237,7 +237,7 @@ class AbstractViewField(models.AbstractModel):
     special_states_field_id = fields.Many2one('builder.ir.model.fields',
                                               related='view_id.model_id.special_states_field_id', string='States Field')
     module_id = fields.Many2one('builder.ir.model', related='view_id.model_id.module_id', string='Module')
-
+    string = fields.Char('String')
 
     @api.one
     @api.depends('field_id.ttype', 'view_id')

@@ -263,7 +263,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="type">jinja</field>
                     <field name="content"><![CDATA[<tree string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if toolbar %} toolbar="True" {% endif %}{% if fonts %} fonts="{{fonts}}" {% endif %}{% if colors %} colors="{{colors}}" {% endif %}>
 {% for field in fields %}
-    <field name="{{field.field_id.name}}"{% if field.invisible %} invisible="True" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} widget_options="{{field.widget_options}}" {% endif %}{% if field.readonly %} readonly="{{field.readonly}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %} />
+    <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.invisible %} invisible="True" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} widget_options="{{field.widget_options}}" {% endif %}{% if field.readonly %} readonly="{{field.readonly}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %} />
 {%- endfor %}
 </tree>]]></field>
         </record>
@@ -313,8 +313,19 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 {% endif -%}
 {% endif -%}
 {% for field in flat_fields %}
-    <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+    <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{field|fieldattrs}} />
 {%- endfor %}
+{% if pages %}
+    <notebook>
+    {%- for page, pfields in pages.items() %}
+        <page string="{{page}}">
+            {%- for field in pfields %}
+            <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{field|fieldattrs}} />
+            {%- endfor %}
+        </page>
+    {%- endfor %}
+    </notebook>
+{%- endif  %}
 {% if not this.inherit_view -%}
 </form>
 {% else -%}

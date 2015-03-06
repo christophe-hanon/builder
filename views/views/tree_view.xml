@@ -88,6 +88,8 @@
                             <field name="domain" attrs="{'invisible': [('field_ttype', 'not in', ['many2one'])]}"/>
                         </group>
                         <group>
+                            <field name="nolabel" />
+                            <field name="string" attrs="{'invisible': [('nolabel', '=', True)]}"/>
                             <field name="invisible" />
                             <field name="readonly" />
                         </group>

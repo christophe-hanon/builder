@@ -98,6 +98,28 @@ class FormView(models.Model):
                 else:
                     flat.append(field)
 
+            def fieldattrs(field):
+                attrs = []
+                if field.invisible and field.invisible_condition:
+                    attrs.append('"invisible": {cond}'.format(cond=field.invisible_condition))
+
+                if field.required and field.required_condition:
+                    attrs.append('"required": {cond}'.format(cond=field.required_condition))
+
+                if field.readonly and field.readonly_condition:
+                    attrs.append('"readonly": {cond}'.format(cond=field.readonly_condition))
+
+                return 'attrs={' + ', '.join(attrs) + '} ' if attrs else ''
+
+            functions = {
+                'filters': {
+                    'dot2dashed': lambda x: x.replace('.', '_'),
+                    'dot2name': lambda x: ''.join([s.capitalize() for s in x.split('.')]),
+                    'cleargroup': lambda x: x.replace('.', '_'),
+                    'fieldattrs': fieldattrs
+                },
+            }
+
             template_obj = self.env['document.template']
             return template_obj.render_template('builder.view_arch_form.xml', {
                 'this': self,
@@ -111,7 +133,7 @@ class FormView(models.Model):
                 'states_clickable': self.states_clickable,
                 'show_status_bar': self.show_status_bar,
                 'visible_states': self.visible_states.split(',') if self.visible_states else False,
-            })
+            }, **functions)
 
 
 DEFAULT_WIDGETS_BY_TYPE = {

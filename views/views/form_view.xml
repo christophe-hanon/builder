@@ -108,6 +108,7 @@
                         </group>
                         <group>
                             <field name="nolabel" />
+                            <field name="string" attrs="{'invisible': [('nolabel', '=', True)]}"/>
                             <field name="required" />
                             <field name="required_condition" attrs="{'invisible': [('required', '=', False)]}"/>
                             <field name="invisible" />
