@@ -102,6 +102,6 @@ class ModelImport(models.TransientModel):
 
                 model_map[model.model] = new_model
 
-            self._create_model_fields(module, self.model_ids, model_map, self.relations_only)
+        self._create_model_fields(module, self.model_ids, model_map, self.relations_only)
 
         return {'type': 'ir.actions.act_window_close'}
