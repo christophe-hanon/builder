@@ -57,6 +57,13 @@
                                     </group>
                                 </group>
                             </page>
+                            <page string="Help">
+                                <group>
+                                    <field name="show_help" />
+                                </group>
+                                <group></group>
+                                <field name="help" attrs="{'invisible': [('show_help', '=', False)], 'readonly': [('show_help', '=', False)]}"/>
+                            </page>
                             <page string="Security">
 
                             </page>

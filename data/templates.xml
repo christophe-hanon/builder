@@ -47,7 +47,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
             {%- endif -%}
         {%- endfor -%}]
     {%- endif %}
-    {% if model.inherit_model_ids -%}_inherits = {{'{'}} {%- for inherits in model.inherits_model_ids -%}
+    {% if model.inherits_model_ids -%}_inherits = {{'{'}} {%- for inherits in model.inherits_model_ids -%}
             {%- if inherits.system_model_id.model -%}
                 '{{inherits.system_model_id.model}}' : '{{inherits.field_name}}',
             {%- endif -%}
@@ -58,9 +58,10 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
     {%- endif %}
     {% if model.info %}_description = '{{model.info}}'{% endif -%}
     {%- for field in model.field_ids %}
+    {% if not field.is_inherited %}
     {{field.name}} = fields.{{field.ttype.capitalize()}}(
                     {%- if field.ttype == 'many2many' %} '{{field.relation_model_id.model}}', {%- endif %}
-                    {%- if field.ttype == 'many2one' %} '{{field.relation_model_id.model}}', ondelete='{{field.on_delete.lower()}}', {%- endif %}
+                    {%- if field.ttype == 'many2one' %} '{{field.relation_model_id.model}}', {%- if field.on_delete -%}ondelete='{{field.on_delete}}',{% endif %}{%- endif %}
                     {%- if field.ttype == 'one2many' %} '{{field.relation_model_id.model}}', '{{field.relation_field}}', {%- endif %}
                     {%- if field.ttype == 'char' %} {%- if field.size %} size={{field.size}}, {% endif %}{%- if field.translate -%}translate=True,{% endif %}{%- endif %}
                     {%- if field.ttype == 'text' %} {%- if field.translate -%}translate=True, {% endif %}{%- endif %}
@@ -74,6 +75,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     {%- if field.selection %} selection={{field.selection}},{% endif %}
                     {%- if field.compute -%} compute='{{field.compute_method_name}}',{% endif %}
                     {%- if field.inverse -%} inverse='{{field.inverse_method_name}}',{% endif %})
+    {% endif %}
     {%- endfor %}
     {% for field in model.field_ids %}
     {%- if field.compute %}
@@ -371,21 +373,26 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 {% block content %}
 {% for action in module.action_window_ids %}
 <record model="ir.actions.act_window" id="{{action.name}}">
-    {% if action.name %} <field name="name">{{action.name}}</field> {% endif %}
-    {% if action.model_id.model %} <field name="res_model">{{action.model_id.model}}</field>{% endif %}
-    {% if action.src_model %} <field name="src_model">{{action.src_model}}</field>{% endif %}
-    {% if action.domain %} <field name="domain">[{{action.domain}}]</field>{% endif %}
-    {% if action.context %} <field name="context">{{action.context}}</field>{% endif %}
-    {% if action.view_id %} <field name="view_ids" ref="{{action.view_id}}"/>{% endif %}
-    {% if action.view_mode %} <field name="view_mode">{{action.view_mode}}</field>{% endif %}
-    {% if action.view_type %} <field name="view_type">{{action.view_type}}</field>{% endif %}
-    {% if action.usage %} <field name="usage">{{action.usage}}</field>{% endif %}
-    {% if action.target %} <field name="target">{{action.target}}</field>{% endif %}
-    {% if action.search_view_id %} <field name="search_view" ref="{{action.search_view_id}}"/>{% endif %}
-    {% if action.limit %} <field name="limit">{{action.limit}}</field>{% endif %}
-    {% if action.auto_refresh %} <field name="auto_refresh">{{action.auto_refresh}}</field>{% endif %}
-    {% if action.auto_search %} <field name="auto_search">{{action.auto_search}}</field>{% endif %}
-    {% if action.multi %} <field name="multi">{{action.multi}}</field>{% endif %}
+    {% if action.name %}    <field name="name">{{action.name}}</field> {%- endif %}
+    {% if action.model_id.model %}  <field name="res_model">{{action.model_id.model}}</field>{%- endif %}
+    {% if action.src_model %}   <field name="src_model">{{action.src_model}}</field>{%- endif %}
+    {% if action.domain %}  <field name="domain">{{action.domain}}</field>{%- endif %}
+    {% if action.context and action.context!='{}' %} <field name="context">{{action.context}}</field>{%- endif %}
+    {% if action.view_id %} <field name="view_ids" ref="{{action.view_id}}"/>{%- endif %}
+    {% if action.view_mode %}   <field name="view_mode">{{action.view_mode}}</field>{%- endif %}
+    {% if action.view_type %}   <field name="view_type">{{action.view_type}}</field>{%- endif %}
+    {% if action.usage %}   <field name="usage">{{action.usage}}</field>{% endif %}
+    {% if action.target and target!='current' %}  <field name="target">{{action.target}}</field>{%- endif %}
+    {% if action.search_view_id %}  <field name="search_view" ref="{{action.search_view_id}}"/>{%- endif %}
+    {% if action.limit and action.limit != 80 %}   <field name="limit">{{action.limit}}</field>{%- endif %}
+    {% if action.auto_refresh %}    <field name="auto_refresh">{{action.auto_refresh}}</field>{%- endif %}
+    {% if not action.auto_search %} <field name="auto_search">{{action.auto_search}}</field>{%- endif %}
+    {% if action.multi %}   <field name="multi">{{action.multi}}</field>{%- endif %}
+    {% if action.show_help -%}
+    <field name="help" type="html">
+        {{action.help}}
+    </field>
+    {%- endif %}
 </record>
 {% endfor %}
 {% endblock %}]]></field>

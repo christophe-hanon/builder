@@ -129,6 +129,8 @@ class ir_actions_act_window(osv.osv):
         'auto_search':fields.boolean('Auto Search'),
         # 'search_view' : fields.function(_search_view, type='text', string='Search View'),
         'multi': fields.boolean('Restrict to lists', help="If checked and the action is bound to a model, it will only appear in the More menu on list views"),
+        'show_help': fields.boolean('Display Help'),
+        'help': fields.html('Help'),
     }
 
     _defaults = {
@@ -141,6 +143,13 @@ class ir_actions_act_window(osv.osv):
         'auto_refresh': 0,
         'auto_search':True,
         'multi': False,
+        'help': """
+          <p class="oe_view_nocontent_create">
+            Click to create a new model.
+          </p><p>
+            This is an example of help content.
+          </p>
+        """
     }
 
     @api.onchange('model_id')
