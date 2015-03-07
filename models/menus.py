@@ -113,7 +113,7 @@ class IrUiMenu(models.Model):
 
     action_module = fields.Reference([
                                     ('builder.ir.actions.act_window', 'Window'),
-                                    ('builder.ir.actions.act_url', 'URL'),
+                                    # ('builder.ir.actions.act_url', 'URL'),
     ], 'Module Action')
 
     group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_menu_group_rel', 'menu_id', 'gid', string='Groups', help="If this field is empty, the menu applies to all users. Otherwise, the view applies to the users of those groups only.")
