@@ -18,15 +18,27 @@
                             <field name="attr_delete"  />
                         </group>
                         <group>
-                            <field name="attr_date_start_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
-                            <field name="attr_date_stop_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
-                            <field name="attr_date_delay_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
-                            <field name="attr_progress_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
-                            <field name="attr_default_group_by_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}"/>
+
                         </group>
                     </group>
 
                     <notebook>
+                        <page string="Options">
+                            <group>
+                                <group string="Date Settings">
+                                    <field name="attr_date_start_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
+                                    <field name="attr_date_stop_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
+                                    <field name="attr_date_delay_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
+                                </group>
+                                <group string="Other Settings">
+                                    <field name="attr_progress_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
+                                    <field name="attr_color_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}"/>
+                                    <field name="attr_mode" />
+                                    <field name="attr_default_group_by_field_id" domain="[('model_id', '=', model_id)]" options="{'no_create': True}"/>
+                                </group>
+                            </group>
+
+                        </page>
                         <page string="Arch">
                             <group>
                                 <group></group>

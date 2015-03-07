@@ -4,7 +4,7 @@ from .base import FIELD_WIDGETS_ALL
 
 __author__ = 'one'
 
-
+#TODO: add support for levels?
 class GanttView(models.Model):
     _name = 'builder.views.gantt'
 
@@ -23,6 +23,18 @@ class GanttView(models.Model):
     attr_date_delay_field_id = fields.Many2one('builder.ir.model.fields', 'Date Delay Field', ondelete='set null')
     attr_progress_field_id = fields.Many2one('builder.ir.model.fields', 'Progress Field', ondelete='set null')
     attr_default_group_by_field_id = fields.Many2one('builder.ir.model.fields', 'Default Group By Field', ondelete='set null')
+    attr_color_field_id = fields.Many2one('builder.ir.model.fields', 'Color Field', ondelete='set null')
+    attr_mode = fields.Selection([
+                                     ('day', 'Day'),
+                                     ('3days', '3 Days'),
+                                     ('week', 'Week'),
+                                     ('3weeks', '3 Weeks'),
+                                     ('month', 'Month'),
+                                     ('3months', '3 Months'),
+                                     ('year', 'Year'),
+                                     ('3years', '3 Years'),
+                                     ('5years', '5 Years'),
+                                 ], 'Mode', default='month')
 
 
     field_ids = fields.One2many('builder.views.gantt.field', 'view_id', 'Items')
@@ -61,6 +73,8 @@ class GanttView(models.Model):
                 'date_stop': self.attr_date_stop_field_id and self.attr_date_stop_field_id.name or False,
                 'date_delay': self.attr_date_delay_field_id and self.attr_date_delay_field_id.name or False,
                 'progress': self.attr_progress_field_id and self.attr_progress_field_id.name or False,
+                'mode': self.attr_mode,
+                'color': self.attr_color_field_id and self.attr_color_field_id.name or False,
                 'default_group_by': self.attr_default_group_by_field_id and self.attr_default_group_by_field_id.name or False,
             })
 

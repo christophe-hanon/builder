@@ -19,6 +19,7 @@
                             <field name="attr_delete"  />
                         </group>
                         <group>
+                            <field name="field_parent_id" domain="[('ttype', '=', 'one2many'), ('model_id', '=', model_id)]" />
                             <field name="attr_toolbar" />
                             <field name="attr_colors" />
                             <field name="attr_fonts" />

@@ -15,6 +15,7 @@ class TreeView(models.Model):
     }
 
     view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
+    field_parent_id = fields.Many2one('builder.ir.model.fields', string='Field Parent', ondelete='set null')
     attr_create = fields.Boolean('Allow Create', default=True)
     attr_edit = fields.Boolean('Allow Edit', default=True)
     attr_delete = fields.Boolean('Allow Delete', default=True)

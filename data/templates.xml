@@ -215,7 +215,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     <field name="name">builder.view_arch_gantt.xml</field>
                     <field name="title">builder.view_arch_gantt.xml</field>
                     <field name="type">jinja</field>
-                    <field name="content"><![CDATA[<gantt string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if date_start %} date_start="{{date_start}}" {% endif %}{% if date_stop %} date_stop="{{date_stop}}" {% endif %}{% if date_delay %} date_delay="{{date_delay}}" {% endif %}{% if progress %} progress="{{progress}}" {% endif %}{% if default_group_by%} default_group_by="{{default_group_by}}" {% endif %}>
+                    <field name="content"><![CDATA[<gantt string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if date_start %} date_start="{{date_start}}" {% endif %}{% if date_stop %} date_stop="{{date_stop}}" {% endif %}{% if date_delay %} date_delay="{{date_delay}}" {% endif %}{% if progress %} progress="{{progress}}" {% endif %}{% if color %} color="{{color}}" {% endif %}{% if mode and mode<>'month' %} mode="{{mode}}" {% endif %}{% if default_group_by%} default_group_by="{{default_group_by}}" {% endif %}>
 </gantt>]]></field>
         </record>
 
@@ -349,6 +349,9 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
             <record model="ir.ui.view" id="{{view.xml_id}}">
                 <field name="name">{{view.name}}</field>
                 <field name="model">{{view.model_id.model}}</field>
+                {%- if view.type == 'tree' and view.field_parent_id %}
+                <field name="field_parent">{{view.field_parent_id.name}}</field>
+                {% endif -%}
                 <field name="priority" eval="16"/>
                 <field name="arch" type="xml">
                     {{view.arch|indent}}
