@@ -16,6 +16,7 @@ class ModelImport(models.TransientModel):
     _name = 'builder.ir.model.import.wizard'
 
     model_ids = fields.Many2many('ir.model', 'builder_ir_model_import_wizard_model_rel', 'wizard_id', 'model_id', 'Models')
+    exclude_fields = fields.Boolean('Exclude Fields')
     create_fields = fields.Boolean('Include Fields')
     relations_only = fields.Boolean('Relations Only')
     set_inherited = fields.Boolean('Set as Inherit', default=True)
@@ -102,6 +103,7 @@ class ModelImport(models.TransientModel):
 
                 model_map[model.model] = new_model
 
-        self._create_model_fields(module, self.model_ids, model_map, self.relations_only)
+        if (self.set_inherited and not self.exclude_fields) or (not self.set_inherited and (self.create_fields or self.relations_only) ):
+            self._create_model_fields(module, self.model_ids, model_map, self.relations_only)
 
         return {'type': 'ir.actions.act_window_close'}

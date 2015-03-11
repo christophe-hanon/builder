@@ -321,12 +321,15 @@ javascript:(function(){
         return zfileIO
 
     @api.multi
+    def _export_zip(self):
+        return self.get_zipped_module()
+
+    @api.multi
     def _export_odoo(self):
         return json.JsonExport(self.env).export(self)
 
     @api.model
     def _import_odoo(self, importer):
-        print "clling impoer"
         return json.JsonImport(self.env).build(self, decodestring(importer.file))
 
 

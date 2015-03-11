@@ -416,6 +416,10 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                 {% for item in asset.item_ids -%}
                     {% if item.file_id.extension == '.css' -%}
                         <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.less' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" type="text/less" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.sass' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" type="text/sass" t-ignore="true"/>
                     {% elif  item.file_id.extension == '.js' -%}
                         <script type="text/javascript" src="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
                     {% endif -%}

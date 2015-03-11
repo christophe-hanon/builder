@@ -9,6 +9,7 @@
                     <group>
                         <group>
                             <field name="set_inherited" />
+                            <field name="exclude_fields" attrs="{'invisible': [('set_inherited', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="create_fields" attrs="{'invisible': [('set_inherited', '=', True)]}"/>

@@ -126,7 +126,14 @@ class IrUiMenu(models.Model):
             data = self.env['ir.model.data'].search([('model', '=', model), ('res_id', '=', res_id)])
             self.action_system_ref = "{module}.{id}".format(module=data.module, id=data.name) if data.id else False
 
+            self.name = self.action_system.name
+            self.xml_id = "menu_{action}".format(action=self.action_system_ref.replace('.', '_'))
 
+    @api.onchange('action_module')
+    def onchange_action_module(self):
+        if self.action_module:
+            self.name = self.action_module.name
+            self.xml_id = "menu_{action}".format(action=self.action_module.xml_id)
 
     @api.model
     @api.returns('self', lambda value: value.id)

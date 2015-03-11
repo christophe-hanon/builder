@@ -155,7 +155,7 @@ class ir_actions_act_window(osv.osv):
     @api.onchange('model_id')
     def onchange_model_id(self):
         if not self.name and self.model_id:
-            self.xml_id = "act_{model}".format(model =self.model_id.model)
+            self.xml_id = "act_{model}".format(model =self.model_id.model.replace('.', '_'))
             self.name = self.model_id.name
 
         if self.model_id:

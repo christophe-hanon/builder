@@ -38,7 +38,7 @@
                                 </group>
                                 <group>
                                     <field name="inherit_view_type" attrs="{'invisible': [('inherit_view', '=', False)], 'required': [('inherit_view', '=', True)]}"/>
-                                    <field name="inherit_view_field_id" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('inherit_view_type', 'not in', ['field'])], 'required': [('inherit_view', '=', True), ('inherit_view_type', 'in', ['field'])]}"/>
+                                    <field name="inherit_view_field_id" domain="[('model_id', '=', model_id), ('is_inherited', '=', True)]" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('inherit_view_type', 'not in', ['field'])], 'required': [('inherit_view', '=', True), ('inherit_view_type', 'in', ['field'])]}"/>
                                     <field name="inherit_view_xpath" attrs="{'invisible': ['|', ('inherit_view', '=', False), ('inherit_view_type', 'not in', ['xpath'])], 'required': [('inherit_view', '=', True), ('inherit_view_type', 'in', ['xpath'])]}"/>
                                     <field name="inherit_view_position" attrs="{'invisible': [('inherit_view', '=', False)], 'required': [('inherit_view', '=', True)]}"/>
                                 </group>

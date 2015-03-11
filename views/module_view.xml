@@ -254,7 +254,7 @@
             <field name="model">builder.ir.module.module</field>
             <field name="arch" type="xml">
                 <diagram string="UML Editor">
-                    <node object="builder.ir.model" shape="rectangle:osv_memory!=True;circle:osv_memory==True">
+                    <node object="builder.ir.model" shape="rectangle:True" bgcolor="gray:osv_memory==True;lightcyan:inherit_type=='prototype';lightgreen:inherit_type=='class';lightyellow:inherit_type=='mixed';lightsalmon:inherit_type=='delegation'">
                         <field name="model"/>
                         <field name="name"/>
                         <field name="osv_memory" invisible="1"/>

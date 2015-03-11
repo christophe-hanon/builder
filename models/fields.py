@@ -83,7 +83,7 @@ class IrFields(models.Model):
     relation_field = fields.Char('Relation Field',
                                  help="For one2many fields, the field on the target model that implement the opposite many2one relationship")
 
-    field_description = fields.Char('Field Label', required=True)
+    field_description = fields.Char('Field Label')
     ttype = fields.Selection(_get_fields_type_selection, 'Field Type', required=True)
     relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')],
                                       'Field Type')

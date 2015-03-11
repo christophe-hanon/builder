@@ -39,7 +39,7 @@
                         </group>
                         <notebook>
                             <page string="Fields">
-                                <field name="field_ids">
+                                <field name="field_ids" domain="[('is_inherited', '=', True)]">
                                     <tree string="Fields Description">
                                         <field name="position" widget="handle"/>
                                         <field name="name"/>
@@ -141,6 +141,21 @@
                                         </field>
                                     </group>
                                 </group>
+
+                                <!--<group string="Inherited Fields">
+                                     <field nolabel="1" name="field_ids" domain="[('is_inherited', '=', True)]" create="false" edit="false" delete="false" >
+                                        <tree string="Fields Description">
+                                            <field name="position" widget="handle"/>
+                                            <field name="name"/>
+                                            <field name="field_description"/>
+                                            <field name="ttype"/>
+                                            <field name="required"/>
+                                            <field name="readonly"/>
+                                            <field name="select_level"/>
+                                        </tree>
+                                    </field>
+                                </group>-->
+
                             </page>
                             <page string="Views">
                                 <field name="view_ids" nolabel="1">
