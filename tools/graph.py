@@ -127,7 +127,7 @@ def process(self, starting_node):
 
 def tree_order(self, node, last=0):
         mid_pos = self.result[node]['y']
-        l = self.transitions.get(node, [])
+        l = list(set(self.transitions.get(node, [])) - {node})
         l.reverse()
         no = len(l)
 
@@ -135,11 +135,7 @@ def tree_order(self, node, last=0):
         first_half = l[no/2+rest:]
         last_half = l[:no/2]
 
-        first_clean_half = dict.fromkeys(first_half)
-        if node in first_clean_half:
-            del first_clean_half[node]
-        first_clean_half = first_clean_half.keys()
-        for i, child in enumerate(first_clean_half):
+        for i, child in enumerate(first_half):
             self.result[child]['y'] = mid_pos - (i+1 - (0 if rest else 0.5))
 
             if self.transitions.get(child, False):

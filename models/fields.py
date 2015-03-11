@@ -85,8 +85,7 @@ class IrFields(models.Model):
 
     field_description = fields.Char('Field Label')
     ttype = fields.Selection(_get_fields_type_selection, 'Field Type', required=True)
-    relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')],
-                                      'Field Type')
+    relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')], 'Field Type', compute='_compute_relation_ttype', fnct_inv='_relation_type_set_inverse', store=False)
     selection = fields.Char('Selection Options', help="List of options for a selection field, "
                                                       "specified as a Python expression defining a list of (key, label) pairs. "
                                                       "For example: [('blue','Blue'),('yellow','Yellow')]")
@@ -116,6 +115,17 @@ class IrFields(models.Model):
     inverse_method = fields.Text('Inverse Method')
 
     is_inherited = fields.Boolean('Inherited')
+
+    diagram_arc_name = fields.Char(compute='_compute_arc_name', store=False)
+
+    @api.one
+    @api.depends()
+    def _compute_arc_name(self):
+        if self.ttype in relational_field_types:
+            small_map = {'many2one': 'm2o', 'one2many': 'o2m', 'many2many': 'm2m'}
+            self.diagram_arc_name = "{name} ({type})".format(name=self.name, type=small_map[self.ttype])
+        else:
+            self.diagram_arc_name = self.name
 
     @api.onchange('compute', 'inverse')
     def _compute_method_names(self):
@@ -147,6 +157,18 @@ class IrFields(models.Model):
             self.relation = self.relation_model_id.model
         else:
             self.relation = False
+
+    @api.one
+    @api.depends('ttype')
+    def _compute_relation_ttype(self):
+        if self.ttype in relational_field_types:
+            self.relation_ttype = self.ttype
+        else:
+            return False
+
+    @api.one
+    def _relation_type_set_inverse(self):
+        return self.write({'ttype': self.relation_ttype})
 
     def __str__(self):
         return self.name
@@ -215,10 +237,11 @@ class IrFields(models.Model):
     def _get_default_ttype(self):
         if self.env.context.get('from_diagram'):
             return 'many2one'
-        return False
+        return 'char'
 
     _defaults = {
         'ttype': _get_default_ttype,
+        'relation_ttype': _get_default_ttype,
         'name': _get_default_name,
     }
 

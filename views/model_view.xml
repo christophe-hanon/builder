@@ -277,7 +277,7 @@
                     <group>
                         <group>
                             <field name="ttype" invisible="1"/>
-                            <field name="relation_ttype" required="1"/>
+                            <field name="relation_ttype" required="1" readonly="0"/>
                         </group>
                         <group></group>
                     </group>
