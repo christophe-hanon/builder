@@ -211,6 +211,9 @@ javascript:(function(){
             'target': 'self',
         }
 
+    def import_models(self, model):
+        pass
+
     @api.multi
     def get_zipped_module(self):
 

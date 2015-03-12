@@ -30,5 +30,34 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
+
+        <record model="ir.ui.view" id="builder_ir_module_module_import_local_wizard_form_view">
+            <field name="name">builder.ir.module.module.import.local.wizard.form</field>
+            <field name="model">builder.ir.module.module.import.local.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Module Local Import">
+                    <group>
+                        <group>
+                            <field name="module_id" domain="[('state', 'in', ['installed', 'to upgrade'])]" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_import" string="Import Module" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_module_module_import_local_wizard">
+            <field name="name">Module Import</field>
+            <field name="res_model">builder.ir.module.module.import.local.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
     </data>
 </openerp>

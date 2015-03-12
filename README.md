@@ -25,3 +25,4 @@ TODO
 - fix m2m, m2o, o2m, o2o, relations with the current mudule
 
 - allow exporting module to v8 and v9
+- allow import local module (some features only)
