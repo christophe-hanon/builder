@@ -90,8 +90,6 @@ def process(self, starting_node):
         @param starting_node node from where to start the graph search
         """
 
-        print self.transitions
-
         self.start_nodes = starting_node or []
         self.partial_order = {}
         self.links = []
@@ -123,6 +121,25 @@ def process(self, starting_node):
                 self.start = s
                 self.rank()   # First step:Netwoek simplex algorithm
                 self.order_in_rank()    #Second step: ordering nodes within ranks
+
+def init_order(self, node, level):
+        """Initialize orders the nodes in each rank with depth-first search
+        """
+
+        self._init_order(node, level, self.transitions)
+
+def _init_order(self, node, level, transitions):
+        if not self.result[node]['y']:
+            self.result[node]['y'] = self.order[level]
+            self.order[level] += 1
+
+        node_trans = transitions.get(node, [])
+        if node in transitions:
+                del transitions[node]
+
+        for sec_end in node_trans:
+            if node!=sec_end:
+                self._init_order(sec_end, self.result[sec_end]['x'], transitions)
 
 
 def tree_order(self, node, last=0):
