@@ -54,7 +54,7 @@ def process_order(self):
 
         if roots:
             roots.append(self.start)
-            if clean_tree:
+            if clean_tree and self.start in self.tree_list and len(self.tree_list[self.start]):
                 one_level_el = self.tree_list[self.start][0][1]
                 base = self.result[one_level_el]['y']# * 2 / (index + 2)
             else:
