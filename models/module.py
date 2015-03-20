@@ -217,6 +217,9 @@ javascript:(function(){
     @api.multi
     def get_zipped_module(self):
 
+        def groups_attribute(groups):
+            return 'groups="{list}"'.format(list=','.join([i.xml_id for i in groups])) if len(groups) else ''
+
         def write_template(template_obj, zf, fname, template, d, **params):
             i = zipfile.ZipInfo(fname)
             i.compress_type = zipfile.ZIP_DEFLATED
@@ -231,6 +234,7 @@ javascript:(function(){
                 'dot2dashed': lambda x: x.replace('.', '_'),
                 'dot2name': lambda x: ''.join([s.capitalize() for s in x.split('.')]),
                 'cleargroup': lambda x: x.replace('.', '_'),
+                'groups': groups_attribute,
             },
         }
 

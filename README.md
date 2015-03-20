@@ -26,3 +26,4 @@ TODO
 
 - allow exporting module to v8 and v9
 - allow import local module (some features only)
+- allow creating cron jobs

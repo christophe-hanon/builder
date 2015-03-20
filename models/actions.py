@@ -15,6 +15,7 @@ class actions(osv.osv):
         'name': fields.char('Name', required=True),
         'type': fields.char('Action Type', required=True),
         'usage': fields.char('Action Usage'),
+
         'help': fields.text('Action description',
             help='Optional help text for the users with a description of the target view, such as its usage and purpose.',
             translate=True),
@@ -124,6 +125,8 @@ class ir_actions_act_window(osv.osv):
         'limit': fields.integer('Limit', help='Default limit for the list view'),
         'auto_refresh': fields.integer('Auto-Refresh', help='Add an auto-refresh on the view'),
         # 'groups_id': fields.many2many('res.groups', 'ir_act_window_group_rel', 'act_id', 'gid', 'Groups'),
+        'groups_id': fields.many2many('builder.res.groups', 'builder_ir_act_window_group_rel',
+            'act_id', 'gid', 'Groups'),
         'search_view_id': fields.many2one('builder.ir.ui.view', 'Search View Ref.'),
         'filter': fields.boolean('Filter'),
         'auto_search':fields.boolean('Auto Search'),

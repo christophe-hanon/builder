@@ -65,7 +65,7 @@
                                 <field name="help" attrs="{'invisible': [('show_help', '=', False)], 'readonly': [('show_help', '=', False)]}"/>
                             </page>
                             <page string="Security">
-
+                                <field name="groups_id"/>
                             </page>
                         </notebook>
                     </sheet>
