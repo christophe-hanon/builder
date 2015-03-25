@@ -100,7 +100,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
 {%- include 'builder.python_file_header.py' ignore missing %}
 # noinspection PyStatementEffect
 {
-    "name" : "{{module.name}}",
+    "name" : "{{module.shortdesc}} if {{module.shortdesc}} else {{module.name}}",
 {% if module.installed_version %}    "version" : "{{module.installed_version}}",{% endif %}
 {% if module.author %}    "author" : "{{module.author}}",{% endif %}
 {% if module.website %}    "website" : "{{module.website}}",{% endif %}

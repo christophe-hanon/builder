@@ -8,6 +8,62 @@
                 <form string="Module">
 
                     <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+
+                            <ul class="nav navbar-nav navbar-right" style="">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <span class="oe_topbar_name">Website</span>
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Pages" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Themes" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Snippets" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Assets" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li class="odoo_support_contact">
+                                            <button class="oe_inline oe_stat_button" string="Menus" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right" style="">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <span class="oe_topbar_name">Backend</span>
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Models" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Views" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Actions" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Menus" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li class="odoo_support_contact">
+                                            <button class="oe_inline oe_stat_button" string="Groups" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Record Rules" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
 
                         <field name="icon_image" widget="image" class="oe_avatar oe_left"/>
                         <div class="oe_title">
