@@ -98,6 +98,20 @@ class IrFields(models.Model):
                                help="Whether values for this field can be translated (enables the translation mechanism for that field)")
     size = fields.Char('Size')
     index = fields.Boolean('Index')
+    copy = fields.Boolean('Copy', default=True, help='whether the field value should be copied when the record '
+            'is duplicated (default: ``True`` for normal fields, ``False`` for '
+            '``one2many`` and computed fields, including property fields and '
+            'related fields)')
+    default = fields.Char('Default')
+    delegate = fields.Boolean('Delegate', default=True, help=''' set it to ``True`` to make fields of the target model
+        accessible from the current model (corresponds to ``_inherits``)''')
+    auto_join = fields.Boolean('Auto Join', help='whether JOINs are generated upon search through that field (boolean, by default ``False``')
+    groups = fields.Char('Groups', help='''comma-separated list of group xml ids (string); this
+                                         restricts the field access to the users of the given groups only''')
+
+    decimal_digits = fields.Char('Decimal Digits', )
+    decimal_precision = fields.Char('Decimal Precision')
+
     on_delete = fields.Selection([('cascade', 'Cascade'), ('set null', 'Set NULL'), ('restrict', 'Restrict')],
                                  'On Delete', default='set null', help='On delete property for many2one fields')
     domain = fields.Char('Domain', default='[]',

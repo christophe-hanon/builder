@@ -68,12 +68,21 @@
                                                         <field name="required"/>
                                                         <field name="readonly"/>
                                                         <field name="index"/>
+                                                        <field name="copy"/>
+                                                        <field name="default"/>
+                                                        <field name="groups"/>
                                                         <field name="select_level" attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                                         <field name="translate" attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                                     </group>
                                                     <group>
                                                         <field name="selection" attrs="{'required': [('ttype','in',['selection','reference'])], 'readonly': [('ttype','not in',['selection','reference'])], 'invisible': [('ttype','not in',['selection'])]}"/>
-                                                        <field name="size" attrs="{'required': [('ttype','in',['char','reference'])], 'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+                                                        <field name="size" attrs="{'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+
+                                                        <label for="decimal_digits" attrs="{'invisible': [('ttype','not in',['float'])]}"/>
+                                                        <div attrs="{'invisible': [('ttype','not in',['float'])]}">
+                                                            <field name="decimal_digits" attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Digits" class="oe_inline" style="width: 20%"/>
+                                                            <field name="decimal_precision" attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Precision" class="oe_inline" style="width: 20%"/>
+                                                        </div>
                                                     </group>
                                                 </group>
                                             </page>
@@ -83,6 +92,9 @@
                                                         <field name="relation_model_id" attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])],'readonly': [('ttype','!=','one2many'), ('ttype','!=','many2one'), ('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>
                                                         <field name="relation" readonly="1" attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>
                                                         <field name="relation_field" attrs="{'required': [('ttype','=','one2many')], 'readonly': [('ttype','!=','one2many')], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
+
+                                                        <field name="auto_join" attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                                        <field name="delegate" attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
                                                     </group>
                                                     <group>
                                                         <field name="relation_create_inverse_relation"/>
@@ -223,12 +235,21 @@
                                     <field name="required"/>
                                     <field name="readonly"/>
                                     <field name="index"/>
+                                    <field name="copy"/>
+                                    <field name="default"/>
+                                    <field name="groups"/>
                                     <field name="select_level" attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                     <field name="translate" attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                 </group>
                                 <group>
                                     <field name="selection" attrs="{'required': [('ttype','in',['selection','reference'])], 'readonly': [('ttype','not in',['selection','reference'])], 'invisible': [('ttype','not in',['selection'])]}"/>
-                                    <field name="size" attrs="{'required': [('ttype','in',['char','reference'])], 'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+                                    <field name="size" attrs="{'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+
+                                    <label for="decimal_digits" attrs="{'invisible': [('ttype','not in',['float'])]}"/>
+                                    <div attrs="{'invisible': [('ttype','not in',['float'])]}">
+                                        <field name="decimal_digits" attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Digits" class="oe_inline" style="width: 20%"/>
+                                        <field name="decimal_precision" attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Precision" class="oe_inline" style="width: 20%"/>
+                                    </div>
                                 </group>
                             </group>
                         </page>
@@ -238,6 +259,9 @@
                                     <field name="relation" invisible="1"/>
                                     <!--<field name="relation" readonly="1" attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>-->
                                     <field name="relation_field" attrs="{'required': [('ttype','=','one2many')], 'readonly': [('ttype','!=','one2many')], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
+
+                                    <field name="auto_join" attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                    <field name="delegate" attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
 
                                     <field name="relation_many2many_relation" attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
                                     <field name="relation_many2many_column1" attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
@@ -290,12 +314,21 @@
                                     <field name="required"/>
                                     <field name="readonly"/>
                                     <field name="index"/>
+                                    <field name="copy"/>
+                                    <field name="default"/>
+                                    <field name="groups"/>
                                     <field name="select_level" attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                     <field name="translate" attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                 </group>
                                 <group>
                                     <field name="selection" attrs="{'required': [('ttype','in',['selection','reference'])], 'readonly': [('ttype','not in',['selection','reference'])], 'invisible': [('ttype','not in',['selection'])]}"/>
-                                    <field name="size" attrs="{'required': [('ttype','in',['char','reference'])], 'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+                                    <field name="size" attrs="{'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+
+                                    <label for="decimal_digits" attrs="{'invisible': [('ttype','not in',['float'])]}"/>
+                                    <div attrs="{'invisible': [('ttype','not in',['float'])]}">
+                                        <field name="decimal_digits" attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Digits" class="oe_inline" style="width: 20%"/>
+                                        <field name="decimal_precision" attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Precision" class="oe_inline" style="width: 20%"/>
+                                    </div>
                                 </group>
                             </group>
                         </page>
@@ -305,6 +338,9 @@
                                     <field name="relation" invisible="1"/>
                                     <!--<field name="relation" readonly="1" attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>-->
                                     <field name="relation_field" attrs="{'required': [('ttype','=','one2many')], 'readonly': [('ttype','!=','one2many')], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
+
+                                    <field name="auto_join" attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                    <field name="delegate" attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
 
                                     <field name="relation_many2many_relation" attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
                                     <field name="relation_many2many_column1" attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
