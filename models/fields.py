@@ -96,7 +96,8 @@ class IrFields(models.Model):
         required=True, default='0')
     translate = fields.Boolean('Translatable',
                                help="Whether values for this field can be translated (enables the translation mechanism for that field)")
-    size = fields.Integer('Size')
+    size = fields.Char('Size')
+    index = fields.Boolean('Index')
     on_delete = fields.Selection([('cascade', 'Cascade'), ('set null', 'Set NULL'), ('restrict', 'Restrict')],
                                  'On Delete', default='set null', help='On delete property for many2one fields')
     domain = fields.Char('Domain', default='[]',
