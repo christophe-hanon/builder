@@ -16,6 +16,7 @@ class IrModel(models.Model):
     name = fields.Char('Description', required=True)
     model = fields.Char('Model', required=True, select=1)
     info = fields.Text('Information')
+    rec_name_field_id = fields.Many2one('builder.ir.model.fields', 'Record Name', domain=[('ttype', 'in', ['char', 'text', 'date', 'datetime', 'selection'])])
     osv_memory = fields.Boolean('Transient',
                                 help="This field specifies whether the model is transient or not (i.e. if records are automatically deleted from the database or not)")
     field_ids = fields.One2many('builder.ir.model.fields', 'model_id', 'Fields', required=True, copy=True)

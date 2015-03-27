@@ -62,6 +62,7 @@ class IrFields(models.Model):
     model_id = fields.Many2one('builder.ir.model', 'Model', select=1, ondelete='cascade')
 
     name = fields.Char('Name', required=True, select=1)
+
     position = fields.Integer('Position')
     complete_name = fields.Char('Complete Name', select=1)
 
@@ -103,9 +104,10 @@ class IrFields(models.Model):
             '``one2many`` and computed fields, including property fields and '
             'related fields)')
     default = fields.Char('Default')
+    help = fields.Text('Help')
     delegate = fields.Boolean('Delegate', default=True, help=''' set it to ``True`` to make fields of the target model
         accessible from the current model (corresponds to ``_inherits``)''')
-    auto_join = fields.Boolean('Auto Join', help='whether JOINs are generated upon search through that field (boolean, by default ``False``')
+    auto_join = fields.Boolean('Auto Join', help='Whether JOINs are generated upon search through that field (boolean, by default ``False``')
     groups = fields.Char('Groups', help='''comma-separated list of group xml ids (string); this
                                          restricts the field access to the users of the given groups only''')
 
@@ -118,8 +120,8 @@ class IrFields(models.Model):
                          help="The optional domain to restrict possible values for relationship fields, "
                               "specified as a Python expression defining a list of triplets. "
                               "For example: [('color','=','red')]")
-    #groups = fields.Many2many('programming.res.groups', 'ir_model_fields_group_rel', 'field_id', 'group_id', 'Groups')
     selectable = fields.Boolean('Selectable', default=1)
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_fields_group_rel', 'field_id', 'group_id', string='Groups')
 
     compute = fields.Boolean('Compute')
     compute_method_name = fields.Char('Compute Method Name')

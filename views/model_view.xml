@@ -30,6 +30,8 @@
                                 <field name="osv_memory"/>
                             </group>
                             <group>
+                                <field name="rec_name_field_id" domain="[('model_id', '=', id), ('ttype', 'in', ['char', 'text', 'date', 'datetime', 'selection'])]"/>
+
                                 <label for="order_field_id"/>
                                 <div>
                                     <field name="order_field_id" class="oe_inline" domain="[('model_id', '=', id)]" widget="selection"/>
@@ -127,6 +129,9 @@
                                                                attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
                                                     </group>
                                                 </group>
+                                            </page>
+                                            <page string="Groups">
+                                                <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
                                             </page>
                                         </notebook>
                                     </form>
@@ -283,6 +288,9 @@
                                 </group>
                             </group>
                         </page>
+                        <page string="Groups">
+                            <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
+                        </page>
                     </notebook>
                 </form>
             </field>
@@ -361,6 +369,9 @@
 
                                 </group>
                             </group>
+                        </page>
+                        <page string="Groups">
+                            <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
                         </page>
                     </notebook>
                 </form>
