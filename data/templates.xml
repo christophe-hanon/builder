@@ -38,6 +38,7 @@ from openerp import models, fields, api, tools, _
 {% for model in models %}
 class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}}({% if model.osv_memory %}models.AbstractModel{% else %}models.Model{% endif %}):
     _name = '{{model.model}}'
+    {%- if not field.rec_name_field_id %}_rec_name='{{model.rec_name_field_id.name}}'{% endif %}
     {% if model.inherit_model_ids -%}_inherit = [{%- for inherit in model.inherit_model_ids -%}
             {%- if inherit.system_model_id.model -%}
                 '{{inherit.system_model_id.model}}',
@@ -61,20 +62,22 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
     {% if not field.is_inherited %}
     {{field.name}} = fields.{{field.ttype.capitalize()}}(
                     {%- if field.ttype == 'many2many' %} '{{field.relation_model_id.model}}', {%- endif %}
-                    {%- if field.ttype == 'many2one' %} '{{field.relation_model_id.model}}', {%- if field.on_delete -%}ondelete='{{field.on_delete}}',{% endif %}{%- endif %}
+                    {%- if field.ttype == 'many2one' %} '{{field.relation_model_id.model}}', {%- if field.on_delete -%}ondelete='{{field.on_delete}}',{% endif %}{%- if field.auto_join -%}auto_join=True,{% endif %}{%- if field.delegate -%}delegate=True,{% endif %}{%- endif %}
                     {%- if field.ttype == 'one2many' %} '{{field.relation_model_id.model}}', '{{field.relation_field}}', {%- endif %}
                     {%- if field.ttype == 'char' %} {%- if field.size %} size={{field.size}}, {% endif %}{%- if field.translate -%}translate=True,{% endif %}{%- endif %}
                     {%- if field.ttype == 'text' %} {%- if field.translate -%}translate=True, {% endif %}{%- endif %}
-                    {%- if field.ttype == 'float' %} {%- if field.digits -%} digits=({{field.digits}}),{% endif %}{%- endif %}
+                    {%- if field.ttype == 'float' %} {%- if field.decimal_digits and field.decimal_precision -%} digits=({{field.decimal_digits}}, {{field.decimal_precision}}),{% endif %}{%- endif %}
                     {%- if field.required %} required=True,{% endif %}
                     {%- if field.readonly %} readonly=True,{% endif %}
                     {%- if field.field_description %} string='{{field.field_description}}',{% endif %}
                     {%- if field.string %} string='{{field.string}}',{% endif %}
-                    {%- if field.help %} help='{{field.help}}',{% endif %}
+                    {%- if field.help %} help='''{{field.help}}''',{% endif %}
                     {%- if field.index %} index=True,{% endif %}
+                    {%- if not field.copy %} copy=False,{% endif %}
                     {%- if field.selection %} selection={{field.selection}},{% endif %}
                     {%- if field.compute -%} compute='{{field.compute_method_name}}',{% endif %}
-                    {%- if field.inverse -%} inverse='{{field.inverse_method_name}}',{% endif %})
+                    {%- if field.inverse -%} inverse='{{field.inverse_method_name}}',{% endif %}
+                    {%- if field.default -%} default='{{field.default}}',{% endif %})
     {% endif %}
     {%- endfor %}
     {% for field in model.field_ids %}

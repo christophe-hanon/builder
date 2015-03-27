@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <menuitem id="menu_module_builder_root" parent="base.menu_administration" name="Module Builder" sequence="1" action="open_module_tree" />
+        <menuitem id="menu_module_builder_root" parent="base.menu_administration" name="Module Builder" sequence="0" action="open_module_tree" />
         <menuitem id="menu_module_builder_tree" parent="menu_module_builder_root" name="Modules" sequence="1" action="open_module_tree" />
         <menuitem id="menu_module_builder_import" parent="menu_module_builder_root" name="Import Module" sequence="10" action="act_builder_ir_module_module_import_wizard" />
         <menuitem id="menu_module_builder_import_local" parent="menu_module_builder_root" name="Import Local Module" sequence="11" action="act_builder_ir_module_module_import_local_wizard" />
