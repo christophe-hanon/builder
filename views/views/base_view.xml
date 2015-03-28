@@ -21,26 +21,30 @@
             <field name="model">builder.ir.ui.view</field>
             <field name="arch" type="xml">
                 <form string="View Generator">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="model_id" />
-                            <field name="name" />
-                            <field name="xml_id"  />
-                            <field name="type"  />
-                        </group>
-                        <group>
+                            <group>
+                                <field name="model_id" domain="[('module_id', '=', context.get('default_module_id'))]"/>
+                                <field name="name"/>
+                                <field name="xml_id"/>
+                                <field name="type"/>
+                            </group>
+                            <group>
 
+                            </group>
                         </group>
-                    </group>
 
-                    <notebook>
-                        <page string="Arch">
-                            <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml" style="min-height:200px" />
-                        </page>
-                        <page string="Groups">
-                            <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
-                        </page>
-                    </notebook>
+                        <notebook>
+                            <page string="Arch">
+                                <field name="arch" nolabel="1" widget="ace" theme="tomorrow" mode="xml"
+                                       style="min-height:200px"/>
+                            </page>
+                            <page string="Groups">
+                                <field name="group_ids" domain="[('module_id', '=', context.get('default_module_id'))]" />
+                            </page>
+                        </notebook>
+                    </sheet>
+
                 </form>
             </field>
         </record>
