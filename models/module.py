@@ -158,7 +158,7 @@ javascript:(function(){
         }
 
     @api.multi
-    def action_models(self):
+    def action_backend_models(self):
 
         tree_view = self.env.ref('builder.builder_ir_model_tree_view', False)
         form_view = self.env.ref('builder.builder_ir_model_form_view', False)
@@ -171,6 +171,180 @@ javascript:(function(){
             'res_model': 'builder.ir.model',
             'views': [(tree_view and tree_view.id or False, 'tree'), (form_view and form_view.id or False, 'form')],
             'view_id': tree_view and tree_view.id,
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_views(self):
+
+        tree_view = self.env.ref('builder.builder_ir_ui_view_tree', False)
+        form_view = self.env.ref('builder.builder_ir_ui_view_form', False)
+
+        return {
+            'name': _('Views'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.ir.ui.view',
+            'views': [(tree_view.id if tree_view else False, 'tree'), (form_view.id if form_view else False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_actions(self):
+
+        return {
+            'name': _('Actions'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.ir.actions.act_window',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_menus(self):
+
+        return {
+            'name': _('Menus'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.ir.ui.menu',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_groups(self):
+
+        return {
+            'name': _('Groups'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.res.groups',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_rules(self):
+
+        return {
+            'name': _('Model Rules'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.ir.rule',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_website_pages(self):
+
+        return {
+            'name': _('Pages'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.website.page',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_website_assets(self):
+
+        return {
+            'name': _('Assets'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.website.asset',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_website_themes(self):
+
+        return {
+            'name': _('Themes'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.website.theme',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_website_menus(self):
+
+        return {
+            'name': _('Website Menus'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.website.menu',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+
+    @api.multi
+    def action_website_snippets(self):
+
+        return {
+            'name': _('Snippets'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.website.snippet',
+            'views': [(False, 'tree'), (False, 'form')],
             'domain': [('module_id', '=', self.id)],
             # 'target': 'current',
             'context': {

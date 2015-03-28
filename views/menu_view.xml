@@ -7,7 +7,9 @@
             <field name="model">builder.ir.ui.menu</field>
             <field name="arch" type="xml">
                 <tree string="Menu">
-                    <field name="name"/>
+                    <field name="sequence"/>
+                    <field name="xml_id"/>
+                    <field name="complete_name"/>
                 </tree>
             </field>
         </record>

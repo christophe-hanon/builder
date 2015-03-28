@@ -1,6 +1,21 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+
+        <record model="ir.ui.view" id="builder_ir_ui_view_tree">
+            <field name="name">builder.ir.ui.view.tree</field>
+            <field name="model">builder.ir.ui.view</field>
+            <field name="arch" type="xml">
+                <tree string="View">
+                    <field name="model_id"/>
+                    <field name="type"/>
+                    <field name="xml_id"/>
+                    <field name="inherit_id"/>
+                    <button name="action_open_view" type="object" string="Configure" class="oe_button oe_form_button oe_link"/>
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="builder_ir_ui_view_form">
             <field name="name">builder.ir.ui.view.form</field>
             <field name="model">builder.ir.ui.view</field>
@@ -31,11 +46,10 @@
         </record>
 
         <record model="ir.actions.act_window" id="act_builder_ir_ui_view">
-            <field name="name">View</field>
+            <field name="name">Views</field>
             <field name="res_model">builder.ir.ui.view</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="target">new</field>
         </record>
     </data>
 </openerp>

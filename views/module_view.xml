@@ -8,7 +8,7 @@
                 <form string="Module">
 
                     <sheet>
-                        <div class="oe_right oe_button_box" name="buttons">
+                        <div class="oe_right oe_button_box builder_button_box" name="buttons" id="builder_button_box">
 
                             <ul class="nav navbar-nav navbar-right" style="">
                                 <li class="dropdown">
@@ -18,19 +18,19 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Pages" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Pages" name="action_website_pages" type="object"  icon="fa-file" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Themes" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Themes" name="action_website_themes" type="object"  icon="fa-html5" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Snippets" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Snippets" name="action_website_snippets" type="object"  icon="fa-puzzle-piece" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Assets" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Assets" name="action_website_assets" type="object"  icon="fa-archive" context="{'default_module_id': id}"/>
                                         </li>
                                         <li class="odoo_support_contact">
-                                            <button class="oe_inline oe_stat_button" string="Menus" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Menus" name="action_website_menus" type="object"  icon="fa-list" context="{'default_module_id': id}"/>
                                         </li>
                                     </ul>
                                 </li>
@@ -43,22 +43,25 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Models" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Models" name="action_backend_models" type="object"  icon="fa-code" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Views" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Views" name="action_backend_views" type="object"  icon="fa-columns" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Actions" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Actions" name="action_backend_actions" type="object"  icon="fa-font" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Menus" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Menus" name="action_backend_menus" type="object"  icon="fa-list" context="{'default_module_id': id}"/>
                                         </li>
                                         <li class="odoo_support_contact">
-                                            <button class="oe_inline oe_stat_button" string="Groups" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Groups" name="action_backend_groups" type="object"  icon="fa-group" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Record Rules" name="action_diagram" type="object"  icon="fa-magic" context="{}"/>
+                                            <button class="oe_inline oe_stat_button" string="Record Rules" name="action_backend_rules" type="object"  icon="fa-lock" context="{'default_module_id': id}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Cron Jobs" name="action_backend_jobs" type="object"  icon="fa-bell-slash" context="{'default_module_id': id}"/>
                                         </li>
                                     </ul>
                                 </li>
