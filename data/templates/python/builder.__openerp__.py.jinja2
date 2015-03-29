@@ -1,0 +1,29 @@
+{%- include 'builder.python_file_header.py' ignore missing %}
+# noinspection PyStatementEffect
+{
+    "name" : "{{module.name}}",
+{% if module.installed_version %}    "version" : "{{module.installed_version}}",{% endif %}
+{% if module.author %}    "author" : "{{module.author}}",{% endif %}
+{% if module.website %}    "website" : "{{module.website}}",{% endif %}
+{% if module.category_id %}    "category" : "{{module.category_id}}",{% endif %}
+    "licence" : "{{module.license}}",
+    "description": """
+{{module.shortdesc}}
+====================================
+{{module.summary}}
+                    """,
+    "depends" : {{ module.dependencies_as_list() }},
+    "data" : [
+                {% for item in data -%}
+                '{{item}}',
+                {% endfor  -%}
+            ],
+    "demo" : [
+            {%- for item in demo -%}
+                '{{item}}',
+            {%- endfor  -%}
+    ],
+    "installable": True,
+    "auto_install": {{module.auto_install}},
+    "application": {{module.application}},
+}

@@ -1,0 +1,57 @@
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+   <template id="{{module.name}}.snippets" inherit_id="website.snippets" name="Snippets">
+   {% for custom, snippets in snippet_type.items() %}
+       {% if custom %}
+                <xpath expr="//ul[@class='nav navbar-nav nav-tabs']" position="inside">
+                    <li>
+                        <a href="#snippet_{{module.name}}" data-toggle="tab">{{module.name}}</a>
+                    </li>
+                </xpath>
+
+                <xpath expr="//div[@class='tab-content']" position="inside">
+                    <div id="snippet_{{module.name}}" class="tab-pane fade">
+                        {% for snippet in snippets %}
+                            <div>
+                                <div class="oe_snippet_thumbnail">
+                                    {% if snippet.image %}
+                                        <img class="oe_snippet_thumbnail_img" src="data:image/png;base64,{{snippet.image}}"/>
+                                    {% else %}
+                                        <span data-size="fa-5x" class="fa-4x fa fa-question-circle" style="line-height: inherit;"></span>
+                                    {% endif %}
+                                    <span class="oe_snippet_thumbnail_title">{{snippet.name}}</span>
+                                </div>
+                                <section class="oe_snippet_body">
+                                    <div class="oe_structure">
+                                        {{snippet.content}}
+                                    </div>
+                                </section>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </xpath>
+        {% else  %}
+        <xpath expr="//div[@id='snippet_content']" position="inside">
+            {% for snippet in snippets %}
+                <div>
+                    <div class="oe_snippet_thumbnail">
+                        {% if snippet.image %}
+                            <img class="oe_snippet_thumbnail_img" src="data:image/png;base64,{{snippet.image}}"/>
+                        {% else %}
+                            <span data-size="fa-5x" class="fa-4x fa fa-question-circle" style="line-height: inherit;"></span>
+                        {% endif %}
+                        <span class="oe_snippet_thumbnail_title">{{snippet.name}}</span>
+                    </div>
+                    <section class="oe_snippet_body">
+                        <div class="oe_structure">
+                            {{snippet.content}}
+                        </div>
+                    </section>
+                </div>
+            {% endfor %}
+        </xpath>
+        {% endif  %}
+   {% endfor %}
+   </template>
+{% endblock %}

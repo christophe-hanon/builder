@@ -1,0 +1,5 @@
+<tree string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if toolbar %} toolbar="True" {% endif %}{% if fonts %} fonts="{{fonts}}" {% endif %}{% if colors %} colors="{{colors}}" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.invisible %} invisible="True" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} widget_options="{{field.widget_options}}" {% endif %}{% if field.readonly %} readonly="{{field.readonly}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %} />
+{%- endfor %}
+</tree>

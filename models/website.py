@@ -133,6 +133,8 @@ SNIPPET_TEMPLATE = Template("""
 class WebsiteSnippet(models.Model):
     _name = 'builder.website.snippet'
 
+    _order = 'sequence, name'
+
     name = fields.Char('Name', required=True)
 
     sequence = fields.Integer('Sequence')

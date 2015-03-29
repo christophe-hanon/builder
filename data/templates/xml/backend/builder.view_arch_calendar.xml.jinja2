@@ -1,0 +1,5 @@
+<calendar string="{{string}}"{% if date_start %} date_start="{{date_start}}" {% endif %}{% if date_stop %} date_stop="{{date_stop}}" {% endif %}{% if date_length %} date_length="{{date_length}}" {% endif %}{% if date_delay %} date_delay="{{date_delay}}" {% endif %}{% if day_length %} day_length="{{day_length}}" {% endif %}{% if all_day %} all_day="true" {% endif %}{% if use_contacts %} use_contacts="true" {% endif %}{% if color %} color="{{color}}" {% endif %}{% if color_is_attendee %} color_is_attendee="true" {% endif %}{% if event_open_popup %} event_open_popup="{{event_open_popup}}" {% endif %}{% if avatar_filter %} avatar_filter="{{avatar_filter}}" {% endif %}{% if avatar_model %} avatar_model="{{avatar_model}}" {% endif %}{% if avatar_title %} avatar_title="{{avatar_title}}" {% endif %}{% if not quick_add %} quick_add="false" {% endif %}{% if display %} display="{{display}}" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.field_id.name}}"{% if field.invisible %} invisible="True" {% endif %} />
+{%- endfor %}
+</calendar>
