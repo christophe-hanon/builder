@@ -1,0 +1,25 @@
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+    {% for asset in assets %}
+        <template id="{{module.name}}.{{asset.attr_id}}" name="{{asset.attr_name}}" inherit_id="{{asset.type}}" {% if asset.type == 'website.theme' %} {% if not asset.attr_active %}active="False"{% endif %} customize_show="{{asset.attr_customize_show}}" {% endif %}>
+            {% if asset.type == 'website.theme' -%}
+            <xpath expr="//link[@id='bootstrap_css']" position="after">
+            {% else -%}
+            <xpath expr="." position="inside">
+            {% endif -%}
+                {% for item in asset.item_ids -%}
+                    {% if item.file_id.extension == '.css' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.less' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" type="text/less" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.sass' -%}
+                        <link rel="stylesheet" href="/{{module.name}}{{item.file_id.path}}" type="text/sass" t-ignore="true"/>
+                    {% elif  item.file_id.extension == '.js' -%}
+                        <script type="text/javascript" src="/{{module.name}}{{item.file_id.path}}" t-ignore="true"/>
+                    {% endif -%}
+                {% endfor -%}
+            </xpath>
+        </template>
+    {% endfor %}
+{% endblock %}

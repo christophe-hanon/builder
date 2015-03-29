@@ -1,0 +1,25 @@
+{%- extends 'builder.base.xml' %}
+
+{% block content %}
+
+    <template id="themes" inherit_id="website.themes" name="Themes">
+            <xpath expr="//div[@id='themes-list']" position="inside">
+                {% for theme in themes %}
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        {% if theme.image %}
+                        <div class="image">
+                            <img class="img-responsive" src="/{{module.name}}/static/themes/{{theme.asset_id.attr_id}}.png" alt="{{theme.attr_name}}" style="width: 360px"/>
+                        </div>
+                        {% endif %}
+                        <div class="options">
+                            <h3>{{theme.attr_name}}</h3>
+                            <p>{{theme.attr_description}}</p>
+                            <a class="btn btn-info" href="/website/theme_change?theme_id={{module.name}}.{{theme.asset_id.attr_id}}">Apply</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </xpath>
+        </template>
+{% endblock %}

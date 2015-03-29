@@ -1,0 +1,5 @@
+<graph string="{{string}}"{% if type %} type="{{type}}" {% endif %}{% if stacked %} stacked="true" {% endif %}{% if orientation %} orientation="{{orientation}}" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.field_id.name}}"{% if field.operator %} operator="{{field.operator}}" {% endif %}{% if field.type %} type="{{field.type}}" {% endif %}{% if field.interval %} interval="{{field.interval}}" {% endif %}/>
+{%- endfor %}
+</graph>

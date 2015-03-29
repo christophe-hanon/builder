@@ -1,0 +1,10 @@
+<kanban string="{{string}}"{% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}{% if default_group_by%} default_group_by="{{default_group_by}}" {% endif %}{% if not quick_create%} quick_create="false" {% endif %}>
+{% for field in fields %}
+    <field name="{{field.name}}" />
+{%- endfor %}
+{% if template %}
+    <templates>
+{{template}}
+    <templates>
+{% endif %}
+</kanban>

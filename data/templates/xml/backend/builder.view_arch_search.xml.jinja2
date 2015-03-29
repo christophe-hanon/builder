@@ -1,0 +1,24 @@
+<search string="{{string}}">
+{% for field in ungrouped_fields %}
+    {% if field.type == 'filter' -%}
+        <filter {% if field.attr_name %}name="{{field.attr_name}}" {% endif %}{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+    {%- elif field.type == 'field' -%}
+        <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+    {%- elif field.type == 'separator' -%}
+        <separator  />
+    {%- endif %}
+{%- endfor %}
+{% for k, item in groups.items() %}
+    <group string="{{item.group.name}}">
+        {%- for field in item.fields %}
+            {% if field.type == 'filter' -%}
+                <filter {% if field.attr_name %}name="{{field.attr_name}}" {% endif %}{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+            {%- elif field.type == 'field' -%}
+                <field name="{{field.field_id.name}}"{% if field.attr_string %} string="{{field.attr_string}}" {% endif %}{% if field.attr_domain %} domain="{{field.attr_domain}}" {% endif %}{% if field.attr_filter_domain %} filter_domain="{{field.attr_filter_domain}}" {% endif %}{% if field.attr_operator %} operator="{{field.attr_operator}}" {% endif %}{% if field.attr_help %} help="{{field.attr_help}}" {% endif %}{% if field.group_field_id %} context="{'group_by':'{{field.group_field_id.name}}'}" {% endif %} />
+            {%- elif field.type == 'separator' -%}
+                <separator  />
+            {%- endif %}
+        {%- endfor %}
+    </group>
+{% endfor %}
+</search>
