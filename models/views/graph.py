@@ -44,7 +44,7 @@ class GraphView(models.Model):
             return self.arch
         else:
             template_obj = self.env['document.template']
-            return template_obj.render_template('builder.view_arch_graph.xml', {
+            return template_obj.render_template('builder.view_arch_graph.xml.jinja2', {
                 'this': self,
                 'string': self.name,
                 'type': self.attr_type,

@@ -430,12 +430,12 @@ javascript:(function(){
             module_data.append('views/menu.xml')
             module_data.append('views/actions.xml')
 
-            write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py' , {}, **functions)
-            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py' , {'packages': ['models']},**functions)
-            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml'           , {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml'        , {'module': self}, **functions)
-            write_template(templates, zfile, self.name + '/views/views.xml'   , 'builder.view.xml'           , {'models': self.view_ids}, **functions)
-            write_template(templates, zfile, self.name + '/models/models.py'  , 'builder.models.py'          , {'models': self.model_ids}, **functions)
+            write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py.jinja2' , {}, **functions)
+            write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py.jinja2' , {'packages': ['models']},**functions)
+            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml.jinja2'           , {'module': self}, **functions)
+            write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml.jinja2'        , {'module': self}, **functions)
+            write_template(templates, zfile, self.name + '/views/views.xml'   , 'builder.view.xml.jinja2'           , {'models': self.view_ids}, **functions)
+            write_template(templates, zfile, self.name + '/models/models.py'  , 'builder.models.py.jinja2'          , {'models': self.model_ids}, **functions)
 
         if self.icon_image:
             info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
@@ -466,17 +466,17 @@ javascript:(function(){
 
         if self.website_asset_ids:
             module_data.append('views/website_assets.xml')
-            write_template(templates, zfile, self.name + '/views/website_assets.xml', 'builder.website_assets.xml',
+            write_template(templates, zfile, self.name + '/views/website_assets.xml', 'builder.website_assets.xml.jinja2',
                                 {'module': self, 'assets': self.website_asset_ids},
                                 **functions)
         if self.website_page_ids:
             module_data.append('views/website_pages.xml')
-            write_template(templates, zfile, self.name + '/views/website_pages.xml', 'builder.website_pages.xml',
+            write_template(templates, zfile, self.name + '/views/website_pages.xml', 'builder.website_pages.xml.jinja2',
                                 {'module': self, 'pages': self.website_page_ids, 'menus': self.website_menu_ids},
                                 **functions)
         if self.website_theme_ids:
             module_data.append('views/website_themes.xml')
-            write_template(templates, zfile, self.name + '/views/website_themes.xml', 'builder.website_themes.xml',
+            write_template(templates, zfile, self.name + '/views/website_themes.xml', 'builder.website_themes.xml.jinja2',
                                 {'module': self, 'themes': self.website_theme_ids},
                                 **functions)
 
@@ -486,7 +486,7 @@ javascript:(function(){
                 snippet_type[snippet.is_custom_category].append(snippet)
 
             module_data.append('views/website_snippets.xml')
-            write_template(templates, zfile, self.name + '/views/website_snippets.xml', 'builder.website_snippets.xml',
+            write_template(templates, zfile, self.name + '/views/website_snippets.xml', 'builder.website_snippets.xml.jinja2',
                                 {'module': self, 'snippet_type': snippet_type},
                                 **functions)
 
@@ -494,7 +494,7 @@ javascript:(function(){
 
 
         #this must be last to include all resources
-        write_template(templates, zfile, self.name + '/__openerp__.py', 'builder.__openerp__.py',
+        write_template(templates, zfile, self.name + '/__openerp__.py', 'builder.__openerp__.py.jinja2',
                             {'module': self, 'data': module_data}, **functions)
 
         zfile.close()

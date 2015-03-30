@@ -57,7 +57,7 @@ class TreeView(models.Model):
             return self.arch
         else:
             template_obj = self.env['document.template']
-            return template_obj.render_template('builder.view_arch_tree.xml', {
+            return template_obj.render_template('builder.view_arch_tree.xml.jinja2', {
                 'this': self,
                 'string': self.name,
                 'create': self.attr_create,

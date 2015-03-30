@@ -2,142 +2,142 @@
 <openerp>
     <data>
         <record model="document.template" id="builder_base_xml">
-            <field name="name">builder.base.xml</field>
-            <field name="title">builder.base.xml</field>
+            <field name="name">builder.base.xml.jinja2</field>
+            <field name="title">builder.base.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/builder.base.xml.jinja2" type="char" />
         </record>
         
         <record model="document.template" id="builder_menu_xml">
-            <field name="name">builder.menu.xml</field>
-            <field name="title">builder.menu.xml</field>
+            <field name="name">builder.menu.xml.jinja2</field>
+            <field name="title">builder.menu.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.menu.xml.jinja2" type="char" />
         </record>
         
         <record model="document.template" id="builder_models_py">
-            <field name="name">builder.models.py</field>
-            <field name="title">builder.models.py</field>
+            <field name="name">builder.models.py.jinja2</field>
+            <field name="title">builder.models.py.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/python/backend/builder.models.py.jinja2" type="char" />
         </record>
         
         <record model="document.template" id="builder_openerp_py">
-            <field name="name">builder.__openerp__.py</field>
-            <field name="title">builder.__openerp__.py</field>
+            <field name="name">builder.__openerp__.py.jinja2</field>
+            <field name="title">builder.__openerp__.py.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/python/builder.__openerp__.py.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_python_file_header_py">
-            <field name="name">builder.python_file_header.py</field>
-            <field name="title">builder.python_file_header.py</field>
+            <field name="name">builder.python_file_header.py.jinja2</field>
+            <field name="title">builder.python_file_header.py.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/python/builder.python_file_header.py.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_python_init_py">
-            <field name="name">builder.python.__init__.py</field>
-            <field name="title">builder.python.__init__.py</field>
+            <field name="name">builder.python.__init__.py.jinja2</field>
+            <field name="title">builder.python.__init__.py.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/python/builder.python.__init__.py.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_form_macros_xml">
-            <field name="name">builder.view_form_macros.xml</field>
-            <field name="title">builder.view_form_macros.xml</field>
+            <field name="name">builder.view_form_macros.xml.jinja2</field>
+            <field name="title">builder.view_form_macros.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_form_macros.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_gantt">
-            <field name="name">builder.view_arch_gantt.xml</field>
-            <field name="title">builder.view_arch_gantt.xml</field>
+            <field name="name">builder.view_arch_gantt.xml.jinja2</field>
+            <field name="title">builder.view_arch_gantt.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_gantt.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_kanban">
-            <field name="name">builder.view_arch_kanban.xml</field>
-            <field name="title">builder.view_arch_kanban.xml</field>
+            <field name="name">builder.view_arch_kanban.xml.jinja2</field>
+            <field name="title">builder.view_arch_kanban.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_kanban.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_graph">
-            <field name="name">builder.view_arch_graph.xml</field>
-            <field name="title">builder.view_arch_graph.xml</field>
+            <field name="name">builder.view_arch_graph.xml.jinja2</field>
+            <field name="title">builder.view_arch_graph.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_graph.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_calendar">
-            <field name="name">builder.view_arch_calendar.xml</field>
-            <field name="title">builder.view_arch_calendar.xml</field>
+            <field name="name">builder.view_arch_calendar.xml.jinja2</field>
+            <field name="title">builder.view_arch_calendar.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_calendar.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_tree">
-            <field name="name">builder.view_arch_tree.xml</field>
-            <field name="title">builder.view_arch_tree.xml</field>
+            <field name="name">builder.view_arch_tree.xml.jinja2</field>
+            <field name="title">builder.view_arch_tree.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_tree.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_search">
-            <field name="name">builder.view_arch_search.xml</field>
-            <field name="title">builder.view_arch_search.xml</field>
+            <field name="name">builder.view_arch_search.xml.jinja2</field>
+            <field name="title">builder.view_arch_search.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_search.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_form">
-            <field name="name">builder.view_arch_form.xml</field>
-            <field name="title">builder.view_arch_form.xml</field>
+            <field name="name">builder.view_arch_form.xml.jinja2</field>
+            <field name="title">builder.view_arch_form.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view_arch_form.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_xml">
-            <field name="name">builder.view.xml</field>
-            <field name="title">builder.view.xml</field>
+            <field name="name">builder.view.xml.jinja2</field>
+            <field name="title">builder.view.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.view.xml.jinja2" type="char" />
         </record>
 
 
         <record model="document.template" id="builder_actions_xml">
-            <field name="name">builder.actions.xml</field>
-            <field name="title">builder.actions.xml</field>
+            <field name="name">builder.actions.xml.jinja2</field>
+            <field name="title">builder.actions.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/backend/builder.actions.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_website_assets_xml">
-            <field name="name">builder.website_assets.xml</field>
-            <field name="title">builder.website_assets.xml</field>
+            <field name="name">builder.website_assets.xml.jinja2</field>
+            <field name="title">builder.website_assets.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/website/builder.website_assets.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_website_pages_xml">
-            <field name="name">builder.website_pages.xml</field>
-            <field name="title">builder.website_pages.xml</field>
+            <field name="name">builder.website_pages.xml.jinja2</field>
+            <field name="title">builder.website_pages.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/website/builder.website_pages.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_website_themes_xml">
-            <field name="name">builder.website_themes.xml</field>
-            <field name="title">builder.website_themes.xml</field>
+            <field name="name">builder.website_themes.xml.jinja2</field>
+            <field name="title">builder.website_themes.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/website/builder.website_themes.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_website_snippets_xml">
-            <field name="name">builder.website_snippets.xml</field>
-            <field name="title">builder.website_snippets.xml</field>
+            <field name="name">builder.website_snippets.xml.jinja2</field>
+            <field name="title">builder.website_snippets.xml.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/website/builder.website_snippets.xml.jinja2" type="char" />
         </record>

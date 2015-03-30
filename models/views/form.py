@@ -121,7 +121,7 @@ class FormView(models.Model):
             }
 
             template_obj = self.env['document.template']
-            return template_obj.render_template('builder.view_arch_form.xml', {
+            return template_obj.render_template('builder.view_arch_form.xml.jinja2', {
                 'this': self,
                 'string': self.name,
                 'fields': self.field_ids,

@@ -55,7 +55,7 @@ class SearchView(models.Model):
                     flat.append(field)
 
             template_obj = self.env['document.template']
-            return template_obj.render_template('builder.view_arch_search.xml', {
+            return template_obj.render_template('builder.view_arch_search.xml.jinja2', {
                 'this': self,
                 'string': self.name,
                 'fields': self.field_ids,

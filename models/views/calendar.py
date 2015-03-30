@@ -68,7 +68,7 @@ class CalendarView(models.Model):
             return self.arch
         else:
             template_obj = self.env['document.template']
-            return template_obj.render_template('builder.view_arch_calendar.xml', {
+            return template_obj.render_template('builder.view_arch_calendar.xml.jinja2', {
                 'this': self,
                 'string': self.name,
                 'date_start': self.attr_date_start_field_id and self.attr_date_start_field_id.name or False,

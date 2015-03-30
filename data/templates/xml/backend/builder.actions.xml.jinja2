@@ -1,4 +1,4 @@
-{%- extends 'builder.base.xml' %}
+{%- extends 'builder.base.xml.jinja2' %}
 {% block content %}
 {% for action in module.action_window_ids %}
 <record model="ir.actions.act_window" id="{{action.name}}">
