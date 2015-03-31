@@ -120,6 +120,23 @@ class IrModel(models.Model):
         self.groups_binary_field_ids = self.find_field_by_type(['binary'])
         self.groups_inherited_field_ids = self.env['builder.ir.model.fields'].search([('model_id', '=', self.id), ('is_inherited', '=', True)])
 
+    @api.multi
+    def action_fields(self):
+        return {
+            'name': _('Fields'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': self.field_ids._name,
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('model_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.module_id.id,
+                'default_model_id': self.id,
+            },
+        }
+
 
 
 class ModelMethod(models.Model):

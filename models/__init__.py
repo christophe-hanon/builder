@@ -1,5 +1,5 @@
 __author__ = 'one'
-
+from . import mixins
 from . import base
 from . import module
 from . import models

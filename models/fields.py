@@ -346,6 +346,24 @@ class IrFields(models.Model):
 
         return saved
 
+    @api.multi
+    def action_selection_options(self):
+        return {
+            'name': _('Options'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': self._name,
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('field_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_model_id': self.model_id.id,
+                'default_module_id': self.model_id.module_id.id,
+                'default_field_id': self.id,
+            },
+        }
+
 
 
 
