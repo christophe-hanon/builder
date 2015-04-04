@@ -1,6 +1,7 @@
 from openerp.addons.builder.models.fields import snake_case
 from openerp import models, fields, api, _
 from .base import FIELD_WIDGETS_ALL
+from openerp.addons.builder.tools.render import render
 
 __author__ = 'one'
 
