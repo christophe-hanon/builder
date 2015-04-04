@@ -71,33 +71,19 @@ class ModuleImportLocal(models.TransientModel):
 
 
         sys_model_obj = self.env['ir.model']
+        sys_models = []
 
-        model_data_obj = self.env['ir.model.data']
-        model_ids = model_data_obj.search([
-                ('module', '=', self.module_id.name),
-                ('model', '=', sys_model_obj._name)
-        ])
+        for m in self.get_module_data(self.module_id.name, 'ir.model'):
+            sys_models.append(m)
 
-        model_names = []
-        for item in model_ids:
-            sysmodel = sys_model_obj.search([('id', '=', item.res_id)])
-            if sysmodel.id:
-                model_names.append(sysmodel.model)
-
-        imd_ids = model_data_obj.search([
-                ('module', '=', self.module_id.name),
-                ('model', '=', 'ir.ui.view')
-        ])
         views = []
-        view_obj = self.env['ir.ui.view']
-        for imd_res in imd_ids:
-            view = view_obj.search([('id', '=', imd_res.res_id)])
+        for view in self.get_module_data(self.module_id.name, 'ir.ui.view'):
             views.append(view)
             if view.model:
-                model_names.append(view.model)
-
-
-        sys_models = sys_model_obj.search([('model', 'in', list(set(model_names)))])
+                if any([x for x in sys_models if x.model == view.model]):
+                    views.append(view)
+            else:
+                views.append(view)
 
         model_map = {}
         for model in sys_models:
@@ -131,8 +117,61 @@ class ModuleImportLocal(models.TransientModel):
             else:
                 module.view_ids.create(view_attrs)
 
+
+        #menus
+        menu_obj = self.env['builder.ir.ui.menu']
+        menus = self.get_module_data_with_data(self.module_id.id, 'ir.ui.menu')
+
+        menu_map = {}
+        for m, d in menus:
+            menu = menu_obj.create({
+                'module_id': module.id,
+                'name': m.name,
+                'xml_id': d.name,
+                'sequence': m.sequence,
+            })
+
+            menu_map[m.id] = menu
+
+        for m, d in menus:
+            menu = menu_map[m.id]
+            if menu.parent_id:
+                if menu.parent_id.id in menu_map:
+                    menu.write({
+                        'parent_id': menu_map[menu.parent_id.id].id,
+                        'parent_type': 'module'
+                    })
+                else:
+                    data = self.env['ir.model.data'].search([('res_id', '=', menu.parent_id.id), ('model', '=', 'ir.ui.menu')])
+                    if data.id:
+                        menu.write({
+                            'parent_ref': "{module}.{name}".format(module=data.module, name=data.name),
+                            'parent_type': 'system',
+                            'parent_menu_id': menu.parent_id.id,
+                        })
+
         return {'type': 'ir.actions.act_window_close'}
 
+    @api.model
+    def get_module_data(self, module, model_name):
+        data_obj = self.env['ir.model.data']
+        model_obj = self.env[model_name]
+
+        model_ids = [x.res_id for x in data_obj.search([('module', '=', module), ('model', '=', model_obj._name)])]
+
+        return model_obj.search([('id', 'in', model_ids)])
+
+    @api.model
+    def get_module_data_with_data(self, module, model_name):
+        data_obj = self.env['ir.model.data']
+        model_obj = self.env[model_name]
+
+        results = []
+        for d in data_obj.search([('module', '=', module), ('model', '=', model_obj._name)]):
+            res = model_obj.search([('id', '=', d.res_id)])
+            results.append((res, d))
+
+        return results
 
     @api.one
     def _create_model_fields(self, module, model_items, model_map, relations_only=True):
