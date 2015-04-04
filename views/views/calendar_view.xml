@@ -22,7 +22,7 @@
                             <group>
                                 <group string="Date Settings">
                                     <field name="attr_date_start_ttype" invisible="1" />
-                                    <field name="attr_date_start_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
+                                    <field name="attr_date_start_field_id" required="1" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
                                     <field name="attr_date_stop_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['date', 'datetime'])]" options="{'no_create': True}"/>
                                     <field name="attr_day_length_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>
                                     <field name="attr_date_delay_field_id" domain="[('model_id', '=', model_id), ('ttype', 'in', ['integer', 'float'])]" options="{'no_create': True}"/>

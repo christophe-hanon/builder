@@ -15,7 +15,7 @@ class CalendarView(models.Model):
     }
 
     view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
-    attr_date_start_field_id = fields.Many2one('builder.ir.model.fields', 'Date Start Field', ondelete='set null', required=True)
+    attr_date_start_field_id = fields.Many2one('builder.ir.model.fields', 'Date Start Field', ondelete='set null')
     attr_date_start_ttype = fields.Char('Start Date Field Type')
     attr_date_stop_field_id = fields.Many2one('builder.ir.model.fields', 'Date Stop Field', ondelete='set null')
     attr_day_length_field_id = fields.Many2one('builder.ir.model.fields', 'Day Length Field', ondelete='set null')
