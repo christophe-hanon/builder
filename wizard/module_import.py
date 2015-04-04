@@ -69,13 +69,26 @@ class ModuleImportLocal(models.TransientModel):
         for dep in self.module_id.dependencies_id:
             module.dependency_ids.create({'dependency_module_name': dep.name, 'dependency_module_id': self.module_id.id, 'type': 'module', 'module_id': module.id})
 
+
+        sys_model_obj = self.env['ir.model']
+
         model_data_obj = self.env['ir.model.data']
+        model_ids = model_data_obj.search([
+                ('module', '=', self.module_id.name),
+                ('model', '=', sys_model_obj._name)
+        ])
+
+        model_names = []
+        for item in model_ids:
+            sysmodel = sys_model_obj.search([('id', '=', item.res_id)])
+            if sysmodel.id:
+                model_names.append(sysmodel.model)
+
         imd_ids = model_data_obj.search([
                 ('module', '=', self.module_id.name),
                 ('model', '=', 'ir.ui.view')
         ])
         views = []
-        model_names = []
         view_obj = self.env['ir.ui.view']
         for imd_res in imd_ids:
             view = view_obj.search([('id', '=', imd_res.res_id)])
@@ -83,9 +96,8 @@ class ModuleImportLocal(models.TransientModel):
             if view.model:
                 model_names.append(view.model)
 
-        sys_model_obj = self.env['ir.model']
 
-        sys_models = sys_model_obj.search([('model', 'in', model_names)])
+        sys_models = sys_model_obj.search([('model', 'in', list(set(model_names)))])
 
         model_map = {}
         for model in sys_models:

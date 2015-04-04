@@ -4,6 +4,7 @@ from openerp.osv import fields as fields_old
 from openerp import tools
 from openerp import _
 
+
 class IrModel(models.Model):
     _name = 'builder.ir.model'
     _description = "Models"
@@ -32,6 +33,7 @@ class IrModel(models.Model):
     access_ids = fields.One2many('builder.ir.model.access', 'model_id', 'Access', copy=True)
 
     view_ids = fields.One2many('builder.ir.ui.view', 'model_id', 'Views')
+    method_ids = fields.One2many('builder.ir.model.method', 'model_id', 'Models')
 
     to_ids = fields.One2many('builder.ir.model.fields', 'relation_model_id', 'Forward Models', domain=[('ttype', 'in', ['many2one','one2many','many2many']), ('relation_model_id', '!=', False)])
     from_ids = fields.One2many('builder.ir.model.fields', 'model_id', 'Backward Models', domain=[('ttype', 'in', ['many2one','one2many','many2many']), ('relation_model_id', '!=', False)])
@@ -138,11 +140,16 @@ class IrModel(models.Model):
         }
 
 
-
 class ModelMethod(models.Model):
     _name = 'builder.ir.model.method'
 
+    model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade')
+    module_id = fields.Many2one('builder.ir.module.module', string='Module', related='model_id.module_id', ondelete='cascade')
+
     name = fields.Char(string='Name', required=True)
+    arguments = fields.Char(string='Arguments')
+
+    prototype = fields.Char('Prototype', compute='_compute_prototype')
 
     sugar_is_onchange = fields.Boolean('On Change')
     sugar_on_change_triggers = fields.Many2many('builder.ir.model.fields', 'builder_ir_model_method_on_change_trigger_rel', 'model_method_id', 'field_id', string="Onchange Fields")
@@ -152,11 +159,28 @@ class ModelMethod(models.Model):
 
     sugar_is_model = fields.Boolean('Model')
 
+    sugar_api_type = fields.Selection([('one', '@api.one'), ('multi', '@api.multi'), ('model', '@api.model')], 'Api Type', default='one')
+
     sugar_is_constraint = fields.Boolean('Constraint')
     sugar_constraint_triggers = fields.Many2many('builder.ir.model.fields', 'builder_ir_model_method_constraint_trigger_rel', 'model_method_id', 'field_id', string="Constraint Fields")
 
-
     code = fields.Text('Code', required=True)
+    code_template = fields.Selection([
+                                         ('onchange', 'On Change Attributes'),
+                                         ('constraint', 'Constraint Method'),
+                                         ('create', 'Create Method Rewrite'),
+                                         ('write', 'Write Method Rewrite'),
+                                         ('unlink', 'Unlink Method Rewrite'),
+    ], 'Method Template', store=False)
+
+    @api.one
+    @api.depends('name', 'arguments')
+    def _compute_prototype(self):
+        self.prototype = "{name}({arguments})".format(name=self.name, arguments=self.arguments)
+
+    @api.onchange('code_template')
+    def _onchange_code_template(self):
+        pass
 
 
 class InheritModelTemplate(models.AbstractModel):
@@ -182,6 +206,7 @@ class InheritModelTemplate(models.AbstractModel):
         self.system_model_name = self.system_model_id.name if self.model_source == 'system' else False
         self.model_display = self.system_model_name if self.model_source == 'system' else self.module_model_id.name
 
+
 class InheritModel(models.Model):
     _name = 'builder.ir.model.inherit'
     _inherit = 'builder.ir.model.inherit.template'
@@ -199,3 +224,4 @@ class InheritsModel(models.Model):
     @api.depends('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
     def _compute_field_display(self):
         self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name
+
