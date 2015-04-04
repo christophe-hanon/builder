@@ -139,6 +139,23 @@ class IrModel(models.Model):
             },
         }
 
+    @api.multi
+    def action_methods(self):
+        return {
+            'name': _('Methods'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': self.method_ids._name,
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('model_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.module_id.id,
+                'default_model_id': self.id,
+            },
+        }
+
 
 class ModelMethod(models.Model):
     _name = 'builder.ir.model.method'
@@ -180,7 +197,7 @@ class ModelMethod(models.Model):
 
     @api.onchange('code_template')
     def _onchange_code_template(self):
-        pass
+        self.code = self.code_template
 
 
 class InheritModelTemplate(models.AbstractModel):

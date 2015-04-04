@@ -23,6 +23,7 @@
                     <sheet>
                         <div class="oe_right oe_button_box" name="buttons" invisible="not context.get('active_id', False)">
                             <button class="oe_inline oe_stat_button" string="Fields" name="action_fields" type="object"  icon="fa-list" context="{'default_model_id': id, 'default_module_id': module_id}"/>
+                            <button class="oe_inline oe_stat_button" string="Methods" name="action_methods" type="object"  icon="fa-cog" context="{'default_model_id': id, 'default_module_id': module_id}"/>
                         </div>
 
                         <group>
@@ -535,7 +536,7 @@
                                         <field name="code_template" />
                                     </group>
                                 </group>
-                                <field name="code" nolabel="1" widget="ace" theme="tomorrow" mode="python" style="min-height:200px"/>
+                                <field name="code" nolabel="1" widget="ace" readonly="1" theme="tomorrow" mode="python" style="min-height:200px"/>
                             </page>
                         </notebook>
                     </sheet>
