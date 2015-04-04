@@ -185,6 +185,17 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Methods">
+                                <field name="method_ids" nolabel="1" context="{'default_module_id': module_id, 'default_model_id': id}">
+                                    <tree string="Methods" create="1" edit="1" delete="1">
+                                        <field name="prototype"/>
+                                        <field name="sugar_is_onchange"/>
+                                        <field name="sugar_is_depends"/>
+                                        <field name="sugar_is_model"/>
+                                        <field name="sugar_is_constraint"/>
+                                    </tree>
+                                </field>
+                            </page>
                              <page string="Access Rights">
                                  <field name="access_ids">
                                     <tree string="Access Rules" editable="bottom">
@@ -423,6 +434,80 @@
             </field>
         </record>
 
+
+        <!-- Model Method -->
+        <record model="ir.ui.view" id="builder_ir_model_method_tree_view">
+            <field name="name">builder.ir.model.method.tree</field>
+            <field name="model">builder.ir.model.method</field>
+            <field name="arch" type="xml">
+                <tree string="Model Method">
+                    <field name="prototype"/>
+                    <field name="sugar_is_onchange"/>
+                    <field name="sugar_is_depends"/>
+                    <field name="sugar_is_model"/>
+                    <field name="sugar_is_constraint"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_model_method_form_view">
+            <field name="name">builder.ir.model.method.form</field>
+            <field name="model">builder.ir.model.method</field>
+            <field name="arch" type="xml">
+                <form string="Model Method">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="model_id" invisible="1"/>
+                                <field name="module_id" invisible="1"/>
+
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="arguments"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="sugar_is_onchange"/>
+                                <field name="sugar_on_change_triggers" widget="many2many_tags" domain="[('model_id', '=', model_id)]" attrs="{'invisible': [('sugar_is_onchange', '=', False)]}"/>
+
+                                <field name="sugar_is_model"/>
+
+                            </group>
+                            <group>
+                                <field name="sugar_is_depends"/>
+                                <field name="sugar_depends_triggers" widget="many2many_tags" domain="[('model_id.module_id', '=', module_id)]" attrs="{'invisible': [('sugar_is_depends', '=', False)]}"/>
+
+
+                                <field name="sugar_is_constraint"/>
+                                <field name="sugar_constraint_triggers" widget="many2many_tags" domain="[('model_id.module_id', '=', module_id)]" attrs="{'invisible': [('sugar_is_constraint', '=', False)]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Code">
+                                <group>
+                                    <group></group>
+                                    <group>
+                                        <field name="code_template" />
+                                    </group>
+                                </group>
+                                <field name="code" nolabel="1" widget="ace" theme="tomorrow" mode="python" style="min-height:200px"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_builder_ir_model_method">
+            <field name="name">Model Method</field>
+            <field name="res_model">builder.ir.model.method</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Model Method -->
 
     </data>
 </openerp>

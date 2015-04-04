@@ -1,5 +1,3 @@
-from addons.builder.tools.render import JinjaRender
-
 __author__ = 'one'
 
 from . import models
@@ -18,4 +16,4 @@ graph.init_order = init_order
 graph._init_order = _init_order
 # graph.process = process
 
-render = JinjaRender(['builder/data/templates/python'])
+# render = JinjaRender(['builder/data/templates/python'])
