@@ -164,8 +164,12 @@ class ModelMethod(models.Model):
     model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade')
     module_id = fields.Many2one('builder.ir.module.module', string='Module', related='model_id.module_id', ondelete='cascade')
 
+    reference = fields.Reference([
+                                     ('builder.ir.model.fields', 'Field'),
+    ], string='Reference')
+
     name = fields.Char(string='Name', required=True)
-    arguments = fields.Char(string='Arguments')
+    arguments = fields.Char(string='Arguments', default='')
 
     prototype = fields.Char('Prototype', compute='_compute_prototype')
 

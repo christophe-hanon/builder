@@ -127,12 +127,14 @@ class IrFields(models.Model):
     states_ids = fields.One2many('builder.ir.model.fields.state', 'field_id', 'States')
 
     compute = fields.Boolean('Compute')
-    compute_method_name = fields.Char('Compute Method Name')
-    compute_method = fields.Text('Compute Method')
+    compute_method_name = fields.Char('Compute Method Name', related='model_compute_method_id.name')
+    compute_method = fields.Text('Compute Method', related='model_compute_method_id.code')
+    model_compute_method_id = fields.Many2one('builder.ir.model.method', 'Compute Model Method', ondelete='restrict')
 
     inverse = fields.Boolean('Inverse')
-    inverse_method_name = fields.Char('Inverse Method Name')
-    inverse_method = fields.Text('Inverse Method')
+    inverse_method_name = fields.Char('Inverse Method Name', related='model_inverse_method_id.name')
+    inverse_method = fields.Text('Inverse Method', related='model_inverse_method_id.code')
+    model_inverse_method_id = fields.Many2one('builder.ir.model.method', 'Inverse Model Method', ondelete='restrict')
 
     is_inherited = fields.Boolean('Inherited')
 
@@ -297,6 +299,14 @@ class IrFields(models.Model):
         ('size_gt_zero', 'CHECK (size>=0)', _size_gt_zero_msg ),
     ]
 
+    @api.onchange('inverse', 'compute')
+    def _onchange_inverse(self):
+        if self.inverse:
+            self.inverse_method = self.inverse_method if self.inverse_method else 'self.{field} = False'.format(field=self.name)
+
+        if self.compute:
+            self.compute_method = self.compute_method if self.compute_method else 'self.{field} = False'.format(field=self.name)
+
     @api.model
     @api.returns('self', lambda value: value.id)
     def create(self, vals):
@@ -321,6 +331,7 @@ class IrFields(models.Model):
                     attrs['relation_field'] = model.name
                 reverse_field = field_obj.create(attrs)
 
+        model.create_update_methods()
         return model
 
     @api.multi
@@ -348,7 +359,64 @@ class IrFields(models.Model):
                     attrs['relation_field'] = model.name
                 reverse_field = field_obj.create(attrs)
 
+        self.create_update_methods()
+
         return saved
+
+    @api.one
+    def create_update_methods(self):
+        model_inverse_method_id = self.model_inverse_method_id
+        inverse_method_name = self.inverse_method_name
+        inverse_method = self.inverse_method
+        inverse = self.inverse
+
+        if self.compute:
+            if not self.model_compute_method_id.id:
+                self.model_compute_method_id = self.env['builder.ir.model.method'].create({
+                    'model_id': self.model_id.id,
+                    'module_id': self.model_id.module_id.id,
+                    'name': self.compute_method_name,
+                    'sugar_is_depends': True,
+                    'sugar_depends_triggers': [(6, 0, [(self.id,)])],
+                    'sugar_api_type': 'one',
+                    'arguments': '',
+                    'code': self.compute_method if self.compute_method else 'self.{field} = False'.format(field=self.name),
+                    'reference': "{model},{id}".format(model=self._name, id=self.id)
+                })
+            else:
+                self.model_compute_method_id.write({
+                    'name': self.compute_method_name,
+                    'code': self.compute_method
+                })
+        else:
+            if self.model_compute_method_id.id:
+                method_id = self.model_compute_method_id.id
+                self.write({'model_compute_method_id': False})
+                self.pool['builder.ir.model.method'].unlink(self.env.cr, self.env.uid, [method_id])
+
+        if inverse:
+            if not model_inverse_method_id.id:
+                self.model_inverse_method_id = self.env['builder.ir.model.method'].create({
+                    'model_id': self.model_id.id,
+                    'module_id': self.model_id.module_id.id,
+                    'name': inverse_method_name,
+                    'sugar_is_depends': True,
+                    'sugar_depends_triggers': [(6, 0, [(self.id,)])],
+                    'sugar_api_type': 'one',
+                    'arguments': '',
+                    'code': inverse_method if inverse_method else 'self.{field} = False'.format(field=self.name),
+                    'reference': "{model},{id}".format(model=self._name, id=self.id)
+                })
+            else:
+                self.model_inverse_method_id.write({
+                    'name': inverse_method_name,
+                    'code': inverse_method
+                })
+        else:
+            if self.model_inverse_method_id.id:
+                method_id = self.model_inverse_method_id.id
+                self.write({'model_inverse_method_id': False})
+                self.pool['builder.ir.model.method'].unlink(self.env.cr, self.env.uid, [method_id])
 
 
 class ModelFieldOption(models.Model):

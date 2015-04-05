@@ -354,7 +354,7 @@
                                         <field name="code_template" />
                                     </group>
                                 </group>
-                                <field name="code" nolabel="1" widget="ace" readonly="1" theme="tomorrow" mode="python" style="min-height:200px"/>
+                                <field name="code" nolabel="1" widget="ace" theme="tomorrow" mode="python" style="min-height:200px"/>
                             </page>
                         </notebook>
                     </sheet>
