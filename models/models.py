@@ -124,13 +124,14 @@ class IrModel(models.Model):
 
     @api.multi
     def action_fields(self):
+        ref = self.env.ref('builder.builder_ir_model_fields_form_view', False)
         return {
             'name': _('Fields'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': self.field_ids._name,
-            'views': [(False, 'tree'), (False, 'form')],
+            'views': [(False, 'tree'), (ref.id if ref else False, 'form')],
             'domain': [('model_id', '=', self.id)],
             # 'target': 'current',
             'context': {

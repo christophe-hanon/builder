@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="builder_ir_model_fields_form_diagram_view">
+            <field name="name">builder.ir.model.fields.form</field>
+            <field name="model">builder.ir.model.fields</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Field">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="field_description"/>
+                        <field name="model_id" invisible="1"/>
+                        <field name="relation_model_id" invisible="1"/>
+                        <field name="special_states_field_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="ttype" invisible="1"/>
+                            <field name="relation_ttype" required="1" readonly="0"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <notebook>
+                        <page string="General">
+                            <group>
+                                <group>
+                                    <field name="required"/>
+                                    <field name="readonly"/>
+                                    <field name="index"/>
+                                    <field name="copy"/>
+                                    <field name="default"/>
+                                    <field name="groups"/>
+                                    <field name="select_level"
+                                           attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
+                                    <field name="translate"
+                                           attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
+                                </group>
+                                <group>
+                                    <field name="size"
+                                           attrs="{'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+
+                                    <label for="decimal_digits" attrs="{'invisible': [('ttype','not in',['float'])]}"/>
+                                    <div attrs="{'invisible': [('ttype','not in',['float'])]}">
+                                        <field name="decimal_digits"
+                                               attrs="{'readonly': [('ttype','not in',['float'])]}" placeholder="Digits"
+                                               class="oe_inline" style="width: 20%"/>
+                                        <field name="decimal_precision"
+                                               attrs="{'readonly': [('ttype','not in',['float'])]}"
+                                               placeholder="Precision" class="oe_inline" style="width: 20%"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Relation"
+                              attrs="{'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}">
+                            <group>
+                                <group>
+                                    <field name="relation" invisible="1"/>
+                                    <!--<field name="relation" readonly="1" attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>-->
+                                    <field name="relation_field"
+                                           attrs="{'required': [('ttype','=','one2many')], 'readonly': [('ttype','!=','one2many')], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
+
+                                    <field name="auto_join"
+                                           attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                    <field name="delegate"
+                                           attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+
+                                    <field name="relation_many2many_relation"
+                                           attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
+                                    <field name="relation_many2many_column1"
+                                           attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
+                                    <field name="relation_many2many_column2"
+                                           attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
+                                </group>
+                                <group>
+                                    <field name="relation_create_inverse_relation"/>
+                                    <field name="reverse_relation_name"
+                                           attrs="{'required': [('relation_create_inverse_relation', '=', True)], 'invisible': [('relation_create_inverse_relation', '=', False)]}"/>
+                                    <field name="reverse_relation_field_description"
+                                           attrs="{'required': [('relation_create_inverse_relation', '=', True)], 'invisible': [('relation_create_inverse_relation', '=', False)]}"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="domain"
+                                           attrs="{'readonly': [('relation','=','')], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>
+                                    <field name="on_delete"
+                                           attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                </group>
+                                <group>
+
+                                </group>
+                            </group>
+                        </page>
+                        <page string="States" attrs="{'invisible': [('special_states_field_id', '=', False)]}">
+                            <field name="states_ids" mode="tree">
+                                <tree editable="bottom">
+                                    <field name="state_id" domain="[('field_id.model_id', '=', parent.model_id)]"
+                                           options="{'no_open': True}"/>
+                                    <field name="required"/>
+                                    <field name="readonly"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Options" attrs="{'invisible': [('ttype', 'not in', ['selection'])]}">
+                            <field name="option_ids" nolabel="1" mode="tree"
+                                   attrs="{'required': [('ttype', 'in', ['selection'])]}">
+                                <tree name="Options" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="value"/>
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Methods">
+                                <group>
+                                    <group>
+                                        <field name="compute"/>
+                                        <field name="compute_method_name"
+                                               attrs="{'required': [('compute', '=', True)], 'readonly': [('compute','=',False)], 'invisible': [('compute','=',False)]}"/>
+                                        <field name="compute_method" widget="ace" style="min-height:150px" mode="python"
+                                               theme="tomorrow"
+                                               attrs="{'required': [('compute', '=', True)], 'readonly': [('compute','=',False)], 'invisible': [('compute','=',False)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="inverse"/>
+                                        <field name="inverse_method_name"
+                                               attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
+                                        <field name="inverse_method" widget="ace"
+                                               style="min-height:150px" mode="python" theme="tomorrow"
+                                               attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                        <page string="Groups">
+                            <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_model_fields_tree_view">
+            <field name="name">builder.ir.model.fields.tree</field>
+            <field name="model">builder.ir.model.fields</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="position" widget="handle"/>
+                    <field name="name"/>
+                    <field name="field_description"/>
+                    <field name="ttype"/>
+                    <field name="required"/>
+                    <field name="readonly"/>
+                    <field name="select_level"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_model_fields_form_view">
+            <field name="name">builder.ir.model.fields.form</field>
+            <field name="model">builder.ir.model.fields</field>
+            <field name="arch" type="xml">
+                <sheet>
+                    <!--<div class="oe_right oe_button_box" name="buttons">
+                        <button class="oe_inline oe_stat_button" string="Options" name="action_selection_options" type="object"  icon="fa-list-ol" context="{'default_field_id': id, 'default_model_id': model_id}" attrs="{'invisible': [('ttype', 'not in', ['selection'])]}"/>
+                    </div>-->
+
+                    <form string="Field">
+                        <group>
+                            <group>
+                                <field name="id" invisible="1"/>
+                                <field name="model_id" invisible="1"/>
+                                <field name="relation_model_id" invisible="1"/>
+                                <field name="special_states_field_id" invisible="1"/>
+
+                                <field name="name"/>
+                                <field name="field_description"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="ttype"/>
+                            </group>
+                            <group></group>
+                        </group>
+                        <notebook>
+                            <page string="General">
+                                <group>
+                                    <group>
+                                        <field name="required"/>
+                                        <field name="readonly"/>
+                                        <field name="index"/>
+                                        <field name="copy"/>
+                                        <field name="default"/>
+                                        <field name="groups"/>
+                                        <field name="select_level"
+                                               attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
+                                        <field name="translate"
+                                               attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="size"
+                                               attrs="{'readonly': [('ttype','not in',['char','reference'])], 'invisible': [('ttype','not in',['char','reference'])]}"/>
+
+                                        <label for="decimal_digits"
+                                               attrs="{'invisible': [('ttype','not in',['float'])]}"/>
+                                        <div attrs="{'invisible': [('ttype','not in',['float'])]}">
+                                            <field name="decimal_digits"
+                                                   attrs="{'readonly': [('ttype','not in',['float'])]}"
+                                                   placeholder="Digits" class="oe_inline" style="width: 20%"/>
+                                            <field name="decimal_precision"
+                                                   attrs="{'readonly': [('ttype','not in',['float'])]}"
+                                                   placeholder="Precision" class="oe_inline" style="width: 20%"/>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Relation"
+                                  attrs="{'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}">
+                                <group>
+                                    <group>
+                                        <field name="relation" invisible="1"/>
+                                        <!--<field name="relation" readonly="1" attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>-->
+                                        <field name="relation_field"
+                                               attrs="{'required': [('ttype','=','one2many')], 'readonly': [('ttype','!=','one2many')], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
+
+                                        <field name="auto_join"
+                                               attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                        <field name="delegate"
+                                               attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+
+                                        <field name="relation_many2many_relation"
+                                               attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
+                                        <field name="relation_many2many_column1"
+                                               attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
+                                        <field name="relation_many2many_column2"
+                                               attrs="{'required': [('ttype','=','many2many')], 'readonly': [('ttype','!=','many2many')], 'invisible': [('ttype', 'not in', ['many2many'])]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="relation_create_inverse_relation"/>
+                                        <field name="reverse_relation_name"
+                                               attrs="{'required': [('relation_create_inverse_relation', '=', True)], 'invisible': [('relation_create_inverse_relation', '=', False)]}"/>
+                                        <field name="reverse_relation_field_description"
+                                               attrs="{'required': [('relation_create_inverse_relation', '=', True)], 'invisible': [('relation_create_inverse_relation', '=', False)]}"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="domain"
+                                               attrs="{'readonly': [('relation','=','')], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>
+                                        <field name="on_delete"
+                                               attrs="{'readonly': [('ttype','!=','many2one')], 'invisible': [('ttype', 'not in', ['many2one'])]}"/>
+                                    </group>
+                                    <group>
+
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="States" attrs="{'invisible': [('special_states_field_id', '=', False)]}">
+                                <field name="states_ids" mode="tree">
+                                    <tree editable="bottom">
+                                        <field name="state_id" domain="[('field_id.model_id', '=', parent.model_id)]"
+                                               options="{'no_open': True}"/>
+                                        <field name="required"/>
+                                        <field name="readonly"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Options" attrs="{'invisible': [('ttype', 'not in', ['selection'])]}">
+                                <field name="option_ids" nolabel="1" mode="tree"
+                                       attrs="{'required': [('ttype', 'in', ['selection'])]}">
+                                    <tree name="Options" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="value"/>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Methods">
+                                <group>
+                                    <group>
+                                        <field name="compute"/>
+                                        <field name="compute_method_name"
+                                               attrs="{'required': [('compute', '=', True)], 'readonly': [('compute','=',False)], 'invisible': [('compute','=',False)]}"/>
+                                        <field name="compute_method" widget="ace" style="min-height:150px" mode="python"
+                                               theme="tomorrow"
+                                               attrs="{'required': [('compute', '=', True)], 'readonly': [('compute','=',False)], 'invisible': [('compute','=',False)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="inverse"/>
+                                        <field name="inverse_method_name"
+                                               attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
+                                        <field name="inverse_method" widget="ace"
+                                               style="min-height:150px" mode="python" theme="tomorrow"
+                                               attrs="{'required': [('inverse', '=', True)], 'readonly': [('inverse','=',False)], 'invisible': [('inverse','=',False)]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Groups">
+                                <field name="group_ids" domain="[('module_id', '=', module_id)]"/>
+                            </page>
+                        </notebook>
+                    </form>
+                </sheet>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="builder_ir_model_fields_option_form_view">
+            <field name="name">builder.ir.model.fields.option.form</field>
+            <field name="model">builder.ir.model.fields.option</field>
+            <field name="arch" type="xml">
+                <form string="Options">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="value"/>
+                                <field name="name"/>
+                            </group>
+                            <group></group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

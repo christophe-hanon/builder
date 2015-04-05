@@ -318,7 +318,7 @@
                         <field name="name"/>
                         <field name="osv_memory" invisible="1"/>
                     </node>
-                    <arrow object="builder.ir.model.fields" source="model_id" destination="relation_model_id" label="['diagram_arc_name']" form_view_ref="builder.builder_ir_model_fields_form_diagram_view"  context="{'from_diagram': True}">
+                    <arrow object="builder.ir.model.fields" source="model_id" destination="relation_model_id" label="['diagram_arc_name']" form_view_ref="builder.builder_ir_model_fields_form_diagram_view"  context="{'form_view_id': True}">
                     </arrow>
                 </diagram>
             </field>

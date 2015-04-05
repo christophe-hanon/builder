@@ -63,6 +63,7 @@ This module aims to help in the development of new modules
         'wizard/model_export_view.xml',
         'views/menu_view.xml',
         'views/module_view.xml',
+        'views/field_view.xml',
         'views/model_view.xml',
         'views/action_view.xml',
         'views/data_view.xml',

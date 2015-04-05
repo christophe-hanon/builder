@@ -60,6 +60,7 @@ class IrFields(models.Model):
         )
 
     model_id = fields.Many2one('builder.ir.model', 'Model', select=1, ondelete='cascade')
+    special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id', string='States Field')
 
     name = fields.Char('Name', required=True, select=1)
 
@@ -122,6 +123,8 @@ class IrFields(models.Model):
                               "For example: [('color','=','red')]")
     selectable = fields.Boolean('Selectable', default=1)
     group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_fields_group_rel', 'field_id', 'group_id', string='Groups')
+    option_ids = fields.One2many('builder.ir.model.fields.option', 'field_id', 'Options')
+    states_ids = fields.One2many('builder.ir.model.fields.state', 'field_id', 'States')
 
     compute = fields.Boolean('Compute')
     compute_method_name = fields.Char('Compute Method Name')
@@ -252,9 +255,10 @@ class IrFields(models.Model):
 
     @api.model
     def _get_default_ttype(self):
-        if self.env.context.get('from_diagram'):
-            return 'many2one'
-        return 'char'
+        # if self.env.context.get('from_diagram'):
+        #     return 'many2one'
+        # return 'char'
+        pass
 
     _defaults = {
         'ttype': _get_default_ttype,
@@ -346,24 +350,27 @@ class IrFields(models.Model):
 
         return saved
 
-    @api.multi
-    def action_selection_options(self):
-        return {
-            'name': _('Options'),
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'tree,form',
-            'res_model': self._name,
-            'views': [(False, 'tree'), (False, 'form')],
-            'domain': [('field_id', '=', self.id)],
-            # 'target': 'current',
-            'context': {
-                'default_model_id': self.model_id.id,
-                'default_module_id': self.model_id.module_id.id,
-                'default_field_id': self.id,
-            },
-        }
+
+class ModelFieldOption(models.Model):
+    _name = 'builder.ir.model.fields.option'
+    _rec_name = 'value'
+    _order = 'sequence, value'
+
+    field_id = fields.Many2one('builder.ir.model.fields', 'Field', ondelete='cascade')
+    sequence = fields.Integer(string='Sequence')
+    value = fields.Char(string='Value', required=True)
+    name = fields.Char(string='Name', required=True)
+
+    @api.onchange('value')
+    def _onchange_value(self):
+        if not self.name:
+            self.name = self.value
 
 
+class ModelFieldState(models.Model):
+    _name = 'builder.ir.model.fields.state'
 
-
+    field_id = fields.Many2one('builder.ir.model.fields', 'Field', ondelete='cascade', required=True)
+    state_id = fields.Many2one('builder.ir.model.fields.option', string='State', required=True)
+    readonly = fields.Selection([('True', 'Readonly'), ('False', 'Not Readonly')], 'Readonly')
+    required = fields.Selection([('True', 'Required'), ('False', 'Not Required')], 'Required')
