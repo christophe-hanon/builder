@@ -55,10 +55,11 @@ class JsonExport:
 
             if relational_multi:
                 record[column]['recordset'] = []
+                record_inverse_field = [model._fields[column].inverse_name] if hasattr(model._fields[column], 'inverse_name') else []
                 for value in values:
                     recordset = self.env[comodel_name].search([['id', '=', value]])
                     record[column]['recordset'].append(
-                        self.build_json(recordset, [model._fields[column].inverse_name]))
+                        self.build_json(recordset, record_inverse_field))
             else:
 
                 recordset = self.env[comodel_name].search([['id', "=", values[0]]])

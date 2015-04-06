@@ -221,7 +221,7 @@
                                 </field>
                             </page>
                              <page string="Access Rights">
-                                 <field name="access_ids">
+                                 <field name="access_ids" context="{'default_module_id': module_id, 'default_model_id': id}">
                                     <tree string="Access Rules" editable="bottom">
                                         <field name="group_id" domain="[('module_id', '=', parent.module_id)]"/>
                                         <field name="perm_read"/>

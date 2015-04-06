@@ -44,6 +44,7 @@ This module aims to help in the development of new modules
         'wizard/action_lookup_wizard_view.xml',
         'wizard/website_asset_bulk_add_view.xml',
         'wizard/website_page_import_view.xml',
+        'wizard/model_access_generate_wizard_view.xml',
 
         'views/views/base_view.xml',
         'views/views/calendar_view.xml',
@@ -55,21 +56,22 @@ This module aims to help in the development of new modules
         'views/views/tree_view.xml',
         'views/views/selector_view.xml',
         'views/website_view.xml',
-        'views/snippet_view.xml',
 
         'wizard/module_data_import_view.xml',
         'wizard/module_import_view.xml',
         'wizard/model_import_view.xml',
         'wizard/model_export_view.xml',
+
         'views/menu_view.xml',
         'views/module_view.xml',
         'views/field_view.xml',
         'views/model_view.xml',
         'views/action_view.xml',
         'views/data_view.xml',
-        'views/lambda_view.xml',
         'views/security_view.xml',
+        'views/cron_view.xml',
         'views/menu.xml',
+
         'views/backend_assets.xml',
         'views/snippet_templates.xml',
         'views/designer/website_page_designer.xml',

@@ -105,10 +105,14 @@ class IrModelAccess(osv.osv):
         'perm_unlink': fields.boolean('Delete Access'),
     }
 
+    # def create(self, cr, uid, vals, context=None):
+    #     if not vals['module_id']:
+    #         vals['module_id'] = self.pool['builder.ir.model'].search(cr, uid, [('id', '=', vals['model_id'])])
+
 
 class IrRule(osv.osv):
     _name = 'builder.ir.rule'
-    _order = 'name'
+    _order = 'model_id, name'
 
     def _get_value(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
@@ -138,8 +142,6 @@ class IrRule(osv.osv):
         'perm_create': fields.boolean('Apply for Create'),
         'perm_unlink': fields.boolean('Apply for Delete')
     }
-
-    _order = 'model_id DESC'
 
     _defaults = {
         'perm_read': True,

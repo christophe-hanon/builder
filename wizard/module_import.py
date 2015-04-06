@@ -120,7 +120,7 @@ class ModuleImportLocal(models.TransientModel):
 
         #menus
         menu_obj = self.env['builder.ir.ui.menu']
-        menus = self.get_module_data_with_data(self.module_id.id, 'ir.ui.menu')
+        menus = self.get_module_data_with_data(self.module_id.name, 'ir.ui.menu')
 
         menu_map = {}
         for m, d in menus:
@@ -135,19 +135,19 @@ class ModuleImportLocal(models.TransientModel):
 
         for m, d in menus:
             menu = menu_map[m.id]
-            if menu.parent_id:
-                if menu.parent_id.id in menu_map:
+            if m.parent_id:
+                if m.parent_id.id in menu_map:
                     menu.write({
-                        'parent_id': menu_map[menu.parent_id.id].id,
+                        'parent_id': menu_map[m.parent_id.id].id,
                         'parent_type': 'module'
                     })
                 else:
-                    data = self.env['ir.model.data'].search([('res_id', '=', menu.parent_id.id), ('model', '=', 'ir.ui.menu')])
+                    data = self.env['ir.model.data'].search([('res_id', '=', m.parent_id.id), ('model', '=', 'ir.ui.menu')])
                     if data.id:
                         menu.write({
                             'parent_ref': "{module}.{name}".format(module=data.module, name=data.name),
                             'parent_type': 'system',
-                            'parent_menu_id': menu.parent_id.id,
+                            'parent_menu_id': m.parent_id.id,
                         })
 
         return {'type': 'ir.actions.act_window_close'}

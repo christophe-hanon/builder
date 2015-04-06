@@ -94,7 +94,9 @@ class Module(models.Model):
     view_ids = fields.One2many('builder.ir.ui.view', 'module_id', 'Views')
     menu_ids = fields.One2many('builder.ir.ui.menu', 'module_id', 'Menus')
     group_ids = fields.One2many('builder.res.groups', 'module_id', 'Groups')
+    model_access_ids = fields.One2many('builder.ir.model.access', 'module_id', 'ACLs')
     rule_ids = fields.One2many('builder.ir.rule', 'module_id', 'Rules')
+    cron_job_ids = fields.One2many('builder.ir.cron', 'module_id', 'Cron Jobs')
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
@@ -250,6 +252,23 @@ javascript:(function(){
         }
 
     @api.multi
+    def action_backend_model_access(self):
+
+        return {
+            'name': _('Access Control Rules'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.ir.model.access',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
     def action_backend_rules(self):
 
         return {
@@ -258,6 +277,23 @@ javascript:(function(){
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'builder.ir.rule',
+            'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_cron_jobs(self):
+
+        return {
+            'name': _('Cron Jobs'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.ir.cron',
             'views': [(False, 'tree'), (False, 'form')],
             'domain': [('module_id', '=', self.id)],
             # 'target': 'current',
