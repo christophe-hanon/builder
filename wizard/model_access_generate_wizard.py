@@ -9,8 +9,7 @@ class ModelAccessGenerateWizard(models.TransientModel):
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
     model_ids = fields.Many2many('builder.ir.model', 'builder_ir_model_access_generate_model_rel', 'wizard_id',
                                  'model_id', 'Models')
-    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_access_generate_group_rel', 'wizard_id',
-                                 'group_id', 'Groups')
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_access_generate_group_rel', 'wizard_id', 'group_id', 'Groups')
 
     perm_read = fields.Boolean('Read Access')
     perm_write = fields.Boolean('Write Access')
