@@ -43,7 +43,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown">
+                                <li class="dropdown" invisible="1">
                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                         <span class="oe_topbar_name">Website</span>
                                         <b class="caret"></b>
@@ -139,7 +139,7 @@
                                 </div>
                                 <field name="data_file_ids" nolabel="1"/>
                             </page>
-                            <page string="Data">
+                            <page string="Data" invisible="1">
                                 <field name="data_ids" nolabel="1" context="{'default_module_id': active_id}" />
                             </page>
                             <page string="Backend">
@@ -191,6 +191,7 @@
                                     <page string="Menus">
                                         <field name="menu_ids" nolabel="1" context="{'default_module_id': active_id}">
                                             <tree string="Menus">
+                                                <field name="morder" widget="handle"/>
                                                 <field name="sequence"/>
                                                 <field name="xml_id"/>
                                                 <field name="complete_name"/>
@@ -226,7 +227,7 @@
                                 </notebook>
                             </page>
 
-                            <page string="Website">
+                            <page string="Website" invisible="1">
                                 <notebook class="ui-tabs-vertical">
                                     <page string="Pages">
                                         <button string="Import Page" name="%(act_builder_website_page_import_wizard)d" type="action" class="oe_link" context="{'default_module_id': id}"/>

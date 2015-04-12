@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+        {% for cron in cron_jobs %}
+        <record id="{{ module.name }}_ir_cron_{{ loop.index }}_action" model="ir.cron">
+            <field name="name">{{ cron.name }}</field>
+            <field name="interval_number">{{ cron.interval_number }}</field>
+            <field name="interval_type">{{ cron.interval_type }}</field>
+            {% if cron.numbercall -%}
+            <field name="numbercall">{{ cron.numbercall }}</field>
+            {%- else -%}
+            <field name="numbercall">-1</field>
+            {%- endif %}
+            <field name="doall" eval="{{ cron.doall }}"/>
+            <field name="model">{{ cron.model_id.model }}</field>
+            <field name="function">{{ cron.model_method_id.name }}</field>
+            <field name="args">{{ cron.arguments if cron.arguments else '()' }}</field>
+            <field name="active" eval="{{ cron.active }}"/>
+        </record>
+        {% endfor %}
+    </data>
+</openerp>

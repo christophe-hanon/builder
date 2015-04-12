@@ -1,5 +1,21 @@
 {%- extends 'builder.base.xml.jinja2' %}
 
 {% block content %}
-    <menuitem name="{{module.shortdesc}}" id="{{module.name}}_menu_root" />
+    {% for menu in menus %}
+        <menuitem id="{{menu.xml_id}}" name="{{menu.name}}"  {% if menu.sequence %}sequence="{{ menu.sequence }}"{% endif %}
+                {%- if menu.parent_type == 'module' %}
+                    parent="{{ menu.parent_id.xml_id }}"
+                {%- elif menu.parent_type == 'system' %}
+                    parent="{{ menu.parent_ref }}"
+                {%- endif -%}
+                {%- if menu.action_type == 'module' %}
+                    action="{{ menu.action_module.xml_id }}"
+                {%- elif menu.action_type == 'system' %}
+                    action="{{ menu.action_system_ref }}"
+                {%- endif -%}
+                {%- if menu.group_ids %}
+                    {{ menu.group_ids|groups }}
+                {%- endif -%}
+                />
+    {% endfor %}
 {% endblock %}

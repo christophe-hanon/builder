@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+{% for access in model_access -%}
+access_{{ access.model_id.module_id.name }}_{{ access.model_id.model|dot2dashed }}_{{ access.group_id.xml_id|dot2dashed }},{{ access.name }},{{ access.model_id.module_id.name }}.{{ access.model_id.model|dot2dashed }},{{ access.group_id.module_id.name }}.{{ access.group_id.xml_id }},{{ access.perm_read|int }},{{ access.perm_write|int }},{{ access.perm_create|int }},{{ access.perm_unlink|int }}
+{% endfor %}

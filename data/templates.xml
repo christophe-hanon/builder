@@ -7,6 +7,27 @@
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/xml/builder.base.xml.jinja2" type="char" />
         </record>
+
+        <record model="document.template" id="builder_security_xml">
+            <field name="name">builder.security.xml.jinja2</field>
+            <field name="title">builder.security.xml.jinja2</field>
+            <field name="type">jinja</field>
+            <field name="content" file="builder/data/templates/xml/backend/builder.security.xml.jinja2" type="char" />
+        </record>
+
+        <record model="document.template" id="builder_cron_xml">
+            <field name="name">builder.cron.xml.jinja2</field>
+            <field name="title">builder.cron.xml.jinja2</field>
+            <field name="type">jinja</field>
+            <field name="content" file="builder/data/templates/xml/backend/builder.cron.xml.jinja2" type="char" />
+        </record>
+
+        <record model="document.template" id="builder_model_access_csv">
+            <field name="name">builder.model.access.csv.jinja2</field>
+            <field name="title">builder.model.access.csv.jinja2</field>
+            <field name="type">jinja</field>
+            <field name="content" file="builder/data/templates/csv/backend/builder.model.access.csv.jinja2" type="char" />
+        </record>
         
         <record model="document.template" id="builder_menu_xml">
             <field name="name">builder.menu.xml.jinja2</field>

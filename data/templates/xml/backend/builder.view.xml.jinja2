@@ -4,10 +4,10 @@
             <record model="ir.ui.view" id="{{view.xml_id}}">
                 <field name="name">{{view.name}}</field>
                 <field name="model">{{view.model_id.model}}</field>
-                {%- if view.type == 'tree' and view.field_parent_id %}
+                {% if view.type == 'tree' and view.field_parent_id %}
                 <field name="field_parent">{{view.field_parent_id.name}}</field>
                 {% endif -%}
-                <field name="priority" eval="16"/>
+                <field name="priority" eval="16" />
                 <field name="arch" type="xml">
                     {{view.arch|indent}}
                 </field>

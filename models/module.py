@@ -446,6 +446,9 @@ javascript:(function(){
                 'cleargroup': lambda x: x.replace('.', '_'),
                 'groups': groups_attribute,
             },
+            'globals': {
+                'enumerate': enumerate
+            }
         }
 
         zfileIO = StringIO()
@@ -468,10 +471,32 @@ javascript:(function(){
 
             write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py.jinja2' , {}, **functions)
             write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py.jinja2' , {'packages': ['models']},**functions)
-            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml.jinja2'           , {'module': self}, **functions)
+            write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml.jinja2'           , {'module': self, 'menus': self.menu_ids}, **functions)
             write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml.jinja2'        , {'module': self}, **functions)
             write_template(templates, zfile, self.name + '/views/views.xml'   , 'builder.view.xml.jinja2'           , {'models': self.view_ids}, **functions)
             write_template(templates, zfile, self.name + '/models/models.py'  , 'builder.models.py.jinja2'          , {'models': self.model_ids}, **functions)
+
+        if len(self.rule_ids) or len(self.group_ids):
+            module_data.append('security/security.xml')
+            write_template(templates, zfile, self.name + '/security/security.xml'       , 'builder.security.xml.jinja2' , {
+                'module': self,
+                'rules': self.rule_ids,
+                'groups': self.group_ids,
+            }, **functions)
+
+        if len(self.model_access_ids):
+            module_data.append('security/ir.model.access.csv')
+            write_template(templates, zfile, self.name + '/security/ir.model.access.csv'       , 'builder.model.access.csv.jinja2' , {
+                'module': self,
+                'model_access': self.model_access_ids,
+            }, **functions)
+
+        if len(self.cron_job_ids):
+            module_data.append('data/cron.xml')
+            write_template(templates, zfile, self.name + '/data/cron.xml'       , 'builder.cron.xml.jinja2' , {
+                'module': self,
+                'cron_jobs': self.cron_job_ids,
+            }, **functions)
 
         if self.icon_image:
             info = zipfile.ZipInfo(self.name + '/static/description/icon.png')
