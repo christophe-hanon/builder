@@ -106,6 +106,7 @@
                                     <field name="demo"/>
                                     <field name="application"/>
                                     <field name="auto_install"/>
+                                    <field name="post_install_action"/>
                                 </group>
                                 <group string="Dependencies"/>
                                 <p class="oe_grey" attrs="{'invisible': [('dependency_ids','not in',[None,False])]}">

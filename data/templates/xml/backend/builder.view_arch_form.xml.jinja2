@@ -1,5 +1,7 @@
 {% if not this.inherit_view -%}
 <form string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
+    <sheet>
+    <group col="4">
 {% else -%}
 {% if this.inherit_view_type == 'field' %}
 <field name="{{this.inherit_view_field_id.name}}" position="{{this.inherit_view_position}}">
@@ -22,6 +24,8 @@
     </notebook>
 {%- endif  %}
 {% if not this.inherit_view -%}
+    </group>
+    </sheet>
 </form>
 {% else -%}
 {% if this.inherit_view_type == 'field' %}

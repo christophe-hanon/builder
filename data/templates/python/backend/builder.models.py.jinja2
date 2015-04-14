@@ -49,6 +49,7 @@ class {{model.model|replace(".", " ")|replace("_", " ")|title()|replace(" ","")}
                     {%- if field.index %} index=True,{%- endif -%}
                     {%- if not field.copy %} copy=False,{%- endif -%}
                     {%- if field.selection %} selection={{field.selection}},{%- endif -%}
+                    {%- if field.option_ids %} selection={{field.option_ids|field_options}},{%- endif -%}
                     {%- if field.compute -%} compute='{{field.compute_method_name}}',{%- endif -%}
                     {%- if field.inverse -%} inverse='{{field.inverse_method_name}}',{%- endif -%}
                     {%- if field.default -%} default='{{field.default}}',{%- endif -%})

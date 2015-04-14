@@ -82,6 +82,11 @@ class Module(models.Model):
     views_by_module = fields.Text(string='Views')
     demo = fields.Boolean('Has Demo Data')
 
+    post_install_action = fields.Reference([
+                                    ('builder.ir.actions.act_window', 'Window'),
+                                    # ('builder.ir.actions.act_url', 'URL'),
+    ], 'After Install Action')
+
     models_count = fields.Integer("Models Count", compute='_compute_models_count', store=False)
 
     dependency_ids = fields.One2many(
@@ -430,6 +435,12 @@ javascript:(function(){
         def groups_attribute(groups):
             return 'groups="{list}"'.format(list=','.join([i.xml_id for i in groups])) if len(groups) else ''
 
+        def field_options(options):
+            opts = []
+            for op in options:
+                opts.append((op.value, op.name))
+            return repr(opts)
+
         def write_template(template_obj, zf, fname, template, d, **params):
             i = zipfile.ZipInfo(fname)
             i.compress_type = zipfile.ZIP_DEFLATED
@@ -445,6 +456,7 @@ javascript:(function(){
                 'dot2name': lambda x: ''.join([s.capitalize() for s in x.split('.')]),
                 'cleargroup': lambda x: x.replace('.', '_'),
                 'groups': groups_attribute,
+                'field_options': field_options,
             },
             'globals': {
                 'enumerate': enumerate
@@ -466,10 +478,10 @@ javascript:(function(){
 
         if has_models:
             module_data.append('views/views.xml')
-            module_data.append('views/menu.xml')
             module_data.append('views/actions.xml')
+            module_data.append('views/menu.xml')
 
-            write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py.jinja2' , {}, **functions)
+            write_template(templates, zfile, self.name + '/__init__.py'       , 'builder.python.__init__.py.jinja2' , {'packages': ['models']}, **functions)
             write_template(templates, zfile, self.name + '/models/__init__.py', 'builder.python.__init__.py.jinja2' , {'packages': ['models']},**functions)
             write_template(templates, zfile, self.name + '/views/menu.xml'    , 'builder.menu.xml.jinja2'           , {'module': self, 'menus': self.menu_ids}, **functions)
             write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml.jinja2'        , {'module': self}, **functions)

@@ -126,7 +126,7 @@ class ModuleImportLocal(models.TransientModel):
         for m, d in menus:
             menu = menu_obj.create({
                 'module_id': module.id,
-                'name': m.name,
+                'name': m.name if m.name else '(empty)',
                 'xml_id': d.name,
                 'sequence': m.sequence,
             })

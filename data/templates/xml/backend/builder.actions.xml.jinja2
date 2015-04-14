@@ -1,7 +1,7 @@
 {%- extends 'builder.base.xml.jinja2' %}
 {% block content %}
 {% for action in module.action_window_ids %}
-    <record model="ir.actions.act_window" id="{{action.name}}">
+    <record model="ir.actions.act_window" id="{{action.xml_id}}">
         {% if action.name %}
         <field name="name">{{action.name}}</field>
         {% endif %}
@@ -54,4 +54,11 @@
         {% endif %}
     </record>
 {% endfor %}
+
+    {% if module.post_install_action %}
+    <record id="{{ module.name }}.do_action" model="ir.actions.todo">
+        <field name="action_id" ref="{{ module.post_install_action.xml_id }}"/>
+        <field name="state">open</field>
+    </record>
+    {% endif %}
 {% endblock %}
