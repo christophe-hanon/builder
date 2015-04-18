@@ -15,11 +15,11 @@ class ModelDependency(models.Model):
     # the module that depends on it
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
 
-    type = fields.Selection(DEPENDENCY_TYPES, 'Type', default='manual', store=False)
+    type = fields.Selection(DEPENDENCY_TYPES, 'Type', default='manual', store=False, search=True)
 
     # the module corresponding to the dependency, and its status
-    dependency_module_id = fields.Many2one('ir.module.module', 'Dependency', store=False)
-    dependency_project_id = fields.Many2one('builder.ir.module.module', 'Dependency', store=False)
+    dependency_module_id = fields.Many2one('ir.module.module', 'Dependency', store=False, search=True)
+    dependency_project_id = fields.Many2one('builder.ir.module.module', 'Dependency', store=False, search=True)
     dependency_module_name = fields.Char('Dependency', select=True)
 
     @api.one

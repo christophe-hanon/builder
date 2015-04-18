@@ -87,7 +87,7 @@ class IrFields(models.Model):
 
     field_description = fields.Char('Field Label')
     ttype = fields.Selection(_get_fields_type_selection, 'Field Type', required=True)
-    relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')], 'Field Type', compute='_compute_relation_ttype', fnct_inv='_relation_type_set_inverse', store=False)
+    relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')], 'Field Type', compute='_compute_relation_ttype', fnct_inv='_relation_type_set_inverse', store=False, search=True)
     selection = fields.Char('Selection Options', help="List of options for a selection field, "
                                                       "specified as a Python expression defining a list of (key, label) pairs. "
                                                       "For example: [('blue','Blue'),('yellow','Yellow')]")
@@ -138,7 +138,7 @@ class IrFields(models.Model):
 
     is_inherited = fields.Boolean('Inherited')
 
-    diagram_arc_name = fields.Char(compute='_compute_arc_name', store=False)
+    diagram_arc_name = fields.Char(compute='_compute_arc_name', store=False, search=True)
 
     @api.one
     @api.depends()

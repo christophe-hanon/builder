@@ -193,7 +193,7 @@ class ModelMethod(models.Model):
                                          ('create', 'Create Method Rewrite'),
                                          ('write', 'Write Method Rewrite'),
                                          ('unlink', 'Unlink Method Rewrite'),
-    ], 'Method Template', store=False)
+    ], 'Method Template', store=False, search=True)
 
     @api.one
     @api.depends('name', 'arguments')
