@@ -2,7 +2,7 @@
 {% if not this.inherit_view -%}
 <form string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
     <sheet>
-    <group col="4">
+        <group col="4">
 {% else -%}
 {% if this.inherit_view_type == 'field' %}
 <field name="{{this.inherit_view_field_id.name}}" position="{{this.inherit_view_position}}">
@@ -11,21 +11,21 @@
 {% endif -%}
 {% endif -%}
 {% for field in flat_fields %}
-    {{ macros.form_field(field) }}
+        {{ macros.form_field(field)|indent(8) }}
 {%- endfor %}
 {% if pages %}
-    <notebook>
-    {%- for page, pfields in pages.items() %}
-        <page string="{{page}}">
-            {%- for field in pfields %}
-            {{ macros.form_field(field) }}
-            {%- endfor %}
-        </page>
-    {%- endfor %}
-    </notebook>
+        <notebook>
+        {%- for page, pfields in pages.items() %}
+            <page string="{{page}}">
+                {%- for field in pfields %}
+                {{ macros.form_field(field)|indent(8) }}
+                {%- endfor %}
+            </page>
+        {%- endfor %}
+        </notebook>
 {%- endif  %}
-{% if not this.inherit_view -%}
-    </group>
+{% if not this.inherit_view %}
+        </group>
     </sheet>
 </form>
 {% else -%}
