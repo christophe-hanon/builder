@@ -8,6 +8,13 @@
             <field name="content" file="builder/data/templates/xml/builder.base.xml.jinja2" type="char" />
         </record>
 
+        <record model="document.template" id="builder_backend_macros_xml">
+            <field name="name">builder.backend.macros.xml.jinja2</field>
+            <field name="title">builder.backend.macros.xml.jinja2</field>
+            <field name="type">jinja</field>
+            <field name="content" file="builder/data/templates/xml/backend/builder.backend.macros.xml.jinja2" type="char" />
+        </record>
+
         <record model="document.template" id="builder_security_xml">
             <field name="name">builder.security.xml.jinja2</field>
             <field name="title">builder.security.xml.jinja2</field>
@@ -62,13 +69,6 @@
             <field name="title">builder.python.__init__.py.jinja2</field>
             <field name="type">jinja</field>
             <field name="content" file="builder/data/templates/python/builder.python.__init__.py.jinja2" type="char" />
-        </record>
-
-        <record model="document.template" id="builder_view_form_macros_xml">
-            <field name="name">builder.view_form_macros.xml.jinja2</field>
-            <field name="title">builder.view_form_macros.xml.jinja2</field>
-            <field name="type">jinja</field>
-            <field name="content" file="builder/data/templates/xml/backend/builder.view_form_macros.xml.jinja2" type="char" />
         </record>
 
         <record model="document.template" id="builder_view_arch_gantt">

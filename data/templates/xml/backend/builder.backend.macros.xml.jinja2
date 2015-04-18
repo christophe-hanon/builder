@@ -1,0 +1,15 @@
+{% macro form_field(field) -%}
+    {% if (field.field_id.ttype in ["many2many", "one2many"]) and (field.related_field_view_type and field.related_field_view_type != 'default') -%}
+        {% if field.related_field_view_type == 'custom' -%}
+            <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {% if field.related_field_mode %} mode="{{ field.related_field_mode }}" {% endif %}{% if field.related_field_mode == 'tree' and field.related_field_tree_editable %} editable="{{ field.related_field_tree_editable }}" {% endif %} {{field|fieldattrs}} >
+                {{ field.related_field_arch|indent(width=16) }}
+            </field>
+        {% elif field.related_field_view_type == 'defined' -%}
+            <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{field|fieldattrs}} context="{'form_view_id': '{{ field.related_field_form_id }}', 'tree_view_id': '{{ field.related_field_tree_id }}'}" />
+        {% endif -%}
+    {% else -%}
+        <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{field|fieldattrs}} />
+    {%- endif -%}
+{%- endmacro %}
+
+

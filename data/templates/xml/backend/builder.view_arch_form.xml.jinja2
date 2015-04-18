@@ -1,3 +1,4 @@
+{% import "builder.backend.macros.xml.jinja2" as macros %}
 {% if not this.inherit_view -%}
 <form string="{{string}}" {% if not create %} create="false" {% endif %}{% if not edit %} edit="false" {% endif %}{% if not delete %} delete="false" {% endif %}>
     <sheet>
@@ -10,14 +11,14 @@
 {% endif -%}
 {% endif -%}
 {% for field in flat_fields %}
-    <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{field|fieldattrs}} />
+    {{ macros.form_field(field) }}
 {%- endfor %}
 {% if pages %}
     <notebook>
     {%- for page, pfields in pages.items() %}
         <page string="{{page}}">
             {%- for field in pfields %}
-            <field name="{{field.field_id.name}}"{% if field.string %} string="{{field.string}}" {% endif %}{% if field.domain %} domain="{{field.domain}}" {% endif %}{% if field.widget %} widget="{{field.widget}}" {% endif %}{% if field.widget_options %} options="{{field.widget_options}}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}{% if field.required and not field.required_condition %} required="1" {% endif %}{% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}{% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{field|fieldattrs}} />
+            {{ macros.form_field(field) }}
             {%- endfor %}
         </page>
     {%- endfor %}
