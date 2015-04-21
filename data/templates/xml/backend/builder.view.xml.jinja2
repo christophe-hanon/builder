@@ -7,6 +7,9 @@
                 {% if view.type == 'tree' and view.field_parent_id %}
                 <field name="field_parent">{{view.field_parent_id.name}}</field>
                 {% endif -%}
+                {% if view.inherit_view %}
+                <field name="inherit_id" ref="{{ view.inherit_view_ref }}"/>
+                {% endif %}
                 <field name="priority" eval="16" />
                 <field name="arch" type="xml">
                     {{view.arch|indent}}
