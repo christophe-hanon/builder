@@ -29,7 +29,7 @@
                                         <li>
                                             <button class="oe_inline oe_stat_button" string="Menus" name="action_backend_menus" type="object"  icon="fa-list" context="{'default_module_id': id}"/>
                                         </li>
-                                        <li class="odoo_support_contact">
+                                        <li>
                                             <button class="oe_inline oe_stat_button" string="Groups" name="action_backend_groups" type="object"  icon="fa-group" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
@@ -37,6 +37,9 @@
                                         </li>
                                         <li>
                                             <button class="oe_inline oe_stat_button" string="Record Rules" name="action_backend_rules" type="object"  icon="fa-lock" context="{'default_module_id': id}"/>
+                                        </li>
+                                        <li>
+                                            <button class="oe_inline oe_stat_button" string="Workflows" name="action_backend_workflows" type="object"  icon="fa-random" context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
                                             <button class="oe_inline oe_stat_button" string="Cron Jobs" name="action_backend_cron_jobs" type="object"  icon="fa-bell-slash" context="{'default_module_id': id}"/>
@@ -61,7 +64,7 @@
                                         <li>
                                             <button class="oe_inline oe_stat_button" string="Assets" name="action_website_assets" type="object"  icon="fa-archive" context="{'default_module_id': id}"/>
                                         </li>
-                                        <li class="odoo_support_contact">
+                                        <li>
                                             <button class="oe_inline oe_stat_button" string="Menus" name="action_website_menus" type="object"  icon="fa-list" context="{'default_module_id': id}"/>
                                         </li>
                                     </ul>
@@ -69,7 +72,7 @@
                             </ul>
                         </div>
 
-                        <field name="icon_image" widget="image" class="oe_avatar oe_left"/>
+                        <field name="icon_image" widget="image" filename="icon_image_name" class="oe_avatar oe_left"/>
                         <div class="oe_title">
                             <h1>
                                 <field name="shortdesc"/>
@@ -221,6 +224,9 @@
                                     <page string="Rules">
                                         <field name="rule_ids" nolabel="1" context="{'default_module_id': active_id}" />
                                     </page>
+                                    <page string="Workflows">
+                                        <field name="workflow_ids" nolabel="1" context="{'default_module_id': active_id}" />
+                                    </page>
                                     <page string="Cron Jobs">
                                         <field name="cron_job_ids" nolabel="1" context="{'default_module_id': active_id}" />
                                     </page>
@@ -277,7 +283,6 @@
             <field name="model">builder.ir.module.module</field>
             <field name="arch" type="xml">
                 <kanban>
-                    <field name="icon"/>
                     <field name="icon_image"/>
                     <field name="name"/>
                     <field name="summary"/>
@@ -335,7 +340,7 @@
             <field name="model">builder.ir.module.module</field>
             <field name="arch" type="xml">
                 <diagram string="UML Editor">
-                    <node object="builder.ir.model" shape="rectangle:True" bgcolor="gray:osv_memory==True;lightcyan:inherit_type=='prototype';lightgreen:inherit_type=='class';lightyellow:inherit_type=='mixed';lightsalmon:inherit_type=='delegation'">
+                    <node object="builder.ir.model" position_x="diagram_position_x" position_y="diagram_position_y" shape="rectangle:True" bgcolor="gray:osv_memory==True;lightcyan:inherit_type=='prototype';lightgreen:inherit_type=='class';lightyellow:inherit_type=='mixed';lightsalmon:inherit_type=='delegation'">
                         <field name="model"/>
                         <field name="name"/>
                         <field name="osv_memory" invisible="1"/>
@@ -351,7 +356,7 @@
             <field name="name">Modules</field>
             <field name="res_model">builder.ir.module.module</field>
             <field name="view_type">form</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,tree,form,diagram</field>
             <field name="search_view_id" ref="view_module_filter"/>
             <field name="help" type="html">
                 <p>

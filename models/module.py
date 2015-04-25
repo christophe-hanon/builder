@@ -73,9 +73,9 @@ class Module(models.Model):
     ], string='License', default='AGPL-3')
 
     application = fields.Boolean('Application')
-    icon = fields.Char('Icon URL')
-    image = fields.Binary(string='Icon')
+
     icon_image = fields.Binary(string='Icon')
+    icon_image_name = fields.Char('Icon Filename')
 
     menus_by_module = fields.Text(string='Menus')
     reports_by_module = fields.Text(string='Reports')
@@ -105,6 +105,7 @@ class Module(models.Model):
     action_ids = fields.One2many('builder.ir.actions.actions', 'module_id', 'Actions')
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions')
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions')
+    workflow_ids = fields.One2many('builder.workflow', 'module_id', 'Workflows')
 
     data_file_ids = fields.One2many('builder.data.file', 'module_id', 'Data Files')
     snippet_bookmarklet_url = fields.Char('Link', compute='_compute_snippet_bookmarklet_url')
@@ -283,6 +284,22 @@ javascript:(function(){
             'view_mode': 'tree,form',
             'res_model': 'builder.ir.rule',
             'views': [(False, 'tree'), (False, 'form')],
+            'domain': [('module_id', '=', self.id)],
+            # 'target': 'current',
+            'context': {
+                'default_module_id': self.id
+            },
+        }
+
+    @api.multi
+    def action_backend_workflows(self):
+        return {
+            'name': _('Workflows'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'builder.workflow',
+            'views': [(False, 'tree'), (False, 'form'), (False, 'diagram')],
             'domain': [('module_id', '=', self.id)],
             # 'target': 'current',
             'context': {
@@ -487,6 +504,12 @@ javascript:(function(){
             write_template(templates, zfile, self.name + '/views/actions.xml' , 'builder.actions.xml.jinja2'        , {'module': self}, **functions)
             write_template(templates, zfile, self.name + '/views/views.xml'   , 'builder.view.xml.jinja2'           , {'models': self.view_ids}, **functions)
             write_template(templates, zfile, self.name + '/models/models.py'  , 'builder.models.py.jinja2'          , {'models': self.model_ids}, **functions)
+
+        if len(self.workflow_ids):
+            module_data.append('data/workflow.xml')
+            write_template(templates, zfile, self.name + '/data/workflow.xml'       , 'builder.workflows.xml.jinja2' , {
+                'module': self,
+            }, **functions)
 
         if len(self.rule_ids) or len(self.group_ids):
             module_data.append('security/security.xml')

@@ -1,0 +1,46 @@
+{%- extends 'builder.base.xml.jinja2' %}
+{% block content %}
+
+{% for workflow in module.workflow_ids %}
+    <record id="wkf{{ workflow.id }}" model="workflow">
+        <field name="name">{{ workflow.name }}</field>
+        <field name="osv">{{ workflow.model_id.model }}</field>
+        <field name="on_create">{{ workflow.on_create }}</field>
+    </record>
+
+    {% for activity in workflow.activities %}
+    <record id="act_{{ activity.name }}" model="workflow.activity">
+        <field name="wkf_id" ref="wkf{{ workflow.id }}"/>
+        <field name="name">{{ activity.name }}</field>
+        {% if activity.action%}<field name="action">{{ activity.action }}</field>{% endif %}
+        {% if activity.action_ref %}<field name="action_id" ref="{{ activity.action_ref }}" />{% endif %}
+        <field name="kind">{{ activity.kind }}</field>
+        {% if activity.subflow_id%}
+            {% if activity.system_subflow_ref %}<field name="subflow_id" ref="{{ activity.system_subflow_ref }}" />{% endif %}
+            {% if activity.module_subflow_id %}<field name="subflow_id" ref="wkf{{ workflow.id }}" />{% endif %}
+        {% endif %}
+        {% if activity.flow_stop%}<field name="flow_stop">{{ activity.flow_stop }}</field>{% endif %}
+        {% if activity.flow_start%}<field name="flow_start">{{ activity.flow_start }}</field>{% endif %}
+        {% if activity.split_mode != 'XOR' %}<field name="split_mode">{{ activity.split_mode }}</field>{% endif %}
+        {% if activity.split_mode != 'XOR'%}<field name="join_mode">{{ activity.join_mode }}</field>{% endif %}
+        {% if activity.signal_send%}<field name="signal_send">{{ activity.signal_send }}</field>{% endif %}
+    </record>
+    {% endfor %}
+
+    {% for activity in workflow.activities %}
+        {% for transition in activity.in_transitions %}
+        <record id="t{{ transition.id }}" model="workflow.transition">
+            <field name="act_from" ref="act_{{ transition.act_from.name }}"/>
+            <field name="act_to" ref="act_{{ transition.act_from.name }}"/>
+            {% if transition.signal %}<field name="signal">{{ transition.signal }}</field>{% endif %}
+            <field name="condition">{{ transition.condition }}</field>
+        </record>
+        {% endfor %}
+
+    {% endfor %}
+
+
+{% endfor %}
+
+
+{% endblock %}

@@ -58,6 +58,9 @@ class IrModel(models.Model):
     order_field_id = fields.Many2one('builder.ir.model.fields', 'Order Field')
     order_direction = fields.Selection([('asc', 'asc'), ('desc', 'desc')], 'Order Field', default='asc')
 
+    diagram_position_x = fields.Integer('X')
+    diagram_position_y = fields.Integer('Y')
+
     # @api.constrains('model')
     # def check_model_name(self):
     #     if not check_object_name(self.name):

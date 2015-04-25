@@ -70,6 +70,7 @@ This module aims to help in the development of new modules
         'views/data_view.xml',
         'views/security_view.xml',
         'views/cron_view.xml',
+        'views/workflow_view.xml',
         'views/menu.xml',
 
         'views/backend_assets.xml',

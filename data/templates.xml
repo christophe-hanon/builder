@@ -135,6 +135,13 @@
             <field name="content" file="builder/data/templates/xml/backend/builder.actions.xml.jinja2" type="char" />
         </record>
 
+        <record model="document.template" id="builder_workflows_xml">
+            <field name="name">builder.workflows.xml.jinja2</field>
+            <field name="title">builder.workflows.xml.jinja2</field>
+            <field name="type">jinja</field>
+            <field name="content" file="builder/data/templates/xml/backend/builder.workflows.xml.jinja2" type="char" />
+        </record>
+
         <record model="document.template" id="builder_website_assets_xml">
             <field name="name">builder.website_assets.xml.jinja2</field>
             <field name="title">builder.website_assets.xml.jinja2</field>
