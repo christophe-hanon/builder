@@ -292,13 +292,6 @@ class IrFields(models.Model):
                              _("The Selection Options expression is must be in the [('key','Label'), ...] format!"))
         return True
 
-    def _size_gt_zero_msg(self, cr, user, ids, context=None):
-        return _('Size of the field can never be less than 0 !')
-
-    _sql_constraints = [
-        ('size_gt_zero', 'CHECK (size>=0)', _size_gt_zero_msg ),
-    ]
-
     @api.onchange('inverse', 'compute')
     def _onchange_inverse(self):
         if self.inverse:
